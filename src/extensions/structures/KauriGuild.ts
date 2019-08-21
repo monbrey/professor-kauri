@@ -1,15 +1,5 @@
 import { Structures } from "discord.js";
-import { MessageEmbed } from "discord.js";
-import KauriClient from "../client/KauriClient";
-
-const EMBED_COLORS: {[index: string]: number} = {
-    error: 0xe50000,
-    warn: 0xffc107,
-    longwarn: 0xffc107,
-    cancel: 0x004a7f,
-    success: 0x267f00,
-    info: 0xffffff
-};
+import KauriClient from "../../client/KauriClient";
 
 declare module "discord.js" {
     interface Guild {

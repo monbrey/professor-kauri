@@ -1,5 +1,4 @@
-import { Document, model, Schema } from "mongoose";
-import { Model } from "mongoose";
+import { Document, Model, model, Schema } from "mongoose";
 
 export interface ISettingsSchema extends Document {
     guild_id: string;

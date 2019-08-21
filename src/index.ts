@@ -3,9 +3,11 @@ import path from "path";
 import KauriClient from "./client/KauriClient";
 
 // tslint:disable: no-var-requires
-// require("./structures/KauriGuild");
-// require("./structures/KauriChannel");
+require("./extensions/structures/KauriGuild");
+require("./extensions/structures/KauriChannel");
 require("./extensions/Model");
+require("./extensions/Number");
+require("./extensions/CommandUtil");
 
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 

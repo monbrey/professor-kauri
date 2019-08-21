@@ -28,14 +28,14 @@ export interface IPokemonDocument extends Document {
         sm: IPokemonMoveDocument[];
     };
     evolution: IPokemonEvolutionDocument[];
-    mega: [{
+    mega: Array<{
         megaId: number;
         displayName?: string;
-    }];
-    primal: [{
+    }>;
+    primal: Array<{
         primalId: number;
         displayName?: string;
-    }];
+    }>;
     stats: {
         hp: number;
         attack: number;
@@ -44,9 +44,9 @@ export interface IPokemonDocument extends Document {
         specialDefence: number;
         speed: number;
     };
-    height?: number;
-    weight?: number;
-    gender?: {
+    height: number;
+    weight: number;
+    gender: {
         male?: boolean
         female?: boolean;
     };

@@ -1,17 +1,17 @@
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { Ability } from "../../models/ability";
+import { Move } from "../../models/move";
 
 interface CommandArgs {
     query: string;
 }
 
-export default class AbilityCommand extends Command {
+export default class MoveCommand extends Command {
     constructor() {
-        super("ability", {
-            aliases: ["ability"],
+        super("move", {
+            aliases: ["move"],
             category: "Info",
-            description: "Provides information on Pokemon Abilities",
+            description: "Provides Move information",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
         });
     }
@@ -21,7 +21,7 @@ export default class AbilityCommand extends Command {
             type: "string",
             match: "text",
             prompt: {
-                start: "> Please provide the name of an Ability to lookup"
+                start: "> Please provide the name of an Move to lookup"
             }
         };
 
@@ -30,12 +30,12 @@ export default class AbilityCommand extends Command {
 
     public async exec(message: Message, { query }: CommandArgs) {
         try {
-            const ability = await Ability.findClosest("abilityName", query);
-            if (ability) {
-                this.client.logger.ability(message, query, ability.abilityName);
-                return message.util!.send(ability.info());
+            const move = await Move.findClosest("moveName", query);
+            if (move) {
+                this.client.logger.move(message, query, move.moveName);
+                return message.util!.send(await move.info());
             } else {
-                this.client.logger.ability(message, query, "none");
+                this.client.logger.move(message, query, "none");
                 return message.channel.sendPopup("warn", `No results found for ${query}`);
             }
         } catch (e) {
