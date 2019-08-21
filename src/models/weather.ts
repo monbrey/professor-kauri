@@ -18,22 +18,10 @@ export interface IWeatherModel extends Model<IWeather> {
 }
 
 const WeatherSchema = new Schema({
-    weatherName: {
-        type: String,
-        required: true
-    },
-    shortCode: {
-        type: String,
-        required: true
-    },
-    desc: {
-        type: String,
-        required: true
-    },
-    color: {
-        type: String,
-        required: true
-    }
+    weatherName: { type: String, required: true },
+    shortCode: { type: String, required: true },
+    desc: { type: String, required: true },
+    color: { type: String, required: true }
 }, { collection: "weather" });
 
 WeatherSchema.methods.info = async function() {

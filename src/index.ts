@@ -5,6 +5,7 @@ import KauriClient from "./client/KauriClient";
 // tslint:disable: no-var-requires
 // require("./structures/KauriGuild");
 // require("./structures/KauriChannel");
+require("./extensions/Model");
 
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 

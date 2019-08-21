@@ -1,4 +1,5 @@
 import { Document, model, Schema } from "mongoose";
+import { Model } from "mongoose";
 
 export interface ISettingsSchema extends Document {
     guild_id: string;
@@ -11,6 +12,15 @@ export interface ISettingsSchema extends Document {
     logs: string;
 }
 
+// tslint:disable-next-line: no-empty-interface
+export interface ISettings extends ISettingsSchema {
+
+}
+
+export interface ISettingsModel extends Model<ISettings> {
+
+}
+
 const SettingsSchema: Schema = new Schema({
     guild_id: String,
     prefix: String,
@@ -20,6 +30,6 @@ const SettingsSchema: Schema = new Schema({
         minReacts: Number
     },
     logs: String
-});
+}, { collection: "settings" });
 
-export default model<ISettingsSchema>("Settings", SettingsSchema);
+export const Settings: ISettingsModel = model<ISettings, ISettingsModel>("Settings", SettingsSchema);

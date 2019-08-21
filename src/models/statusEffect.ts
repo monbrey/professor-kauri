@@ -18,23 +18,11 @@ export interface IStatusEffectModel extends Model<IStatusEffect> {
 }
 
 const StatusEffectSchema = new Schema({
-    statusName: {
-        type: String,
-        required: true
-    },
-    shortCode: {
-        type: String,
-        required: true
-    },
-    desc: {
-        type: String,
-        required: true
-    },
-    color: {
-        type: String,
-        required: true
-    }
-});
+    statusName: { type: String, required: true },
+    shortCode: { type: String, required: true },
+    desc: { type: String, required: true },
+    color: { type: String, required: true }
+}, { collection: "statuseffects" });
 
 StatusEffectSchema.plugin(autoIncrement, {
     model: "StatusEffect",

@@ -52,7 +52,7 @@ const MegaSchema = new Schema({
     height: { type: Number },
     weight: { type: Number },
     spriteCode: { type: String }
-});
+}, { collection: "megas" });
 
 MegaSchema.plugin(autoIncrement, {
     model: "Mega",

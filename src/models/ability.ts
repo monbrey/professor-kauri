@@ -24,7 +24,7 @@ const AbilitySchema: Schema = new Schema({
     desc: { type: String },
     additional: { type: String },
     affects: { type: String }
-});
+}, { collection: "abilities" });
 
 AbilitySchema.plugin(autoIncrement, {
     model: "Ability",

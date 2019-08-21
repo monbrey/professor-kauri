@@ -15,15 +15,9 @@ export interface IColorModel extends Model<IColorDocument> {
 }
 
 const ColorSchema = new Schema({
-    key: {
-        type: String,
-        required: true
-    },
-    color: {
-        type: String,
-        required: true
-    }
-});
+    key: { type: String, required: true },
+    color: { type: String, required: true }
+}, { collection: "colors" });
 
 ColorSchema.plugin(autoIncrement, {
     model: "Color",

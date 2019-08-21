@@ -3,14 +3,12 @@ import { Document, Model } from "mongoose";
 
 /**
  * Provider using Mongoose for MongoDB
- * @param {string} conn - MongoDB connection string
  * @param {Model} model - Mongoose Model object
+ * @param {string} idColumn - Unique column to perform lookups
  * @extends {Provider}
  */
-
 export default class MongooseProvider extends Provider {
     private model: Model<Document>;
-
     private idColumn: string;
 
     constructor(model: Model<Document>, idColumn: string) {

@@ -3,7 +3,7 @@ import { ClientOptions } from "discord.js";
 import mongoose from "mongoose";
 import queue from "p-queue";
 import { join } from "path";
-import Settings from "../models/settings";
+import { Settings } from "../models/settings";
 import MongooseProvider from "../providers/MongooseProvider";
 import Logger from "../util/logger";
 

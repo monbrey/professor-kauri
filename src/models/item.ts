@@ -12,7 +12,6 @@ export interface IItemDocument extends Document {
         berryStore?: number;
     };
     priceString: string;
-
 }
 
 export interface IItem extends IItemDocument {
@@ -32,7 +31,7 @@ const ItemSchema = new Schema({
         pokemart: { type: Number },
         berryStore: { type: Number }
     }
-});
+}, { collection: "items" });
 
 ItemSchema.plugin(autoIncrement, {
     model: "Item",
