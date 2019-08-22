@@ -19,9 +19,9 @@ const COMMAND_DEFAULTS = {
 };
 
 export default class KauriCommand extends Command {
-    constructor(id: string, options: KauriCommandOptions) {
+    constructor(id: string, options?: KauriCommandOptions) {
         super(id, options);
 
-        this.defaults = Object.assign(COMMAND_DEFAULTS, options.defaults);
+        this.defaults = Object.assign(COMMAND_DEFAULTS, options ? options.defaults : {});
     }
 }

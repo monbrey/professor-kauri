@@ -5,7 +5,7 @@ import { User } from "discord.js";
 import { MessageReaction } from "discord.js";
 import { TextChannel } from "discord.js";
 import { createLogger, format, LeveledLogMethod, Logger, transports } from "winston";
-import KauriClient from "../lib/client/KauriClient";
+import KauriClient from "../client/KauriClient";
 
 const consoleFormat = format.combine(
     format(info => {

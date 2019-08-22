@@ -1,5 +1,5 @@
 import { Structures } from "discord.js";
-import KauriClient from "../client/KauriClient";
+import KauriClient from "../../client/KauriClient";
 
 declare module "discord.js" {
     interface Guild {

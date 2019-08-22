@@ -2,19 +2,19 @@
 
 import dotenv from "dotenv";
 import path from "path";
-import KauriClient from "./lib/client/KauriClient";
+import KauriClient from "./client/KauriClient";
 
 // Extends Structures
-require("./extensions/structures/KauriGuild");
-require("./extensions/structures/KauriChannel");
+require("./lib/structures/KauriGuild");
+require("./lib/structures/KauriChannel");
 
 // Akairo Extensions
-require("./extensions/Command");
-require("./extensions/CommandUtil");
+require("./lib/commands/KauriCommand");
+require("./lib/commands/KauriCommandUtil");
 
 // Other Extensions
-require("./extensions/Model");
-require("./extensions/Number");
+require("./lib/misc/Model");
+require("./lib/misc/Number");
 
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 

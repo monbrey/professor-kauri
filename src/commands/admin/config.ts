@@ -1,10 +1,12 @@
+import { stripIndents } from "common-tags";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import KauriCommand from "../../lib/commands/KauriCommand";
 import { ICommandConfigDocument } from "../../models/schemas/commandConfig";
 
 interface CommandArgs {
-    command: Command;
+    type: string;
+    target: Command | string;
 }
 
 export default class ConfigCommand extends KauriCommand {
@@ -19,14 +21,34 @@ export default class ConfigCommand extends KauriCommand {
     }
 
     public *args() {
-        const command = yield {
-            type: "commandAlias",
+        const type = yield {
+            type: ["starboard", "logs", "command"],
             prompt: {
-                start: "> Which command needs configuration changes?"
+                start: "> Which config would you like to adjust?>\n`[starboard]` `[logs]` or `[command]`"
             }
         };
 
-        return { command };
+        let target;
+        switch (type) {
+            case "starboard":
+                target = yield {
+                    prompt: {
+                        start: "> `[channel]` `[emoji]` or `[minReacts]`"
+                    }
+                };
+                break;
+            case "command":
+                target = yield {
+                    type: "commandAlias",
+                    prompt: {
+                        start: "> Enter the name of a commad to configure"
+                    }
+                };
+            case "logs":
+                break;
+        }
+
+        return { type, target };
     }
 
     // /**
@@ -234,17 +256,19 @@ export default class ConfigCommand extends KauriCommand {
     //     return command.config.save();
     // }
 
-    public async exec(message: Message, { command }: CommandArgs) {
+    public async exec(message: Message, { type, target }: CommandArgs) {
+        console.log(type, target instanceof Command ? target.id : target);
+        return;
         // Dont provide any config for owner-only commands
-        if (command.ownerOnly) { return; }
+        // if (command.ownerOnly) { return; }
 
         // Ignore config if this message isn't in a guild
-        if (!message.guild) { return; }
+        // if (!message.guild) { return; }
 
-        const commandConfigs = this.client.settings.get(message.guild.id, "commands") as ICommandConfigDocument[];
-        const config = commandConfigs.find(c => c.command === command.id);
+        // const commandConfigs = this.client.settings.get(message.guild.id, "commands") as ICommandConfigDocument[];
+        // const config = commandConfigs.find(c => c.command === command.id);
 
-        const info = this.generateCommandInfo(message, command, Object.assign(command.defaults, config));
+        // const info = this.generateCommandInfo(message, command, Object.assign(command.defaults, config));
         // if (!info.footer) { info.setFooter("Click the pencil to edit the configuration"); }
 
         // const sent = await message.channel.send(info);
