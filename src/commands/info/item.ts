@@ -1,12 +1,12 @@
-import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import KauriCommand from "../../lib/commands/KauriCommand";
 import { Item } from "../../models/item";
 
 interface CommandArgs {
     query: string;
 }
 
-export default class ItemCommand extends Command {
+export default class ItemCommand extends KauriCommand {
     constructor() {
         super("item", {
             aliases: ["item"],

@@ -1,13 +1,20 @@
+// tslint:disable: no-var-requires
+
 import dotenv from "dotenv";
 import path from "path";
-import KauriClient from "./client/KauriClient";
+import KauriClient from "./lib/client/KauriClient";
 
-// tslint:disable: no-var-requires
+// Extends Structures
 require("./extensions/structures/KauriGuild");
 require("./extensions/structures/KauriChannel");
+
+// Akairo Extensions
+require("./extensions/Command");
+require("./extensions/CommandUtil");
+
+// Other Extensions
 require("./extensions/Model");
 require("./extensions/Number");
-require("./extensions/CommandUtil");
 
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 

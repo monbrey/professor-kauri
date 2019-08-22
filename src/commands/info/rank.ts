@@ -1,5 +1,5 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
+import KauriCommand from "../../lib/commands/KauriCommand";
 import { Color } from "../../models/color";
 import { IPokemon, Pokemon } from "../../models/pokemon";
 
@@ -24,7 +24,7 @@ interface CommandArgs {
     query: string;
 }
 
-export default class RankCommand extends Command {
+export default class RankCommand extends KauriCommand {
     public constructor() {
         super("rank", {
             aliases: ["rank"],

@@ -9,5 +9,5 @@ export interface IPokemonAbilityDocument extends Document {
 export const PokemonAbility = new Schema({
     abilityId: { type: Number, ref: "Ability", required: true },
     abilityName: { type: String, required: true },
-    hidden: { type: Boolean }
+    hidden: Boolean
 }, { _id: false });

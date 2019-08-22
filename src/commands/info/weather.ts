@@ -1,12 +1,12 @@
-import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import KauriCommand from "../../lib/commands/KauriCommand";
 import { Weather } from "../../models/weather";
 
 interface CommandArgs {
     query: string;
 }
 
-module.exports = class WeatherCommand extends Command {
+module.exports = class WeatherCommand extends KauriCommand {
     constructor() {
         super("weather", {
             aliases: ["weather"],

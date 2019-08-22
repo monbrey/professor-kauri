@@ -3,14 +3,14 @@ import { ClientOptions } from "discord.js";
 import mongoose from "mongoose";
 import queue from "p-queue";
 import { join } from "path";
-import { Settings } from "../models/settings";
-import MongooseProvider from "../providers/MongooseProvider";
-import Logger from "../util/logger";
+import { ISettings, Settings } from "../../models/settings";
+import MongooseProvider from "../../providers/MongooseProvider";
+import Logger from "../../util/logger";
 
 declare module "discord-akairo" {
     interface AkairoClient {
         logger: Logger;
-        settings: MongooseProvider;
+        settings: MongooseProvider<ISettings>;
         commandHandler: CommandHandler;
         inhibitorHandler: InhibitorHandler;
         listenerHandler: ListenerHandler;
@@ -19,7 +19,7 @@ declare module "discord-akairo" {
 }
 
 export default class KauriClient extends AkairoClient {
-    public settings: MongooseProvider;
+    public settings: MongooseProvider<ISettings>;
     public logger: Logger;
     public reactionQueue: queue;
 

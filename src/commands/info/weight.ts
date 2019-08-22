@@ -1,14 +1,14 @@
-import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
-import { IPokemon, Pokemon } from "../../models/pokemon";
+import KauriCommand from "../../lib/commands/KauriCommand";
+import { Pokemon } from "../../models/pokemon";
 
 interface CommandArgs {
     query: string;
     target: string;
 }
 
-module.exports = class WeightCommand extends Command {
+module.exports = class WeightCommand extends KauriCommand {
     constructor() {
         super("weight", {
             aliases: ["weight"],

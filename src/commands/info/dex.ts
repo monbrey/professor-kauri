@@ -1,6 +1,6 @@
-import { Command } from "discord-akairo";
 import { Message, MessageReaction, User } from "discord.js";
 import { MessageEmbed } from "discord.js";
+import KauriCommand from "../../lib/commands/KauriCommand";
 import { IPokemon, Pokemon } from "../../models/pokemon";
 
 interface CommandArgs {
@@ -12,7 +12,7 @@ interface DexMessage extends Message {
     orig_author: User;
 }
 
-export default class DexCommand extends Command {
+export default class DexCommand extends KauriCommand {
     constructor() {
         super("dex", {
             aliases: ["dex"],

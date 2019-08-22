@@ -1,12 +1,12 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
+import KauriCommand from "../../lib/commands/KauriCommand";
 import { Eot } from "../../models/eot";
 
 interface CommandArgs {
     query: string;
 }
 
-export default class EotCommand extends Command {
+export default class EotCommand extends KauriCommand {
     constructor() {
         super("eot", {
             aliases: ["eot"],

@@ -1,8 +1,8 @@
 import { oneLine, stripIndents } from "common-tags";
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
+import KauriCommand from "../../lib/commands/KauriCommand";
 
-module.exports = class VetoCommand extends Command {
+module.exports = class VetoCommand extends KauriCommand {
     constructor() {
         super("veto", {
             aliases: ["veto"],

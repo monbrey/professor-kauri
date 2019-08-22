@@ -5,6 +5,7 @@ export default class PingCommand extends Command {
     public constructor() {
         super("ping", {
             aliases: ["ping"],
+            category: "Util",
             description: "A basic ping command"
         });
     }
