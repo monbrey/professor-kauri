@@ -18,7 +18,7 @@ const COMMAND_DEFAULTS = {
     disabled: false
 };
 
-export default class KauriCommand extends Command {
+export class KauriCommand extends Command {
     constructor(id: string, options?: KauriCommandOptions) {
         super(id, options);
 

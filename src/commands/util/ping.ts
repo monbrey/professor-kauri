@@ -1,7 +1,7 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
+import { KauriCommand } from "../../lib/commands/KauriCommand";
 
-export default class PingCommand extends Command {
+export default class PingCommand extends KauriCommand {
     public constructor() {
         super("ping", {
             aliases: ["ping"],

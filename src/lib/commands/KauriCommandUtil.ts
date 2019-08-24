@@ -1,9 +1,13 @@
 import { CommandUtil } from "discord-akairo";
 import { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
+import { Collection } from "discord.js";
+import { Snowflake } from "discord.js";
 
 declare module "discord-akairo" {
     interface CommandUtil {
+        userMessages: Collection<Snowflake, Message>;
+        botMessages: Collection<Snowflake, Message>;
         sendPopup(type: string, description?: string | number): Promise<Message>;
     }
 }
@@ -30,6 +34,16 @@ Object.defineProperties(CommandUtil.prototype, {
             const embed = new MessageEmbed({ color: EMBED_COLORS[type] }).setDescription(description);
 
             return this.send(embed);
+        }
+    },
+    userMessages: {
+        get(this: CommandUtil) {
+            return this.messages!.filter(m => !m.author!.bot);
+        }
+    },
+    botMessages: {
+        get(this: CommandUtil) {
+            return this.messages!.filter(m => m.author!.bot);
         }
     }
 });

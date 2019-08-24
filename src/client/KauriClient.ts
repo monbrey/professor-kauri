@@ -27,6 +27,7 @@ export default class KauriClient extends AkairoClient {
         directory: join(__dirname, "..", "commands"),
         prefix: message => message.guild ? this.settings.get(message.guild.id, "prefix") || "!" : "!",
         handleEdits: true,
+        storeMessages: true,
         commandUtil: true,
         commandUtilLifetime: 60000
     });

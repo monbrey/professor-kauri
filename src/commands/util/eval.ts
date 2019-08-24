@@ -1,14 +1,14 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { inspect } from "util";
+import { KauriCommand } from "../../lib/commands/KauriCommand";
 
 interface CommandArgs {
     code: string;
     silent: boolean;
 }
 
-export default class EvalCommand extends Command {
+export default class EvalCommand extends KauriCommand {
     constructor() {
         super("eval", {
             aliases: ["eval"],

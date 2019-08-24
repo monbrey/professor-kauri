@@ -1,6 +1,6 @@
 import { Inhibitor } from "discord-akairo";
 import { Message } from "discord.js";
-import KauriCommand from "../../lib/commands/KauriCommand";
+import { KauriCommand } from "../../lib/commands/KauriCommand";
 
 export default class CommandChannelDisabled extends Inhibitor {
     constructor() {

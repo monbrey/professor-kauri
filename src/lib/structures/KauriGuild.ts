@@ -1,10 +1,11 @@
 import { Structures } from "discord.js";
 import KauriClient from "../../client/KauriClient";
+import { IStarboardConfigDocument } from "../../models/schemas/starboardConfig";
 
 declare module "discord.js" {
     interface Guild {
         client: KauriClient;
-        starboard?: any;
+        starboard?: IStarboardConfigDocument;
         logChannel?: Snowflake;
     }
 }

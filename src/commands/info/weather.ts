@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import KauriCommand from "../../lib/commands/KauriCommand";
+import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Weather } from "../../models/weather";
 
 interface CommandArgs {

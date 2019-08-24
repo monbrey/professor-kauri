@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import KauriCommand from "../../lib/commands/KauriCommand";
+import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Eot } from "../../models/eot";
 
 interface CommandArgs {

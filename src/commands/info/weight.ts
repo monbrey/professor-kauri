@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
-import KauriCommand from "../../lib/commands/KauriCommand";
+import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Pokemon } from "../../models/pokemon";
 
 interface CommandArgs {
