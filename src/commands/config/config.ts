@@ -3,8 +3,9 @@ import { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
 import { MessageReaction } from "discord.js";
 import { User } from "discord.js";
+import { Snowflake } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { CommandConfig, ICommandConfigDocument } from "../../models/schemas/commandConfig";
+import { ICommandConfigDocument } from "../../models/schemas/commandConfig";
 
 interface CommandArgs {
     command: KauriCommand;
@@ -31,16 +32,6 @@ export default class ConfigCommand extends KauriCommand {
         return { command };
     }
 
-    public async reset(message: Message, command: KauriCommand) {
-        const configs = this.client.settings.get(message.guild!.id, "commands") as ICommandConfigDocument[];
-        const index = configs.findIndex(c => c.command === command.id);
-
-        if (index !== -1) {
-            configs.splice(index, 1);
-            this.client.settings.set(message.guild!.id, "commands", configs);
-        }
-    }
-
     public async exec(message: Message, { command }: CommandArgs) {
         if (!message.guild) { return; }
 
@@ -48,7 +39,7 @@ export default class ConfigCommand extends KauriCommand {
         if (command.ownerOnly) { return; }
 
         const commandConfigs = this.client.settings.get(message.guild.id, "commands") as ICommandConfigDocument[];
-        const config = (commandConfigs.find(c => c.command === command.id) || {}) as ICommandConfigDocument;
+        const config = (commandConfigs.find(c => c.command === command.id) || { command: command.id } as ICommandConfigDocument);
 
         const info = this.generateCommandInfo(message, command, config);
 
@@ -56,9 +47,9 @@ export default class ConfigCommand extends KauriCommand {
             return message.util!.send({ embed: info });
         }
 
-        if (!info.footer) { info.setFooter("Click the pencil to edit the configuration"); }
-
+        info.setFooter("Click the pencil to edit the configuration");
         const sent = await message.channel.send(info);
+        info.setFooter("");
         await sent.react("✏");
 
         const filter = ({ emoji }: MessageReaction, u: User) => emoji.name === "✏" && u.id === message.author!.id;
@@ -69,6 +60,16 @@ export default class ConfigCommand extends KauriCommand {
         await sent.edit(this.addEditControls(message, info, command, config));
 
         return this.configure(message, sent, command, config);
+    }
+
+    private async reset(message: Message, command: KauriCommand) {
+        const configs = this.client.settings.get(message.guild!.id, "commands") as ICommandConfigDocument[];
+        const index = configs.findIndex(c => c.command === command.id);
+
+        if (index !== -1) {
+            configs.splice(index, 1);
+            this.client.settings.set(message.guild!.id, "commands", configs);
+        }
     }
 
     private async manageRoles(message: Message, command: KauriCommand, config: ICommandConfigDocument) {
@@ -129,10 +130,7 @@ export default class ConfigCommand extends KauriCommand {
 
         const save = await roleEdit.reactConfirm(message.author!.id, 300000);
         if (save) {
-            const configs = this.client.settings.get(message.guild!.id, "commands") as ICommandConfigDocument[];
-            const index = configs.findIndex(c => c.command === command.id);
-            configs[index] = config;
-            this.client.settings.set(message.guild!.id, "commands", configs);
+            this.saveConfig(message.guild!.id, command, config);
         }
         collector.stop();
     }
@@ -186,10 +184,7 @@ export default class ConfigCommand extends KauriCommand {
 
         const save = await channelEdit.reactConfirm(message.author!.id, 300000);
         if (save) {
-            const configs = this.client.settings.get(message.guild!.id, "commands") as ICommandConfigDocument[];
-            const index = configs.findIndex(c => c.command === command.id);
-            configs[index] = config;
-            this.client.settings.set(message.guild!.id, "commands", configs);
+           this.saveConfig(message.guild!.id, command, config);
         }
 
         collector.stop();
@@ -241,12 +236,16 @@ export default class ConfigCommand extends KauriCommand {
         return sent.edit(this.generateCommandInfo(message, command, config));
     }
 
+    private async saveConfig(id: Snowflake, command: KauriCommand, config: ICommandConfigDocument) {
+        const configs = this.client.settings.get(id, "commands") as ICommandConfigDocument[];
+        const index = configs.findIndex(c => c.command === command.id);
+        index === -1 ? configs.push(config) : configs[index] = config;
+        return this.client.settings.set(id, "commands", configs);
+    }
+
     private async toggleCommand(message: Message, command: KauriCommand, config: ICommandConfigDocument) {
         config.disabled = !(config.disabled || command.defaults.disabled || false);
-        const configs = this.client.settings.get(message.guild!.id, "commands") as ICommandConfigDocument[];
-        const index = configs.findIndex(c => c.command === command.id);
-        configs[index] = config;
-        return this.client.settings.set(message.guild!.id, "commands", configs);
+        this.saveConfig(message.guild!.id, command, config);
     }
 
     /**

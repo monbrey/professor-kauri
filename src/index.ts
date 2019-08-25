@@ -4,9 +4,10 @@ import dotenv from "dotenv";
 import path from "path";
 import KauriClient from "./client/KauriClient";
 
-// Extends Structures
+// Discord Extensions
 require("./lib/structures/KauriGuild");
 require("./lib/structures/KauriChannel");
+require("./lib/structures/KauriMessage");
 
 // Akairo Extensions
 require("./lib/commands/KauriCommand");

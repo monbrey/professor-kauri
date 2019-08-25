@@ -6,6 +6,7 @@ import { join } from "path";
 import { ISettings, Settings } from "../models/settings";
 import MongooseProvider from "../providers/MongooseProvider";
 import Logger from "../util/logger";
+import { buildCommandHandler } from "./CommandHandler";
 
 declare module "discord-akairo" {
     interface AkairoClient {
@@ -23,14 +24,7 @@ export default class KauriClient extends AkairoClient {
     public logger: Logger;
     public reactionQueue: queue;
 
-    public commandHandler: CommandHandler = new CommandHandler(this, {
-        directory: join(__dirname, "..", "commands"),
-        prefix: message => message.guild ? this.settings.get(message.guild.id, "prefix") || "!" : "!",
-        handleEdits: true,
-        storeMessages: true,
-        commandUtil: true,
-        commandUtilLifetime: 60000
-    });
+    public commandHandler: CommandHandler = buildCommandHandler(this);
 
     public inhibitorHandler: InhibitorHandler = new InhibitorHandler(this, {
         directory: join(__dirname, "..", "inhibitors"),
@@ -56,11 +50,11 @@ export default class KauriClient extends AkairoClient {
 
     public async start() {
         await this.init();
-        return this.login(process.env.DISCORD_TOKEN);
+        return this.login(process.env.DISCORD_TOKEN).catch(this.logger.parseError);
     }
 
     private async init() {
-        await mongoose.connect(process.env.MONGODB_URI!, { useNewUrlParser: true, w: "majority" });
+        await mongoose.connect(process.env.MONGODB_URI!, { useNewUrlParser: true, w: "majority" }).catch(this.logger.parseError);
 
         this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
         this.commandHandler.useListenerHandler(this.listenerHandler);

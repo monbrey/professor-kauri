@@ -4,6 +4,7 @@ declare module "discord-akairo" {
     interface Command {
         defaults: {
             disabled: boolean;
+            configurable: boolean;
         };
     }
 }
@@ -11,11 +12,13 @@ declare module "discord-akairo" {
 interface KauriCommandOptions extends CommandOptions {
     defaults?: {
         disabled?: boolean;
+        configurable?: boolean;
     };
 }
 
 const COMMAND_DEFAULTS = {
-    disabled: false
+    disabled: false,
+    configurable: true
 };
 
 export class KauriCommand extends Command {

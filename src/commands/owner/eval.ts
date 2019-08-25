@@ -14,7 +14,8 @@ export default class EvalCommand extends KauriCommand {
             aliases: ["eval"],
             flags: ["-s"],
             category: "Util",
-            ownerOnly: true
+            ownerOnly: true,
+            defaults: { configurable: false }
         });
     }
 
