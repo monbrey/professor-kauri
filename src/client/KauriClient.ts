@@ -59,8 +59,13 @@ export default class KauriClient extends AkairoClient {
         this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
         this.commandHandler.useListenerHandler(this.listenerHandler);
 
+        this.listenerHandler.setEmitters({
+            commandHandler: this.commandHandler
+        });
+
         this.commandHandler.loadAll();
         this.inhibitorHandler.loadAll();
         this.listenerHandler.loadAll();
+
     }
 }

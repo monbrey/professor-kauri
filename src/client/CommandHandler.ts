@@ -25,7 +25,6 @@ export const buildCommandHandler = (client: KauriClient) => {
         if (!matches[2]) { return null; }
         const a = parseInt(matches[2].replace(",", ""), 10);
         if (!a) { return null; }
-        console.log(matches);
         return [a, matches[3] ? "CC" : "$"];
     });
 

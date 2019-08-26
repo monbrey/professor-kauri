@@ -60,4 +60,4 @@ AbilitySchema.methods.info = function() {
     return embed;
 };
 
-export const Ability: IAbilityModel = model<IAbility, IAbilityModel>("Model", AbilitySchema);
+export const Ability: IAbilityModel = model<IAbility, IAbilityModel>("Ability", AbilitySchema);

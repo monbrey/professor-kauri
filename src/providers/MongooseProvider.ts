@@ -4,21 +4,22 @@ import { Document, Model } from "mongoose";
 
 // tslint:disable-next-line: interface-over-type-literal
 type IMongooseProvider<T> = {
-    get(id: string): T | undefined;
-    get(id: string, key?: string): any | undefined;
+    get(id: string | string[]): T | undefined;
+    get(id: string | string[], key?: string): any | undefined;
 };
 
 /**
  * Provider using Mongoose for MongoDB
  * @param {Model} model - Mongoose Model object
- * @param {string} idColumn - Unique column to perform lookups
+ * @param {string | string[]} idColumn - Unique column to perform lookups
  * @extends {Provider}
  */
 export default class MongooseProvider<T extends Document> extends Provider implements IMongooseProvider<T> {
     private model: Model<T>;
-    private idColumn: string;
+    private idColumn: string | string[];
+    private compositeKey: boolean;
 
-    constructor(model: Model<T>, idColumn: string) {
+    constructor(model: Model<T>, idColumn: string | string[]) {
         super();
 
         /**
@@ -33,15 +34,22 @@ export default class MongooseProvider<T extends Document> extends Provider imple
          */
         this.idColumn = idColumn;
 
+        /**
+         * Boolean flag for composite keys
+         * @type {boolean}
+         */
+        this.compositeKey = typeof idColumn === "object" ? true : false;
+
         this.init();
     }
 
     public init() {
         this.model.find({}).then(docs => {
             for (const d of docs) {
-                this.items.set(d.get(this.idColumn), d);
+                this.items.set(this.generateKey(d), d);
             }
         });
+
     }
 
     public has(id: string, key?: string): boolean {
@@ -67,28 +75,23 @@ export default class MongooseProvider<T extends Document> extends Provider imple
     }
 
     public async fetch(id: string, key?: string): Promise<T> {
-        const q: { [index: string]: any } = {};
-        q[this.idColumn] = id;
+        const q = this.deconstructKey(id);
 
         const item = await this.model.findOne(q, `${key}`);
         return item ? (key ? item.get(key) : item) : null;
     }
 
     public async add(value: any): Promise<T> {
-        this.items.set(value[this.idColumn], value);
+        this.items.set(this.generateKey(value), value);
         return value.save();
     }
 
     public async set(id: string, key: string, value: any): Promise<T> {
-        const item = this.items.get(id) || new this.model();
+        const item = this.items.get(id) || this.deconstructKey(id);
         const exists = this.items.has(id);
 
-        if (!exists) {
-            item[this.idColumn] = id;
-        }
-
         item[key] = value;
-        this.items.set(item[id], item);
+        this.items.set(id, item);
 
         return item.save();
     }
@@ -113,5 +116,29 @@ export default class MongooseProvider<T extends Document> extends Provider imple
         }
 
         return;
+    }
+
+    private generateKey(value: any) {
+        if (this.compositeKey) {
+            return (this.idColumn as string[]).map(k => value[k]).join(":");
+        }
+
+        return value[this.idColumn as string];
+    }
+
+    private deconstructKey(id: string) {
+        const d: T = {} as T;
+
+        if (!this.compositeKey) {
+            d.set(this.idColumn as string, id);
+        } else {
+            const params = id.split(":");
+            // tslint:disable-next-line: forin
+            for (const index in params) {
+                d.set(this.idColumn[index], params[index]);
+            }
+        }
+
+        return d;
     }
 }
