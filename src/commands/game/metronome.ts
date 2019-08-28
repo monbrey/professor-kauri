@@ -12,7 +12,7 @@ export default class MetronomeCommand extends KauriCommand {
         });
     }
 
-    public async run(message: Message) {
+    public async exec(message: Message) {
         const move = await Move.metronome();
         return message.util!.send(await move.info());
     }
