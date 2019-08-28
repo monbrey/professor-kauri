@@ -24,12 +24,12 @@ export default class DiceCommand extends KauriCommand {
     }
 
     public async exec(message: Message, { die }: CommandArgs) {
-        const valid = die.filter(d => /^[1-9]\d*(?:,*[1-9]\d*)?$/.test(d));
+        const valid = die.filter(d => /^[1-9]\d*(?:[,d]?[1-9]\d*)?$/.test(d));
         const dice: number[] = valid.flatMap(d => {
-            if (!d.includes(",")) { return parseInt(d, 10); }
-            if (/^[1-9]\d*$/.test(d.split(",")[0]) && d.split(",")[1] !== "") {
-                if (/^[1-9]\d*$/.test(d.split(",")[0]) && /^[1-9]\d*$/.test(d.split(",")[1])) {
-                    return new Array(parseInt(d.split(",")[0], 10)).fill(d.split(",")[1]);
+            if (!d.match(/[,d]/)) { return parseInt(d, 10); }
+            if (/^[1-9]\d*$/.test(d.split(/[,d]/)[0]) && d.split(/[,d]/)[1] !== "") {
+                if (/^[1-9]\d*$/.test(d.split(/[,d]/)[0]) && /^[1-9]\d*$/.test(d.split(/[,d]/)[1])) {
+                    return new Array(parseInt(d.split(/[,d]/)[0], 10)).fill(d.split(/[,d]/)[1]);
                 }
             }
         });

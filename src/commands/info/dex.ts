@@ -4,7 +4,7 @@ import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { IPokemon, Pokemon } from "../../models/pokemon";
 
 interface CommandArgs {
-    query: string;
+    pokemon: IPokemon;
 }
 
 interface DexMessage extends Message {
@@ -23,40 +23,32 @@ export default class DexCommand extends KauriCommand {
     }
 
     public *args() {
-        const query = yield {
-            type: "string",
+        const pokemon = yield {
+            type: "pokemon",
             match: "text",
             prompt: {
                 start: "> Please provide the name of a Pokemon to lookup"
             }
         };
 
-        return { query };
+        return { pokemon };
     }
 
-    public async exec(message: Message, { query }: CommandArgs) {
-        try {
-            const pokemon = await Pokemon.findClosest("uniqueName", query);
+    public async exec(message: Message, { pokemon }: CommandArgs) {
+        const query = message.util && message.util.parsed ? message.util.parsed.content : undefined;
 
-            if (pokemon) {
-                this.client.logger.info({
-                    key: "dex",
-                    query,
-                    result: pokemon.uniqueName
-                });
+        this.client.logger.info({
+            key: "dex",
+            query,
+            result: pokemon.uniqueName
+        });
 
-                const dex: Partial<DexMessage> = await message.channel.send(await pokemon.dex(query)) as Message;
-                dex.pokemon = pokemon;
-                dex.orig_author = message.author!;
+        const dex: Partial<DexMessage> = await message.channel.send(await pokemon.dex(query)) as Message;
+        dex.pokemon = pokemon;
+        dex.orig_author = message.author!;
 
-                return this.prompt(dex as DexMessage);
-            } else {
-                this.client.logger.info({ key: "dex", query, result: "none" });
-                return message.channel.sendPopup("warn", `No results found for ${query}`);
-            }
-        } catch (e) {
-            this.client.logger.parseError(e);
-        }
+        return this.prompt(dex as DexMessage);
+
     }
 
     private async prompt(dex: DexMessage) {

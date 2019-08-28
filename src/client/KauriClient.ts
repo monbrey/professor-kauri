@@ -50,11 +50,15 @@ export default class KauriClient extends AkairoClient {
 
     public async start() {
         await this.init();
-        return this.login(process.env.DISCORD_TOKEN).catch(this.logger.parseError);
+        return this.login(process.env.DISCORD_TOKEN).catch(e => this.logger.parseError(e));
     }
 
     private async init() {
-        await mongoose.connect(process.env.MONGODB_URI!, { useNewUrlParser: true, w: "majority" }).catch(this.logger.parseError);
+        await mongoose.connect(process.env.MONGODB_URI!, {
+            useNewUrlParser: true,
+            useCreateIndex: true,
+            w: "majority"
+        }).catch(e => this.logger.parseError(e));
 
         this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
         this.commandHandler.useListenerHandler(this.listenerHandler);

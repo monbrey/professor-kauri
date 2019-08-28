@@ -17,7 +17,7 @@ require("./lib/commands/KauriCommandUtil");
 require("./lib/misc/Model");
 require("./lib/misc/Number");
 
-dotenv.config({ path: path.resolve(__dirname, ".env") });
+dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
 
 const client = new KauriClient({
     disableEveryone: true,

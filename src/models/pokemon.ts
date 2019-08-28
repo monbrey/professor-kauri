@@ -69,7 +69,7 @@ export interface IPokemonDocument extends Document {
 }
 
 export interface IPokemon extends IPokemonDocument {
-    dex(query: string): MessageEmbed;
+    dex(query?: string): MessageEmbed;
     learnset(dex: Message): MessageEmbed;
     megaDex(whichMega: number): MessageEmbed;
     primalDex(whichPrimal: number): MessageEmbed;
@@ -175,7 +175,7 @@ PokemonSchema.statics.findPartial = function(uniqueName: string, query: any = {}
     return this.find(Object.assign(query, { uniqueName: new RegExp(uniqueName, "i") }));
 };
 
-PokemonSchema.methods.dex = async function(query: string) {
+PokemonSchema.methods.dex = async function(query?: string) {
     const color = await Color.getColorForType(this.type1.toLowerCase());
     const dexString = this.dexNumber.toString().padStart(3, "0");
     const title = `URPG Ultradex - ${this.displayName} (#${dexString})`;
@@ -196,10 +196,9 @@ PokemonSchema.methods.dex = async function(query: string) {
         .addField("Height and Weight", `${this.height}m, ${this.weight}kg`)
         .setFooter("Reactions | [M] View Moves ");
 
-    if (this.matchRating !== 1) {
+    if (this.matchRating !== 1 && query) {
         const percent = Math.round(this.matchRating * 100);
-        const note = `Closest match to your search "${query}" with ${percent}% similarity`;
-        embed.setDescription(note);
+        embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
     }
 
     const rank = [];
