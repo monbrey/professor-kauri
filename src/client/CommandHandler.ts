@@ -1,8 +1,22 @@
+// Node
+import { join } from "path";
+
+// Discord
 import { CommandHandler } from "discord-akairo";
 import { Message } from "discord.js";
-import { join } from "path";
-import { Pokemon } from "../models/pokemon";
+
+// Bot
+import MongooseProvider from "../providers/MongooseProvider";
 import KauriClient from "./KauriClient";
+
+// Models
+import { Ability, IAbility } from "../models/ability";
+import { IMove, Move } from "../models/move";
+import { IPokemon, Pokemon } from "../models/pokemon";
+
+const PokemonProvider = new MongooseProvider<IPokemon>(Pokemon, "uniqueName", false);
+const AbilityProvider = new MongooseProvider<IAbility>(Ability, "moveName", false);
+const MoveProvider = new MongooseProvider<IMove>(Move, "moveName", false);
 
 export const buildCommandHandler = (client: KauriClient) => {
 
@@ -16,7 +30,15 @@ export const buildCommandHandler = (client: KauriClient) => {
     });
 
     ch.resolver.addType("pokemon", (message: Message, phrase: string) => {
-        return Pokemon.findClosest("uniqueName", phrase);
+        return PokemonProvider.resolve(phrase);
+    });
+
+    ch.resolver.addType("ability", (message: Message, phrase: string) => {
+        return AbilityProvider.resolve(phrase);
+    });
+
+    ch.resolver.addType("move", (message: Message, phrase: string) => {
+        return MoveProvider.resolve(phrase);
     });
 
     ch.resolver.addType("currency", (message: Message, phrase: string) => {
