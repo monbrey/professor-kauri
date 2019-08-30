@@ -7,7 +7,27 @@ import { TextChannel } from "discord.js";
 import { createLogger, format, LeveledLogMethod, Logger, transports } from "winston";
 import KauriClient from "../client/KauriClient";
 
-const consoleFormat = format.combine(
+const logFormat = format.combine(
+    format(info => {
+        return info.level !== "error" ? info : false;
+    })(),
+    format.label({ label: process.env.NODE_ENV }),
+    format.timestamp(),
+    format.json(),
+    format.printf(info => {
+        const message = (info.message as any) instanceof Object ? JSON.stringify(info.message) : info.message;
+        return `[${info.timestamp}] ${info.level}: ${message}`;
+    })
+);
+
+const errorFormat = format.combine(
+    format.label({ label: process.env.NODE_ENV }),
+    format.timestamp(),
+    format.json(),
+    format.printf(info => `[${info.timestamp}] ${info.level}: ${info.stack || info.message}`)
+);
+
+const consoleLogFormat = format.combine(
     format(info => {
         return info.level !== "error" ? info : false;
     })(),
@@ -26,12 +46,12 @@ const consoleErrorFormat = format.combine(
     format.timestamp(),
     format.colorize(),
     format.json(),
-    format.printf(info => `[${info.timestamp}] ${info.level}: ${info.stack || info.message}`)
+    format.printf(info => `[${info.timestamp}]: ${info.stack || info.message}`)
 );
 
 const outs: any[] = [
     new transports.Console({
-        format: consoleFormat,
+        format: consoleLogFormat,
         level: "info"
     }),
     new transports.Console({
@@ -43,10 +63,12 @@ const outs: any[] = [
 if (process.env.NODE_ENV === "production") {
     outs.push(
         new transports.File({
-            filename: "./kauri.log"
+            format: logFormat,
+            filename: `./kauri.log`
         }),
         new transports.File({
-            filename: "./kauri-error.log",
+            format: errorFormat,
+            filename: `./kauri-error.log`,
             level: "error"
         })
     );
@@ -71,7 +93,6 @@ class CustomLogger {
      * @param {string} key
      */
     public async parseError(error: Error) {
-        console.log(typeof error);
         const errorType = error.constructor.name;
         error = { ...Util.makePlainError(error) };
 
@@ -88,6 +109,10 @@ class CustomLogger {
 
     //#region PASSTHROUGH
     public async info(data: any) {
+        return this.winston.info(data);
+    }
+
+    public async debug(data: any) {
         return this.winston.info(data);
     }
 
@@ -354,8 +379,7 @@ class CustomLogger {
         try {
             return logChannel.send(embed);
         } catch (e) {
-            console.error(e);
-            // this.parseError(e, "logger");
+            this.parseError(e);
         }
     }
 
@@ -465,7 +489,6 @@ class CustomLogger {
         try {
             return logChannel.send(embed);
         } catch (e) {
-            console.error(e);
             this.parseError(e);
         }
     }
@@ -501,7 +524,6 @@ class CustomLogger {
         try {
             return logChannel.send(embed);
         } catch (e) {
-            console.error(e);
             this.parseError(e);
         }
     }
@@ -524,7 +546,11 @@ class CustomLogger {
             .setTimestamp()
             .setDescription(`New trainer ${trainer.username} (${message.member} : ${message.member!.id}) started with ${starter.uniqueName}`);
 
-        try { return logChannel.send(embed); } catch (e) { console.error(e); }
+        try {
+            return logChannel.send(embed);
+        } catch (e) {
+            this.parseError(e);
+        }
     }
 
     public async statusEffect(message: Message, query: string, result: string) {
