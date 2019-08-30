@@ -19,7 +19,7 @@ export default class MongooseProvider<T extends Document> extends Provider imple
     private idColumn: string | string[];
     private compositeKey: boolean;
 
-    constructor(model: Model<T>, idColumn: string | string[]) {
+    constructor(model: Model<T>, idColumn: string | string[], fullCache: boolean = true) {
         super();
 
         /**
@@ -40,7 +40,7 @@ export default class MongooseProvider<T extends Document> extends Provider imple
          */
         this.compositeKey = typeof idColumn === "object" ? true : false;
 
-        this.init();
+        if (fullCache) this.init();
     }
 
     public init() {
@@ -60,7 +60,7 @@ export default class MongooseProvider<T extends Document> extends Provider imple
     }
 
     public get(id: string): T | undefined;
-    public get(id: string, key: string): any | undefined;
+    public get(id: string, key?: string): any | undefined;
     public get(id: string, key?: string) {
         if (this.items.has(id)) {
             const value = key ? this.items.get(id)[key] : this.items.get(id);
@@ -74,11 +74,16 @@ export default class MongooseProvider<T extends Document> extends Provider imple
         return key ? this.items.map(i => i[key]) : this.items;
     }
 
-    public async fetch(id: string, key?: string): Promise<T> {
+    public async fetch(id: string, key?: string, cache: boolean = true): Promise<T> {
         const q = this.deconstructKey(id);
 
         const item = await this.model.findOne(q, `${key}`);
+        if (cache) this.add(item);
         return item ? (key ? item.get(key) : item) : null;
+    }
+
+    public async resolve(id: string, key?: string, cache: boolean = true) {
+        return this.items.has(id) ? this.get(id, key) : this.fetch(id, key, cache);
     }
 
     public async add(value: any): Promise<T> {
@@ -88,7 +93,6 @@ export default class MongooseProvider<T extends Document> extends Provider imple
 
     public async set(id: string, key: string, value: any): Promise<T> {
         const item = this.items.get(id) || this.deconstructKey(id);
-        const exists = this.items.has(id);
 
         item[key] = value;
         this.items.set(id, item);
