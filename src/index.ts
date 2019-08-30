@@ -2,6 +2,8 @@
 
 import dotenv from "dotenv";
 import path from "path";
+dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
+
 import KauriClient from "./client/KauriClient";
 
 // Discord Extensions
@@ -16,8 +18,6 @@ require("./lib/commands/KauriCommandUtil");
 // Other Extensions
 require("./lib/misc/Model");
 require("./lib/misc/Number");
-
-dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
 
 const client = new KauriClient({
     disableEveryone: true,
