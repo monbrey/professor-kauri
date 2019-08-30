@@ -41,7 +41,7 @@ Thumbs.db
 # My files
 ultra-rpg-bot.log
 ultra-rpg-bot-errors.log
-variables.env
+.env
 snippets
 
 # Old JS files

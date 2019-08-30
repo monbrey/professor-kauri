@@ -17,6 +17,7 @@
                 "allowSingleLine": true
             }
         ],
+        "curly": false,
         "indent": [
             true,
             "spaces"
