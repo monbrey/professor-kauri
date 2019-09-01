@@ -37,7 +37,7 @@ module.exports = class WeatherCommand extends KauriCommand {
             this.client.logger.parseError(e);
         }
 
-        if (!weather) { return message.util!.embed("warn", `No results found for ${query}`); }
+        if (!weather) { return message.util!.sendPopup("warn", `No results found for ${query}`); }
         return message.util!.send(await weather.info());
 
     }
