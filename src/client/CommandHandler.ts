@@ -34,11 +34,11 @@ export const buildCommandHandler = (client: KauriClient) => {
     });
 
     ch.resolver.addType("ability", (message: Message, phrase: string) => {
-        return AbilityProvider.resolve(phrase);
+        return AbilityProvider.resolveClosest(phrase);
     });
 
     ch.resolver.addType("move", (message: Message, phrase: string) => {
-        return MoveProvider.resolve(phrase);
+        return MoveProvider.resolveClosest(phrase);
     });
 
     ch.resolver.addType("currency", (message: Message, phrase: string) => {
