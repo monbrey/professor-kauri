@@ -1,10 +1,14 @@
 {
   "name": "professor-kauri-v2",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "description": "Typescript rewrite of Professor Kauri built on the Akairo framework",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "lint": "npx tslint -p tsconfig.json --fix",
+    "prepare": "npm run build",
+    "preversion": "npm run lint",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
