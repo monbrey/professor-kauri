@@ -30,15 +30,15 @@ module.exports = class WeatherCommand extends KauriCommand {
     }
 
     public async exec(message: Message, { query }: CommandArgs) {
-        const weather = await Weather.findOne({ shortCode: query });
-
-        if (!weather) { return message.util!.sendPopup("warn", `No results found for ${query}`); }
-
+        let weather;
         try {
-            return message.util!.send(await weather.info());
+            weather = await Weather.findClosest("shortCode", query, 0.75) || await Weather.findClosest("weatherName", query);
         } catch (e) {
-            e.key = "weather";
-            throw e;
+            this.client.logger.parseError(e);
         }
+
+        if (!weather) { return message.util!.embed("warn", `No results found for ${query}`); }
+        return message.util!.send(await weather.info());
+
     }
 };

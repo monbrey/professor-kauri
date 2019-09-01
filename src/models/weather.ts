@@ -1,8 +1,8 @@
 import { MessageEmbed } from "discord.js";
 import { Document, model, Model, Schema } from "mongoose";
-import { autoIncrement } from "mongoose-plugin-autoinc";
 
 export interface IWeatherDocument extends Document {
+    _id: number;
     weatherName: string;
     shortCode: string;
     desc: string;
@@ -18,6 +18,7 @@ export interface IWeatherModel extends Model<IWeather> {
 }
 
 const WeatherSchema = new Schema({
+    _id: { type: Number, required: true },
     weatherName: { type: String, required: true },
     shortCode: { type: String, required: true },
     desc: { type: String, required: true },
