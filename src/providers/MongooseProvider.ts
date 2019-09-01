@@ -76,14 +76,29 @@ export default class MongooseProvider<T extends Document> extends Provider imple
 
     public async fetch(id: string, key?: string, cache: boolean = true): Promise<T> {
         const q = this.deconstructKey(id);
+        console.log(q);
 
         const item = await this.model.findOne(q, `${key}`);
         if (cache) this.add(item);
         return item ? (key ? item.get(key) : item) : null;
     }
 
+    public async fetchClosest(id: string, key?: string, cache: boolean = true): Promise<T> {
+        if (this.compositeKey || this.idColumn instanceof Array) {
+            throw new TypeError("MongooseProvider#fetchClosest cannot be used with composite keys");
+        }
+
+        const item = await this.model.findClosest(this.idColumn, id);
+        if (cache) this.add(item);
+        return item ? (key ? item.get(key) : item) : null;
+    }
+
     public async resolve(id: string, key?: string, cache: boolean = true) {
         return this.items.has(id) ? this.get(id, key) : this.fetch(id, key, cache);
+    }
+
+    public async resolveClosest(id: string, key?: string, cache: boolean = true) {
+        return this.items.has(id) ? this.get(id, key) : this.fetchClosest(id, key, cache);
     }
 
     public async add(value: any): Promise<T> {
@@ -131,15 +146,15 @@ export default class MongooseProvider<T extends Document> extends Provider imple
     }
 
     private deconstructKey(id: string) {
-        const d: T = {} as T;
+        const d: { [index: string]: any } = {} as T;
 
         if (!this.compositeKey) {
-            d.set(this.idColumn as string, id);
+            d[this.idColumn as string] = id;
         } else {
             const params = id.split(":");
             // tslint:disable-next-line: forin
             for (const index in params) {
-                d.set(this.idColumn[index], params[index]);
+                d[this.idColumn[index]] = params[index];
             }
         }
 

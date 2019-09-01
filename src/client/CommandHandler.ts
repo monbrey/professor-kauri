@@ -30,7 +30,7 @@ export const buildCommandHandler = (client: KauriClient) => {
     });
 
     ch.resolver.addType("pokemon", (message: Message, phrase: string) => {
-        return PokemonProvider.resolve(phrase);
+        return PokemonProvider.resolveClosest(phrase);
     });
 
     ch.resolver.addType("ability", (message: Message, phrase: string) => {
