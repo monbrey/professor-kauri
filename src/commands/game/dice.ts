@@ -3,6 +3,7 @@ import { KauriCommand } from "../../lib/commands/KauriCommand";
 
 interface CommandArgs {
     die: string[];
+    verify: boolean;
 }
 
 export default class DiceCommand extends KauriCommand {
@@ -10,6 +11,7 @@ export default class DiceCommand extends KauriCommand {
         super("dice", {
             aliases: ["d", "dice"],
             category: "Game",
+            flags: ["-v", "--verify"],
             description: "Rolls one or more x-sided dice",
         });
     }
@@ -20,11 +22,19 @@ export default class DiceCommand extends KauriCommand {
             match: "separate"
         };
 
-        return { die };
+        const verify = yield {
+            match: "flag",
+            flag: ["-v", "--verify"]
+        };
+
+        return { die, verify };
     }
 
-    public async exec(message: Message, { die }: CommandArgs) {
+    public async exec(message: Message, { die, verify }: CommandArgs) {
         const valid = die.filter(d => /^[1-9]\d*(?:[,d]?[1-9]\d*)?$/.test(d));
+
+        if (valid.length === 0) return;
+
         const dice: number[] = valid.flatMap(d => {
             if (!d.match(/[,d]/)) { return parseInt(d, 10); }
             if (/^[1-9]\d*$/.test(d.split(/[,d]/)[0]) && d.split(/[,d]/)[1] !== "") {
@@ -36,14 +46,19 @@ export default class DiceCommand extends KauriCommand {
 
         const rolls = dice.map(d => Math.floor(Math.random() * d + 1));
 
-        if (rolls.length === 0) {
-            return message.util!.sendPopup(
-                "warn",
-                "None of the provide dice were valid. Valid formats are `#` and `#,#`"
-            );
-        }
+        if (rolls.length === 0) return;
 
-        const response = await message.util!.sendPopup("info", `${message.author!.username} rolled ${rolls.join(", ")}`);
+        const response = await message.util!.send({
+            embed: {
+                color: "WHITE",
+                author: { name: message.member!.displayName, icon_url: message.author!.displayAvatarURL() },
+                fields: [
+                    { name: rolls.length > 1 ? "Rolls" : "Roll", value: rolls.join(", "), inline: true },
+                    { name: dice.length > 1 ? "Dice" : "Die", value: dice.join(", "), inline: true }
+                ]
+            }
+        }) as Message;
+        if (verify) response.edit(response.embeds[0].setFooter(`ID: ${response.id}`));
         return this.client.logger.dice(message, response.id, rolls.join(", "));
     }
 }
