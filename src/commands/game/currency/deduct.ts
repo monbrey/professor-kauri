@@ -1,8 +1,8 @@
 import { Message } from "discord.js";
 import { GuildMember } from "discord.js";
 import { MessageEmbed } from "discord.js";
-import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { TrainerData } from "../../models/trainerData";
+import { KauriCommand } from "../../../lib/commands/KauriCommand";
+import { TrainerData } from "../../../models/trainerData";
 
 interface CommandArgs {
     trainer: GuildMember;
@@ -17,7 +17,8 @@ export default class DeductCommand extends KauriCommand {
             aliases: ["deduct"],
             category: "Game",
             description: "Removes money from a user's account",
-            channel: "guild"
+            channel: "guild",
+            defaults: { disabled: true }
         });
     }
 
@@ -53,7 +54,7 @@ export default class DeductCommand extends KauriCommand {
     public async exec(message: Message, { trainer, amount, currency, reason }: CommandArgs) {
         const trainerData = await TrainerData.findById(trainer.id);
         if (!trainerData) {
-            return message.channel.sendPopup(
+            return message.channel.embed(
                 "warn",
                 `Could not find a Trainer profile for ${trainer}`
             );

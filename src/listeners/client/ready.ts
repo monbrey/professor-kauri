@@ -10,7 +10,7 @@ export default class ReadyListener extends Listener {
     }
 
     public exec() {
-        console.log(`Logged in as "${this.client.user!.username}"`);
+        this.client.logger.info(`Logged in as "${this.client.user!.username}"`);
 
         for (const [id, guild] of this.client.guilds) {
             const config = this.client.settings.get(id);

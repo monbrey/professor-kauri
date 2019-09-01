@@ -77,7 +77,7 @@ export default class ConfigCommand extends KauriCommand {
         const gDisabled = config.disabled || command.defaults.disabled || false;
 
         if (gDisabled) {
-            return message.channel.sendPopup("warn", "Role restrictions can only be applied to enabled commands");
+            return message.channel.embed("warn", "Role restrictions can only be applied to enabled commands");
         }
 
         const embed = new MessageEmbed()

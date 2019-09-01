@@ -36,7 +36,7 @@ export default class MoveCommand extends KauriCommand {
                 return message.util!.send(await move.info());
             } else {
                 this.client.logger.move(message, query, "none");
-                return message.channel.sendPopup("warn", `No results found for ${query}`);
+                return message.channel.embed("warn", `No results found for ${query}`);
             }
         } catch (e) {
             this.client.logger.parseError(e);

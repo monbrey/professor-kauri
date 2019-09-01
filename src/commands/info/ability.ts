@@ -36,7 +36,7 @@ export default class AbilityCommand extends KauriCommand {
                 return message.util!.send(ability.info());
             } else {
                 this.client.logger.ability(message, query, "none");
-                return message.channel.sendPopup("warn", `No results found for ${query}`);
+                return message.channel.embed("warn", `No results found for ${query}`);
             }
         } catch (e) {
             this.client.logger.parseError(e);

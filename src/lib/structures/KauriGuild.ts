@@ -22,7 +22,6 @@ Structures.extend("Guild", Guild => {
 
         public get logChannel() {
             const logs = this.client.settings.get(this.id, "logs");
-            console.log(logs);
             return logs;
         }
     }

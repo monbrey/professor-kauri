@@ -78,7 +78,6 @@ export default class EvalCommand extends KauriCommand {
                 })) as Message;
             }
         } catch (e) {
-            console.error(e);
             return (await message.util!.send(
                 new MessageEmbed({
                     color: 0xff0000,

@@ -1,7 +1,7 @@
+import { Argument } from "discord-akairo";
 import { Message } from "discord.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
 import { IPokemon } from "../../../models/pokemon";
-import { Argument } from "discord-akairo";
 
 interface CommandArgs {
     category: string;

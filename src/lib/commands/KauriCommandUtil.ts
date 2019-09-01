@@ -1,18 +1,14 @@
 import { CommandUtil } from "discord-akairo";
 import { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
-import { Collection } from "discord.js";
-import { Snowflake } from "discord.js";
 
 declare module "discord-akairo" {
     interface CommandUtil {
-        userMessages: Collection<Snowflake, Message>;
-        botMessages: Collection<Snowflake, Message>;
-        sendPopup(type: string, description?: string | number): Promise<Message>;
+        embed(type: string, content?: string | { [index: string]: string }): Promise<Message>;
     }
 }
 
-const EMBED_COLORS: {[index: string]: number} = {
+const EMBED_COLORS: { [index: string]: number } = {
     error: 0xe50000,
     warn: 0xffc107,
     longwarn: 0xffc107,
@@ -22,28 +18,26 @@ const EMBED_COLORS: {[index: string]: number} = {
 };
 
 Object.defineProperties(CommandUtil.prototype, {
-    sendPopup: {
+    embed: {
         /**
          * @param {String} type - The type of popup to show
          * @param {String} [description] - Content for the embed
          * @param {Number} [timer] - How long to wait to delete the message in milliseconds
          */
-        async value(this: CommandUtil, type: string, description?: string) {
+        async value(this: CommandUtil, type: string, content?: string | { [index: string]: string }) {
             if (!type) { throw new Error("A popup type must be specified"); }
 
-            const embed = new MessageEmbed({ color: EMBED_COLORS[type] }).setDescription(description);
+            let embed = new MessageEmbed({ color: EMBED_COLORS[type] });
+            switch (typeof content) {
+                case "string":
+                    embed.setDescription(content);
+                    break;
+                case "object":
+                    embed = Object.assign(embed, content);
+                    break;
+            }
 
             return this.send(embed);
-        }
-    },
-    userMessages: {
-        get(this: CommandUtil) {
-            return this.messages!.filter(m => !m.author!.bot);
-        }
-    },
-    botMessages: {
-        get(this: CommandUtil) {
-            return this.messages!.filter(m => m.author!.bot);
         }
     }
 });

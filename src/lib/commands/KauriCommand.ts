@@ -26,6 +26,5 @@ export class KauriCommand extends Command {
         super(id, options);
 
         this.defaults = Object.assign({}, COMMAND_DEFAULTS, options ? options.defaults : {});
-        console.log(id, this.defaults);
     }
 }
