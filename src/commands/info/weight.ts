@@ -52,11 +52,11 @@ module.exports = class WeightCommand extends KauriCommand {
             }
             if (!p1) {
                 this.client.logger.info({ key: "dex", search: query, result: "none" });
-                message.channel.sendPopup("warn", `No results found for ${query}`);
+                message.channel.embed("warn", `No results found for ${query}`);
             }
             if (!p2) {
                 this.client.logger.info({ key: "dex", search: target, result: "none" });
-                message.channel.sendPopup("warn", `No results found for ${target}`);
+                message.channel.embed("warn", `No results found for ${target}`);
             }
             return;
         }
@@ -77,7 +77,7 @@ module.exports = class WeightCommand extends KauriCommand {
             return message.channel.send(embed);
         } else {
             this.client.logger.info({ key: "dex", search: query, result: "none" });
-            message.channel.sendPopup("warn", `No results found for ${query}`);
+            message.channel.embed("warn", `No results found for ${query}`);
         }
     }
 

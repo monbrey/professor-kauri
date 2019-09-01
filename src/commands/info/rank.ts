@@ -110,7 +110,7 @@ export default class RankCommand extends KauriCommand {
             this.client.logger.parseError(e);
         }
 
-        return message.channel.sendPopup("warn", `No Pokemon matching "${query}" could be found`);
+        return message.channel.embed("warn", `No Pokemon matching "${query}" could be found`);
     }
 
     private outputByGen(rankedPokemon: IPokemon[]) {

@@ -22,7 +22,7 @@ export default class LogsCommand extends KauriCommand {
         const embed = new MessageEmbed().setTitle(`Log settings for ${message.guild.name}`).setColor("WHITE");
         embed.addField("Log Channel", logConfig ? message.guild.channels.get(logConfig) || "<#invalid_channel>" : "No logging configured");
 
-        if (!message.member!.permissions.has(["ADMINISTRATOR", "MANAGE_GUILD"])) { return await message.util!.send(embed); }
+        if (!message.member!.permissions.has("MANAGE_GUILD", true)) { return await message.util!.send(embed); }
 
         embed.setFooter("Click the pencil to edit the configuration");
         const sent = await message.util!.send(embed) as Message;

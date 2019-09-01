@@ -25,7 +25,7 @@ export default class StarboardCommand extends KauriCommand {
             embed.setDescription("No Starboard configuration");
         }
 
-        if (!message.member!.permissions.has(["ADMINISTRATOR", "MANAGE_GUILD"])) { return await message.util!.send(embed); }
+        if (!message.member!.permissions.has("MANAGE_GUILD", true)) { return await message.util!.send(embed); }
 
         embed.setFooter("Click the pencil to edit the configuration");
         const sent = await message.util!.send(embed) as Message;

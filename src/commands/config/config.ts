@@ -13,7 +13,7 @@ interface CommandArgs {
 
 export default class ConfigCommand extends KauriCommand {
     constructor() {
-        super("args", {
+        super("config", {
             aliases: ["config"],
             category: "Config",
             description: "Change command configuration in this server.",
@@ -43,7 +43,7 @@ export default class ConfigCommand extends KauriCommand {
 
         const info = this.generateCommandInfo(message, command, config);
 
-        if (!message.member!.permissions.has(["ADMINISTRATOR", "MANAGE_GUILD"])) {
+        if (!message.member!.permissions.has("MANAGE_GUILD", true)) {
             return message.util!.send({ embed: info });
         }
 
@@ -77,7 +77,7 @@ export default class ConfigCommand extends KauriCommand {
         const gDisabled = config.disabled || command.defaults.disabled || false;
 
         if (gDisabled) {
-            return message.channel.sendPopup("warn", "Role restrictions can only be applied to enabled commands");
+            return message.channel.embed("warn", "Role restrictions can only be applied to enabled commands");
         }
 
         const embed = new MessageEmbed()

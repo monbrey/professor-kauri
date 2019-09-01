@@ -13,7 +13,7 @@ const EMBED_COLORS: { [index: string]: number } = {
 
 declare module "discord.js" {
     interface TextBasedChannelFields {
-        sendPopup(type: string, description?: string | number, timeout?: number): Promise<Message>;
+        embed(type: string, description?: string | number, timeout?: number): Promise<Message>;
     }
 }
 
@@ -28,7 +28,7 @@ Structures.extend("TextChannel", TextChannel => {
          * @param {String} [description] - Content for the embed
          * @param {Number} [timer] - How long to wait to delete the message in milliseconds
          */
-        public async sendPopup(type: string, description?: string) {
+        public async embed(type: string, description?: string) {
             if (!type) { throw new Error("A popup type must be specified"); }
 
             const embed = new MessageEmbed({ color: EMBED_COLORS[type] }).setDescription(description);

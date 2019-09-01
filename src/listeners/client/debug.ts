@@ -10,7 +10,7 @@ export default class ReadyListener extends Listener {
 
     public exec(debug: any) {
         if (process.env.NODE_ENV === "development") {
-            console.debug(debug);
+            this.client.logger.debug(debug);
         }
     }
 }
