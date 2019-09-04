@@ -51,7 +51,7 @@ export default class DiceCommand extends KauriCommand {
         const response = await message.util!.send({
             embed: {
                 color: "WHITE",
-                author: { name: message.member!.displayName, icon_url: message.author!.displayAvatarURL() },
+                author: { name: message.member ? message.member.displayName : message.author!.username, icon_url: message.author!.displayAvatarURL() },
                 fields: [
                     { name: rolls.length > 1 ? "Rolls" : "Roll", value: rolls.join(", "), inline: true },
                     { name: dice.length > 1 ? "Dice" : "Die", value: dice.join(", "), inline: true }
