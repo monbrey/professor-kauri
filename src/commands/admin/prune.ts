@@ -14,7 +14,8 @@ export default class PruneCommand extends KauriCommand {
             category: "Admin",
             flags: ["-s"],
             description: "Bulk deletes messages from the channel",
-            channel: "guild"
+            channel: "guild",
+            userPermissions: ["MANAGE_MESSAGES"]
         });
     }
 

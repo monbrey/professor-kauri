@@ -12,7 +12,8 @@ export default class ResetCommand extends KauriCommand {
             aliases: ["reset"],
             category: "Admin",
             description: "Resets the channel",
-            channel: "guild"
+            channel: "guild",
+            userPermissions: ["MANAGE_CHANNELS", "MANAGE_MESSAGES"]
         });
     }
 

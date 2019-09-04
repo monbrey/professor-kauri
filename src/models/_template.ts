@@ -1,3 +1,5 @@
+// tslint:disable: no-empty-interface
+
 import { Document, model, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
 

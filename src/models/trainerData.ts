@@ -115,7 +115,7 @@ TrainerSchema.methods.listPokemon = async function() {
 };
 
 // Adds a new TrainerPokemon for the provided Pokemon ID number
-TrainerSchema.methods.addNewPokemon = async function(pokemon: IPokemon) {
+// TrainerSchema.methods.addNewPokemon = async function(pokemon: IPokemon) {
     // const tp = new TrainerPokemon({
     //     trainer: this.id,
     //     basePokemon: pokemon.id,
@@ -129,7 +129,7 @@ TrainerSchema.methods.addNewPokemon = async function(pokemon: IPokemon) {
     // await tp.save();
     // this.pokemon.push(tp.id);
     // return this.save();
-};
+// };
 
 TrainerSchema.methods.addNewItem = async function(item: IItem, type: string) {
     this.inventory.push({ item: item.id, itemType: type });
