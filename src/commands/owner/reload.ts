@@ -24,8 +24,11 @@ export default class ReloadCommand extends KauriCommand {
     }
 
     public async exec(message: Message, { command }: CommandArgs) {
+        if (!(command instanceof KauriCommand)) return;
+
         command.reload();
 
+        this.client.logger.reload(message, command);
         message.util!.send(`${command.constructor.name} reloaded`);
     }
 }

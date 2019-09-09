@@ -26,10 +26,10 @@ export default class LogsCommand extends KauriCommand {
 
         embed.setFooter("Click the pencil to edit the configuration");
         const sent = await message.util!.send(embed) as Message;
-        embed.setFooter(null);
+        embed.setFooter("");
 
         await sent.react("✏");
-        const filter = ({ emoji }: MessageReaction, u: User) => emoji.name === "📝" && u.id === message.author!.id;
+        const filter = ({ emoji }: MessageReaction, u: User) => emoji.name === "✏" && u.id === message.author!.id;
         const edit = await sent.awaitReactions(filter, { time: 30000, max: 1 });
 
         sent.reactions.removeAll();
@@ -40,7 +40,7 @@ export default class LogsCommand extends KauriCommand {
         if (!message.guild) { return; }
 
         const arg1 = new Argument(this, {
-            type: ["textChannel"],
+            type: "textChannel",
             prompt: {
                 start: embed.setColor("GREEN").addField("Which channel should logs go to?", "\u200b"),
                 modifyRetry: () => {

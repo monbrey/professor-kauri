@@ -54,13 +54,6 @@ export default class KauriClient extends AkairoClient {
     }
 
     private async init() {
-        await mongoose.connect(process.env.MONGODB_URI!, {
-            useNewUrlParser: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            w: "majority"
-        }).catch(e => this.logger.parseError(e));
-
         this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
         this.commandHandler.useListenerHandler(this.listenerHandler);
 

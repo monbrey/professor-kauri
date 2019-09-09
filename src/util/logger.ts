@@ -6,6 +6,7 @@ import { MessageReaction } from "discord.js";
 import { TextChannel } from "discord.js";
 import { createLogger, format, LeveledLogMethod, Logger, transports } from "winston";
 import KauriClient from "../client/KauriClient";
+import { KauriCommand } from "../lib/commands/KauriCommand";
 
 const logFormat = format.combine(
     format(info => {
@@ -467,6 +468,14 @@ class CustomLogger {
         }
     }
 
+    public async reload(message: Message, command: KauriCommand) {
+        this.winston.info({
+            message: `${command.constructor.name} reloaded`,
+            ...this.location(message),
+            key: "reload"
+        });
+    }
+
     public async reflog(message: Message, log: Message) {
         this.winston.info({
             message: "Battle logged",
@@ -481,9 +490,9 @@ class CustomLogger {
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
-            .setFooter("reflog")
+            .setFooter("Battle")
             .setColor(0x1f8b4c)
-            .setDescription(`${message.member!.displayName} logged a battle in [${(log.channel as GuildChannel).name}](${log.url})`)
+            .setDescription(`${message.member!.displayName} logged a battle in [**#${(log.channel as GuildChannel).name}**](${log.url})`)
             .setTimestamp();
 
         try {

@@ -27,4 +27,6 @@ export class KauriCommand extends Command {
 
         this.defaults = Object.assign({}, COMMAND_DEFAULTS, options ? options.defaults : {});
     }
+
+    public afterCancel?(): void;
 }

@@ -43,13 +43,11 @@ export default class MongooseProvider<T extends Document> extends Provider imple
         if (fullCache) this.init();
     }
 
-    public init() {
-        this.model.find({}).then(docs => {
-            for (const d of docs) {
-                this.items.set(this.generateKey(d), d);
-            }
-        });
-
+    public async init() {
+        const docs = await this.model.find({});
+        for (const d of docs) {
+            this.items.set(this.generateKey(d), d);
+        }
     }
 
     public has(id: string, key?: string): boolean {
@@ -76,11 +74,10 @@ export default class MongooseProvider<T extends Document> extends Provider imple
 
     public async fetch(id: string, key?: string, cache: boolean = true): Promise<T> {
         const q = this.deconstructKey(id);
-        console.log(q);
 
         const item = await this.model.findOne(q, `${key}`);
-        if (cache) this.add(item);
-        return item ? (key ? item.get(key) : item) : null;
+        if (item && cache) this.add(item);
+        return item ? (key ? item.get(key) : item) : undefined;
     }
 
     public async fetchClosest(id: string, key?: string, cache: boolean = true): Promise<T> {
@@ -89,8 +86,8 @@ export default class MongooseProvider<T extends Document> extends Provider imple
         }
 
         const item = await this.model.findClosest(this.idColumn, id);
-        if (cache) this.add(item);
-        return item ? (key ? item.get(key) : item) : null;
+        if (item && cache) this.add(item);
+        return item ? (key ? item.get(key) : item) : undefined;
     }
 
     public async resolve(id: string, key?: string, cache: boolean = true) {
@@ -101,7 +98,7 @@ export default class MongooseProvider<T extends Document> extends Provider imple
         return this.items.has(id) ? this.get(id, key) : this.fetchClosest(id, key, cache);
     }
 
-    public async add(value: any): Promise<T> {
+    public async add(value: T): Promise<T> {
         this.items.set(this.generateKey(value), value);
         return value.save();
     }
@@ -161,3 +158,5 @@ export default class MongooseProvider<T extends Document> extends Provider imple
         return d;
     }
 }
+
+const Providers: Array<MongooseProvider<Document>> = [];
