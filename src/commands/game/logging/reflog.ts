@@ -25,8 +25,8 @@ export default class BattleLogCommand extends KauriCommand {
             category: "Game",
             description: "Logs and pays the Battlers and Referee for a battle",
             channel: "guild",
-
-            defaults: { disabled: false }
+            clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
+            defaults: { disabled: true }
         });
     }
 
