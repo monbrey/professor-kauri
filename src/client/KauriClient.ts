@@ -1,11 +1,16 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
 import { ClientOptions } from "discord.js";
+import { Message } from "discord.js";
 import queue from "p-queue";
 import { join } from "path";
 import { ISettings, Settings } from "../models/settings";
 import MongooseProvider from "../providers/MongooseProvider";
 import Logger from "../util/logger";
-import { addTypes } from "./CommandHandler";
+
+// Models
+import { Ability, IAbility } from "../models/ability";
+import { IMove, Move } from "../models/move";
+import { IPokemon, Pokemon } from "../models/pokemon";
 
 declare module "discord-akairo" {
     interface AkairoClient {
@@ -18,29 +23,20 @@ declare module "discord-akairo" {
     }
 }
 
+const Provider = {
+    Pokemon: new MongooseProvider<IPokemon>(Pokemon, "uniqueName"),
+    Ability: new MongooseProvider<IAbility>(Ability, "abilityName"),
+    Move: new MongooseProvider<IMove>(Move, "moveName")
+};
+
 export default class KauriClient extends AkairoClient {
     public settings: MongooseProvider<ISettings>;
     public logger: Logger;
     public reactionQueue: queue;
 
-    public commandHandler: CommandHandler = new CommandHandler(this, {
-        argumentDefaults: { prompt: { time: 60000, cancel: "Command cancelled" } },
-        directory: join(__dirname, "..", "commands"),
-        commandUtil: true,
-        commandUtilLifetime: 60000,
-        fetchMembers: true,
-        handleEdits: true,
-        prefix: message => message.guild ? this.settings.get(message.guild.id, "prefix") || "!" : "!",
-        storeMessages: true,
-    });
-
-    public inhibitorHandler: InhibitorHandler = new InhibitorHandler(this, {
-        directory: join(__dirname, "..", "inhibitors"),
-    });
-
-    public listenerHandler: ListenerHandler = new ListenerHandler(this, {
-        directory: join(__dirname, "..", "listeners"),
-    });
+    public commandHandler: CommandHandler;
+    public inhibitorHandler: InhibitorHandler;
+    public listenerHandler: ListenerHandler;
 
     constructor(options: ClientOptions = {}) {
         super({ ownerID: "122157285790187530" }, options);
@@ -54,6 +50,51 @@ export default class KauriClient extends AkairoClient {
             intervalCap: 1,
             interval: 100
         });
+
+        this.commandHandler = new CommandHandler(this, {
+            argumentDefaults: { prompt: { time: 60000, cancel: "Command cancelled" } },
+            directory: join(__dirname, "..", "commands"),
+            commandUtil: true,
+            commandUtilLifetime: 60000,
+            fetchMembers: true,
+            handleEdits: true,
+            prefix: message => message.guild ? this.settings.get(message.guild.id, "prefix") || "!" : "!",
+            storeMessages: true,
+        });
+
+        this.commandHandler.resolver
+            .addType("pokemon", (message: Message, phrase: string) => {
+                if (!phrase) return;
+                return Provider.Pokemon.resolveClosest(phrase);
+            })
+            .addType("pokemonTeam", (message: Message, phrase: string) => {
+                if (!phrase) return;
+                return Promise.all(phrase.split(/,\s+?/).map(p => Provider.Pokemon.resolveClosest(p)));
+            })
+            .addType("ability", (message: Message, phrase: string) => {
+                if (!phrase) return;
+                return Provider.Ability.fetchClosest(phrase);
+            })
+            .addType("move", (message: Message, phrase: string) => {
+                if (!phrase) return;
+                return Provider.Move.fetchClosest(phrase);
+            })
+            .addType("currency", (message: Message, phrase: string) => {
+                const matches = /(\$)*([\d,]+)([cC]{2})*/.exec(phrase);
+                if (!matches) { return null; }
+                if (!matches[2]) { return null; }
+                const a = parseInt(matches[2].replace(",", ""), 10);
+                if (!a) { return null; }
+                return [a, matches[3] ? "CC" : "$"];
+            });
+
+        this.inhibitorHandler = new InhibitorHandler(this, {
+            directory: join(__dirname, "..", "inhibitors"),
+        });
+
+        this.listenerHandler = new ListenerHandler(this, {
+            directory: join(__dirname, "..", "listeners"),
+        });
     }
 
     public async start() {
@@ -63,7 +104,6 @@ export default class KauriClient extends AkairoClient {
 
     private async init() {
         await this.settings.init();
-        await addTypes(this.commandHandler);
 
         this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
         this.commandHandler.useListenerHandler(this.listenerHandler);
