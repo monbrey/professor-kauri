@@ -14,6 +14,7 @@ export default class CommandFinishedListener extends Listener {
         });
 
         this.stats = new MongooseProvider<ICommandStats>(CommandStats, ["guild_id", "command_id"]);
+        this.stats.init();
     }
 
     public async exec(message: Message, command: KauriCommand) {

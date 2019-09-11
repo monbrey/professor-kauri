@@ -9,11 +9,11 @@ export default class ReadyListener extends Listener {
         });
     }
 
-    public exec() {
+    public async exec() {
         this.client.logger.info(`Logged in as "${this.client.user!.username}"`);
 
         for (const [id, guild] of this.client.guilds) {
-            const config = this.client.settings.get(id);
+            const config = await this.client.settings.resolve(id);
 
             if (!config) {
                 this.client.settings.add(new Settings({
