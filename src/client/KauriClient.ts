@@ -1,12 +1,11 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
 import { ClientOptions } from "discord.js";
-import mongoose from "mongoose";
 import queue from "p-queue";
 import { join } from "path";
 import { ISettings, Settings } from "../models/settings";
 import MongooseProvider from "../providers/MongooseProvider";
 import Logger from "../util/logger";
-import { buildCommandHandler } from "./CommandHandler";
+import { addTypes } from "./CommandHandler";
 
 declare module "discord-akairo" {
     interface AkairoClient {
@@ -24,7 +23,16 @@ export default class KauriClient extends AkairoClient {
     public logger: Logger;
     public reactionQueue: queue;
 
-    public commandHandler: CommandHandler = buildCommandHandler(this);
+    public commandHandler: CommandHandler = new CommandHandler(this, {
+        argumentDefaults: { prompt: { time: 60000, cancel: "Command cancelled" } },
+        directory: join(__dirname, "..", "commands"),
+        commandUtil: true,
+        commandUtilLifetime: 60000,
+        fetchMembers: true,
+        handleEdits: true,
+        prefix: message => message.guild ? this.settings.get(message.guild.id, "prefix") || "!" : "!",
+        storeMessages: true,
+    });
 
     public inhibitorHandler: InhibitorHandler = new InhibitorHandler(this, {
         directory: join(__dirname, "..", "inhibitors"),
@@ -54,6 +62,9 @@ export default class KauriClient extends AkairoClient {
     }
 
     private async init() {
+        await this.settings.init();
+        await addTypes(this.commandHandler);
+
         this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
         this.commandHandler.useListenerHandler(this.listenerHandler);
 
@@ -64,6 +75,5 @@ export default class KauriClient extends AkairoClient {
         this.commandHandler.loadAll();
         this.inhibitorHandler.loadAll();
         this.listenerHandler.loadAll();
-
     }
 }

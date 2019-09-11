@@ -1,6 +1,7 @@
 import { Provider } from "discord-akairo";
 import { Collection } from "discord.js";
 import { Document, Model } from "mongoose";
+import strsim from "string-similarity";
 
 // tslint:disable-next-line: interface-over-type-literal
 type IMongooseProvider<T> = {
@@ -19,7 +20,7 @@ export default class MongooseProvider<T extends Document> extends Provider imple
     private idColumn: string | string[];
     private compositeKey: boolean;
 
-    constructor(model: Model<T>, idColumn: string | string[], fullCache: boolean = true) {
+    constructor(model: Model<T>, idColumn: string | string[]) {
         super();
 
         /**
@@ -39,8 +40,6 @@ export default class MongooseProvider<T extends Document> extends Provider imple
          * @type {boolean}
          */
         this.compositeKey = typeof idColumn === "object" ? true : false;
-
-        if (fullCache) this.init();
     }
 
     public async init() {
@@ -68,14 +67,27 @@ export default class MongooseProvider<T extends Document> extends Provider imple
         return;
     }
 
-    public getAll(key?: string): T[] | Collection<string, T> {
+    public getClosest(id: string): T | undefined;
+    public getClosest(id: string, key?: string): any | undefined;
+    public getClosest(id: string, key?: string) {
+        const keys = this.items.keyArray();
+
+        const { bestMatch } = strsim.findBestMatch(id, keys);
+        const item = this.items.get(bestMatch.target);
+
+        return item ? (key ? item.get(key) : item) : undefined;
+    }
+
+    public getAll(): Collection<string, T>;
+    public getAll(key?: string): any[];
+    public getAll(key?: string) {
         return key ? this.items.map(i => i[key]) : this.items;
     }
 
     public async fetch(id: string, key?: string, cache: boolean = true): Promise<T> {
         const q = this.deconstructKey(id);
 
-        const item = await this.model.findOne(q, `${key}`);
+        const item = await (key ? this.model.findOne(q, key) : this.model.findOne(q));
         if (item && cache) this.add(item);
         return item ? (key ? item.get(key) : item) : undefined;
     }

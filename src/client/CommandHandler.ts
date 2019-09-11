@@ -1,61 +1,42 @@
-// Node
-import { join } from "path";
-
 // Discord
-import { CommandHandler, PromptContentSupplier } from "discord-akairo";
+import { CommandHandler } from "discord-akairo";
 import { Message } from "discord.js";
 
 // Bot
 import MongooseProvider from "../providers/MongooseProvider";
-import KauriClient from "./KauriClient";
 
 // Models
-import { Flag } from "discord-akairo";
 import { Ability, IAbility } from "../models/ability";
 import { IMove, Move } from "../models/move";
 import { IPokemon, Pokemon } from "../models/pokemon";
 import { ITrainer, Trainer } from "../models/trainer";
 
-const TrainerProvider = new MongooseProvider<ITrainer>(Trainer, "_id", true);
-const PokemonProvider = new MongooseProvider<IPokemon>(Pokemon, "uniqueName", false);
-const AbilityProvider = new MongooseProvider<IAbility>(Ability, "moveName", false);
-const MoveProvider = new MongooseProvider<IMove>(Move, "moveName", false);
+const TrainerProvider = new MongooseProvider<ITrainer>(Trainer, "_id");
+const PokemonProvider = new MongooseProvider<IPokemon>(Pokemon, "uniqueName");
+const AbilityProvider = new MongooseProvider<IAbility>(Ability, "moveName");
+const MoveProvider = new MongooseProvider<IMove>(Move, "moveName");
 
-export const buildCommandHandler = (client: KauriClient) => {
-    const ch = new CommandHandler(client, {
-        argumentDefaults: { prompt: { cancel: "Command cancelled" } },
-        directory: join(__dirname, "..", "commands"),
-        commandUtil: true,
-        commandUtilLifetime: 60000,
-        fetchMembers: true,
-        handleEdits: true,
-        prefix: message => message.guild ? client.settings.get(message.guild.id, "prefix") || "!" : "!",
-        storeMessages: true,
-    });
-
-    ch.resolver.addType("trainer", (message: Message, phrase: any) => {
-        return TrainerProvider.get(phrase.id) || new Trainer({ _id: phrase.id });
-    });
-
-    ch.resolver.addType("otherTrainer", (message: Message, phrase: any) => {
-        if (phrase.id === message.author!.id) return Flag.fail("author");
-        return TrainerProvider.get(phrase.id) || new Trainer({ _id: phrase.id });
-    });
+export const addTypes = async (ch: CommandHandler) => {
+    await Promise.all([TrainerProvider.init(), PokemonProvider.init(), AbilityProvider.init(), MoveProvider.init()]);
 
     ch.resolver.addType("pokemon", (message: Message, phrase: string) => {
-        return PokemonProvider.resolveClosest(phrase);
+        if (!phrase) return;
+        return PokemonProvider.getClosest(phrase);
     });
 
     ch.resolver.addType("pokemonTeam", (message: Message, phrase: string) => {
-        return phrase.split(/,?\s+/).map(p => PokemonProvider.resolveClosest(p));
+        if (!phrase) return;
+        return phrase.split(/,\s+?/).map(p => PokemonProvider.getClosest(p));
     });
 
     ch.resolver.addType("ability", (message: Message, phrase: string) => {
-        return AbilityProvider.resolveClosest(phrase);
+        if (!phrase) return;
+        return AbilityProvider.getClosest(phrase);
     });
 
     ch.resolver.addType("move", (message: Message, phrase: string) => {
-        return MoveProvider.resolveClosest(phrase);
+        if (!phrase) return;
+        return MoveProvider.getClosest(phrase);
     });
 
     ch.resolver.addType("currency", (message: Message, phrase: string) => {
@@ -66,6 +47,4 @@ export const buildCommandHandler = (client: KauriClient) => {
         if (!a) { return null; }
         return [a, matches[3] ? "CC" : "$"];
     });
-
-    return ch;
 };
