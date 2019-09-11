@@ -27,15 +27,20 @@ mongoose.connect(process.env.MONGODB_URI!, {
     useCreateIndex: true,
     useFindAndModify: false,
     w: "majority"
-}).then(() => {
-    const client = new KauriClient({
-        disableEveryone: true,
-        disabledEvents: [
-            "TYPING_START",
-            "VOICE_STATE_UPDATE",
-            "VOICE_SERVER_UPDATE",
-            "CHANNEL_PINS_UPDATE"
-        ]
-    });
+});
+
+const db = mongoose.connection;
+
+const client = new KauriClient({
+    disableEveryone: true,
+    disabledEvents: [
+        "TYPING_START",
+        "VOICE_STATE_UPDATE",
+        "VOICE_SERVER_UPDATE",
+        "CHANNEL_PINS_UPDATE"
+    ]
+});
+
+db.on("connected", () => {
     client.start();
-}).catch(console.error);
+});
