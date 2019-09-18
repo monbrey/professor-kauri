@@ -2,10 +2,9 @@ import { Message } from "discord.js";
 import { GuildMember } from "discord.js";
 import { MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
-import { TrainerData } from "../../../models/trainerData";
 
 interface CommandArgs {
-    trainer: GuildMember;
+    member: GuildMember;
     amount: number;
     currency: string;
     reason: string;
@@ -23,7 +22,7 @@ export default class DeductCommand extends KauriCommand {
     }
 
     public *args() {
-        const trainer = yield {
+        const member = yield {
             type: "member",
             prompt: {
                 start: "Which URPG member are you deducting?",
@@ -35,7 +34,7 @@ export default class DeductCommand extends KauriCommand {
             id: "amount",
             type: "currency",
             prompt: {
-                start: `How much is ${trainer} getting deducted?`,
+                start: `How much is ${member} getting deducted?`,
                 retry: "Please provide a valid integer > 0",
                 retries: 100
             }
@@ -48,22 +47,21 @@ export default class DeductCommand extends KauriCommand {
             }
         };
 
-        return { trainer, amount, currency, reason };
+        return { member, amount, currency, reason };
     }
 
-    public async exec(message: Message, { trainer, amount, currency, reason }: CommandArgs) {
-        const trainerData = await TrainerData.findById(trainer.id);
-        if (!trainerData) {
+    public async exec(message: Message, { member, amount, currency, reason }: CommandArgs) {
+        if (!member.trainer) {
             return message.channel.embed(
                 "warn",
-                `Could not find a Trainer profile for ${trainer}`
+                `Could not find a Trainer profile for ${member}`
             );
         }
 
         const currencyString = currency === "$" ? `$${amount.toLocaleString()}` : `${amount.toLocaleString()} CC`;
 
         const embed = new MessageEmbed()
-            .setTitle(`Deduction from ${trainer.displayName} (Pending)`)
+            .setTitle(`Deduction from ${member.displayName} (Pending)`)
             .setDescription(reason)
             .addField("Amount", `${currencyString}`, true)
             .setFooter("React to confirm that this deduction is correct");
@@ -75,18 +73,16 @@ export default class DeductCommand extends KauriCommand {
                 prompt.reactions.removeAll();
 
                 try {
-                    if (currency === "$") {
-                        await trainerData.modifyCash(amount);
-                    } else {
-                        await trainerData.modifyContestCredit(amount);
-                    }
+                    if (currency === "$") await member.trainer.modifyBalances({ cash: amount });
+                    else await member.trainer.modifyBalances({ cc: amount });
+
                 } catch (e) {
                     this.client.logger.parseError(e);
                 }
 
                 embed
-                    .setTitle(`Deduction from ${trainer.displayName}`)
-                    .addField("Updated Balance", trainerData.balanceString);
+                    .setTitle(`Deduction from ${member.displayName}`)
+                    .addField("Updated Balance", member.trainer.balance);
 
                 prompt.edit(embed);
                 return this.client.logger.pay(message, prompt);
