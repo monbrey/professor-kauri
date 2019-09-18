@@ -25,10 +25,10 @@ require("./lib/misc/Number");
 mongoose.connect(process.env.MONGODB_URI!, {
     useNewUrlParser: true,
     useFindAndModify: false,
-    useCreateIndex: true,
     useUnifiedTopology: true,
     w: "majority"
 });
+mongoose.set("useCreateIndex", true);
 
 const db = mongoose.connection;
 
@@ -42,6 +42,6 @@ const client = new KauriClient({
     ]
 });
 
-db.on("connected", () => {
+db.once("connected", () => {
     client.start();
 });
