@@ -1,10 +1,15 @@
 import { Guild, Structures } from "discord.js";
-import { GuildMember } from "discord.js";
 import KauriClient from "../../client/KauriClient";
 import { ITrainer, Trainer } from "../../models/trainer";
 import MongooseProvider from "../../providers/MongooseProvider";
 
 const Trainers = new MongooseProvider(Trainer, "_id");
+
+declare module "discord.js" {
+    interface GuildMember {
+        trainer: ITrainer;
+    }
+}
 
 // tslint:disable-next-line: no-shadowed-variable
 Structures.extend("GuildMember", GuildMember => {
