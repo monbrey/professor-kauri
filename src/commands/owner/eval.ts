@@ -1,3 +1,5 @@
+// tslint:disable-next-line: no-var-requires
+const Discord = require("discord.js");
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { inspect } from "util";
