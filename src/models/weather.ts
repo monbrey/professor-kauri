@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { Document, model, Model, Schema } from "mongoose";
+import { connection, Document, Model, Schema } from "mongoose";
 
 export interface IWeatherDocument extends Document {
     _id: number;
@@ -34,4 +34,5 @@ WeatherSchema.methods.info = async function() {
     return embed;
 };
 
-export const Weather: IWeatherModel = model<IWeather, IWeatherModel>("Weather", WeatherSchema);
+const db = connection.useDb("monbrey-urpg-v2");
+export const Weather: IWeatherModel = db.model<IWeather, IWeatherModel>("Weather", WeatherSchema);

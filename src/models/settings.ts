@@ -1,4 +1,4 @@
-import { Document, Model, model, Schema } from "mongoose";
+import { connection, Document, Model, Schema } from "mongoose";
 import { CommandConfig, ICommandConfigDocument } from "./schemas/commandConfig";
 import { IStarboardConfigDocument, StarboardConfig } from "./schemas/starboardConfig";
 
@@ -11,9 +11,9 @@ export interface ISettingsDocument extends Document {
 }
 
 // tslint:disable-next-line: no-empty-interface
-export interface ISettings extends ISettingsDocument {}
+export interface ISettings extends ISettingsDocument { }
 
-export interface ISettingsModel extends Model<ISettings> {}
+export interface ISettingsModel extends Model<ISettings> { }
 
 const SettingsSchema: Schema = new Schema({
     guild_id: { type: String, required: true },
@@ -23,4 +23,5 @@ const SettingsSchema: Schema = new Schema({
     commands: [CommandConfig]
 }, { collection: "settings" });
 
-export const Settings: ISettingsModel = model<ISettings, ISettingsModel>("Settings", SettingsSchema);
+const db = connection.useDb(process.env.NODE_ENV || "development");
+export const Settings: ISettingsModel = db.model<ISettings, ISettingsModel>("Settings", SettingsSchema);

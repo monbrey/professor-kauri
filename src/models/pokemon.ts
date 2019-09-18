@@ -1,9 +1,8 @@
-import { Document, model, Model, Schema } from "mongoose";
-import { autoIncrement } from "mongoose-plugin-autoinc";
 // import { paginate } from "./plugins/paginator";
+import { Message, MessageEmbed } from "discord.js";
+import { connection, Document, model, Model, Schema } from "mongoose";
+import { autoIncrement } from "mongoose-plugin-autoinc";
 
-import { MessageEmbed } from "discord.js";
-import { Message } from "discord.js";
 import { Color } from "./color";
 import { Mega } from "./mega";
 import { IPokemonAbilityDocument, PokemonAbility } from "./schemas/pokemonAbility";
@@ -292,4 +291,5 @@ PokemonSchema.methods.primalDex = async function(this: IPokemon, whichPrimal: nu
     return primal.dex(this);
 };
 
-export const Pokemon: IPokemonModel = model<IPokemon, IPokemonModel>("Pokemon", PokemonSchema);
+const db = connection.useDb("monbrey-urpg-v2");
+export const Pokemon: IPokemonModel = db.model<IPokemon, IPokemonModel>("Pokemon", PokemonSchema);

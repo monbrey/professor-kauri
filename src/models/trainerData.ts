@@ -1,5 +1,6 @@
-import { Document, model, Model, Schema } from "mongoose";
+import { connection, Document, Model, Schema } from "mongoose";
 import timestamp from "mongoose-timestamp";
+
 import { IItem } from "./item";
 import { IPokemon } from "./pokemon";
 import { ITrainerItemDocument, TrainerItem } from "./schemas/trainerItem";
@@ -136,4 +137,5 @@ TrainerSchema.methods.addNewItem = async function(item: IItem, type: string) {
     return this.save();
 };
 
-export const TrainerData: ITrainerDataModel =  model<ITrainerData, ITrainerDataModel>("Model", TrainerSchema);
+const db = connection.useDb(process.env.NODE_ENV || "development");
+export const TrainerData: ITrainerDataModel =  db.model<ITrainerData, ITrainerDataModel>("Model", TrainerSchema);

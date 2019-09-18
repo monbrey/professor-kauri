@@ -1,12 +1,12 @@
 // tslint:disable: no-var-requires
 
 import dotenv from "dotenv";
-import path from "path";
-dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
-
 import mongoose from "mongoose";
+import path from "path";
 
 import KauriClient from "./client/KauriClient";
+
+dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
 
 // Discord Extensions
 require("./lib/structures/GuildTrainer");
@@ -24,8 +24,9 @@ require("./lib/misc/Number");
 
 mongoose.connect(process.env.MONGODB_URI!, {
     useNewUrlParser: true,
-    useCreateIndex: true,
     useFindAndModify: false,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
     w: "majority"
 });
 

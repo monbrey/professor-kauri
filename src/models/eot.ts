@@ -1,4 +1,4 @@
-import { Document, model, Model, Schema } from "mongoose";
+import { connection, Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
 
 export interface IEotDocument extends Document {
@@ -36,4 +36,5 @@ EotSchema.statics.getSurrounding = async function(num: number) {
     return effects;
 };
 
-export const Eot: IEotModel = model<IEot, IEotModel>("EOT", EotSchema);
+const db = connection.useDb("monbrey-urpg-v2");
+export const Eot: IEotModel = db.model<IEot, IEotModel>("EOT", EotSchema);

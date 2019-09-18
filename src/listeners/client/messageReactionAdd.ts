@@ -1,10 +1,7 @@
 import { Listener } from "discord-akairo";
-import { MessageReaction, User } from "discord.js";
-import { Collection } from "discord.js";
-import { Snowflake } from "discord.js";
-import { Message } from "discord.js";
-import { TextChannel } from "discord.js";
-import { MessageEmbed } from "discord.js";
+import {
+    Collection, Message, MessageEmbed, MessageReaction, Snowflake, TextChannel, User
+} from "discord.js";
 
 const getImage = (message: Message) => {
     const imgRe = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png|webp)/gi;

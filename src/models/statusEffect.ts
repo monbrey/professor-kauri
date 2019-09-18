@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { Document, model, Model, Schema } from "mongoose";
+import { connection, Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
 
 export interface IStatusEffectDocument extends Document {
@@ -38,4 +38,5 @@ StatusEffectSchema.methods.info = async function() {
     return embed;
 };
 
-export const StatusEffect: IStatusEffectModel = model("StatusEffect", StatusEffectSchema);
+const db = connection.useDb("monbrey-urpg-v2");
+export const StatusEffect: IStatusEffectModel = db.model("StatusEffect", StatusEffectSchema);

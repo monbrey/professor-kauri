@@ -1,4 +1,4 @@
-import { Document, model, Model, Schema } from "mongoose";
+import { connection, Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
 
 export interface IColorDocument extends Document {
@@ -30,4 +30,5 @@ ColorSchema.statics.getColorForType = async function(type: string) {
     if (pair) { return pair.color; } else { return "0x000000"; }
 };
 
-export const Color: IColorModel = model<IColor, IColorModel>("Color", ColorSchema);
+const db = connection.useDb("monbrey-urpg-v2");
+export const Color: IColorModel = db.model<IColor, IColorModel>("Color", ColorSchema);

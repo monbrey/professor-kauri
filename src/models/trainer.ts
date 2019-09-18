@@ -1,7 +1,8 @@
 
 import { Snowflake } from "discord.js";
-import { Document, model, Model, Schema } from "mongoose";
+import { connection, Document, Model, Schema } from "mongoose";
 import timestamp from "mongoose-timestamp";
+
 import { BattleRecord, IBattleRecordDocument } from "./schemas/battleRecord";
 
 export interface ICurrency {
@@ -107,4 +108,5 @@ TrainerSchema.methods.modifyBalances = async function(amount: ICurrency) {
 //     return this.save();
 // };
 
-export const Trainer: ITrainerModel = model<ITrainer, ITrainerModel>("Trainer", TrainerSchema);
+const db = connection.useDb(process.env.NODE_ENV || "development");
+export const Trainer: ITrainerModel = db.model<ITrainer, ITrainerModel>("Trainer", TrainerSchema);

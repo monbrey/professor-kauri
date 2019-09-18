@@ -1,7 +1,8 @@
 import { stripIndents } from "common-tags";
 import { MessageEmbed } from "discord.js";
-import { Document, model, Model, Schema } from "mongoose";
+import { connection, Document, model, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
+
 import { Color } from "./color";
 
 export interface IMoveDocument extends Document {
@@ -127,4 +128,5 @@ MoveSchema.methods.info = async function() {
     return embed;
 };
 
-export const Move: IMoveModel = model<IMove, IMoveModel>("Move", MoveSchema);
+const db = connection.useDb("monbrey-urpg-v2");
+export const Move: IMoveModel = db.model<IMove, IMoveModel>("Move", MoveSchema);

@@ -1,6 +1,7 @@
 import { MessageEmbed } from "discord.js";
-import { Document, model, Model, Mongoose, Schema } from "mongoose";
+import { connection, Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
+
 // import { paginate } from "./plugins/paginator";
 
 export interface IItemDocument extends Document {
@@ -73,4 +74,5 @@ ItemSchema.methods.info = async function() {
     return embed;
 };
 
-export const Item: IItemModel = model<IItem, IItemModel>("Item", ItemSchema);
+const db = connection.useDb("monbrey-urpg-v2");
+export const Item: IItemModel = db.model<IItem, IItemModel>("Item", ItemSchema);
