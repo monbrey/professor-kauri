@@ -38,8 +38,9 @@
   "dependencies": {
     "common-tags": "^1.8.0",
     "discord-akairo": "discord-akairo/discord-akairo",
-    "discord.js": "Monbrey/discord.js#permissions-any",
+    "discord.js": "discordjs/discord.js",
     "dotenv": "^8.1.0",
+    "dotenv-expand": "^5.1.0",
     "mongoose": "^5.6.9",
     "mongoose-plugin-autoinc": "^1.1.9",
     "mongoose-timestamp": "^0.6.0",
