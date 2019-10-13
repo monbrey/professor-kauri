@@ -43,9 +43,9 @@
     "@types/node" "*"
 
 "@types/mongodb@*":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.3.1.tgz#9569ffcb356fbb5313ae2d3afa88c230bf8cf0d1"
-  integrity sha512-Va7o1fN3zeabmIJSQ6yuAWkqPvrT38HSTIi4YbVOb2UL7FJ4diXrWt+OUuuEFWAVPtF9VZV5h+7LDYdzgXWgQA==
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.3.2.tgz#2d8bf021cf252a97357049d385af28c56b43625c"
+  integrity sha512-YTTzii2ECx+4R8kzKchydG905z3gb+lzrizeC4s8SAGan7/22bDDJ6nN6r9mueJGRGrCnFo1QBAI/Wz45lETZQ==
   dependencies:
     "@types/bson" "*"
     "@types/node" "*"
@@ -59,9 +59,9 @@
     "@types/node" "*"
 
 "@types/node-fetch@^2.5.0":
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.0.tgz#1c55616a4591bdd15a389fbd0da4a55b9502add5"
-  integrity sha512-TLFRywthBgL68auWj+ziWu+vnmmcHCDFC/sqCOQf1xTz4hRq8cu79z8CtHU9lncExGBsB8fXA4TiLDLt6xvMzw==
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.1.tgz#9e4daffa983eb098d25c2cb410c949678f3aee78"
+  integrity sha512-nYsC20tHanaNa4coFvCDcuIvtdvu8YkQz0XQOoBHL1X1y1QxeNe73dg1PaLGqsJNWiVwK0bjn5Jf+ZQpE6acJg==
   dependencies:
     "@types/node" "*"
 
@@ -282,11 +282,11 @@ diff@^4.0.1:
 
 discord-akairo@discord-akairo/discord-akairo:
   version "8.0.0-beta.8"
-  resolved "https://codeload.github.com/discord-akairo/discord-akairo/tar.gz/2fd87796b135b1d79bf8c0fa6798becb73a37140"
+  resolved "https://codeload.github.com/discord-akairo/discord-akairo/tar.gz/563d57b428ab7dfee3cdedf04834f6d3d606481e"
 
 discord.js@discordjs/discord.js:
   version "12.0.0-dev"
-  resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/d5831df7b18e3b71c9ad7057b85fc3c84aa7c609"
+  resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/60f89bd96f7e110617af021642a810e7fb71e694"
   dependencies:
     "@discordjs/collection" "^0.1.1"
     abort-controller "^3.0.0"
