@@ -20,7 +20,7 @@ export default class BattleLogCommand extends KauriCommand {
     private logMessage?: Message;
 
     public constructor() {
-        super("battleLog", {
+        super("battlelog", {
             aliases: ["battlelog", "bl", "reflog", "rl"],
             category: "Game",
             description: "Logs and pays the Battlers and Referee for a battle",

@@ -66,7 +66,7 @@ ItemSchema.statics.findPartial = function(itemName: string) {
     });
 };
 
-ItemSchema.methods.info = async function() {
+ItemSchema.methods.info = function() {
     const embed = new MessageEmbed().setTitle(this.itemName).setDescription(this.desc);
 
     if (this.price) { embed.addField("Mart Price", `$${this.price}`); }
