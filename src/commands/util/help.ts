@@ -1,3 +1,4 @@
+import { stripIndents } from "common-tags";
 import { PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
@@ -32,14 +33,23 @@ export default class HelpCommand extends KauriCommand {
         if (!command) {
             const embed = new MessageEmbed()
                 .setAuthor("Professor Kauri", undefined, "https://github.com/Monbrey/professor-kauri-v2")
-                .setDescription(`Report issues or contribute to development on [Github](https://github.com/Monbrey/professor-kauri-v2)
+                .setDescription(stripIndents`Report issues or contribute to development on [Github](https://github.com/Monbrey/professor-kauri-v2)
                 Current Version: v${pJson.version}`)
-                .addField("Commands", `A list of commands available, based on your permission levels
-                For additional information on a command, type ${prefix}help <command>`);
+                .addField("Commands", stripIndents`A list of commands available, based on your permission levels`);
+                //  For additional information on a command, type ${prefix}help <command>`);
 
             for (const [catId, cat] of this.handler.categories) {
-                const cmds = (await Promise.all(cat.map(async c => !c.ownerOnly && !(await this.handler.runPermissionChecks(message, c)) ? c : null)))
-                    .filter(c => c !== null) as KauriCommand[];
+                const cmds = (
+                    await Promise.all(
+                        cat.map(async c => {
+                            const notOwner = !c.ownerOnly;
+                            const permitted = !(await this.handler.runPermissionChecks(message, c));
+                            const notInhibited = !(await this.handler.runPostTypeInhibitors(message, c));
+
+                            return notOwner && permitted && notInhibited ? c : null;
+                        })
+                    )
+                ).filter(c => c !== null) as KauriCommand[];
 
                 const suffix = message.member!.permissions.has("MANAGE_GUILD", true) ? " (View and Edit)" : " (View)";
                 const title = `\\▪ ${catId}${catId === "Config" ? suffix : ""}`;
