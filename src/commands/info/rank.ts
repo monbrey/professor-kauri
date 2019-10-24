@@ -49,7 +49,7 @@ export default class RankCommand extends KauriCommand {
     public async exec(message: Message, { query }: CommandArgs) {
         const rankQ = new RegExp(query, "i");
 
-        if (sRanks.find(r => r.name === query)) {
+        if (sRanks.find(r => rankQ.exec(r.name))) {
             try {
                 const rankedPokemon = await Pokemon
                     .find({ $or: [{ "rank.story": rankQ }, { "rank.art": rankQ }] })
@@ -67,7 +67,7 @@ export default class RankCommand extends KauriCommand {
             }
         }
 
-        if (pRanks.find(r => r.name === query)) {
+        if (pRanks.find(r => rankQ.exec(r.name))) {
             try {
                 const rankedPokemon = await Pokemon.find({ "rank.park": rankQ })
                     .sort("dexNumber")
