@@ -46,7 +46,7 @@ export default class RankCommand extends KauriCommand {
         return { query };
     }
 
-    public async run(message: Message, { query }: CommandArgs) {
+    public async exec(message: Message, { query }: CommandArgs) {
         const rankQ = new RegExp(query, "i");
 
         if (sRanks.find(r => r.name === query)) {

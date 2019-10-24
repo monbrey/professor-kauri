@@ -6,8 +6,8 @@ declare module "mongoose" {
         matchRating: number;
     }
     interface Model<T extends Document> {
-        findClosest(field: string, value: string, threshold?: number): T;
-        findAllClosest(field: string, value: string, threshold?: number): T[];
+        findClosest(field: string, value: string, threshold?: number): Promise<T>;
+        findAllClosest(field: string, value: string, threshold?: number): Promise<T[]>;
     }
 }
 
@@ -50,7 +50,7 @@ Object.defineProperties(Model, {
 
             if (closestResult.bestMatch.rating < threshold) { return null; }
 
-            const closestId = values[closestResult.bestMatchIndex].id;
+            const closestId = values[closestResult.bestMatchIndex];
             const closestField = closestId[field];
 
             query[field] = closestField;
