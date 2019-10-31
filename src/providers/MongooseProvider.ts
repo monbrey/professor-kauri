@@ -88,7 +88,7 @@ export default class MongooseProvider<T extends Document> extends Provider imple
         const q = this.deconstructKey(id);
 
         const item = await (key ? this.model.findOne(q, key) : this.model.findOne(q));
-        if (item && cache) this.add(item);
+        if (item && cache) this.items.set(this.generateKey(item), item);
         return item ? (key ? item.get(key) : item) : undefined;
     }
 
@@ -98,7 +98,7 @@ export default class MongooseProvider<T extends Document> extends Provider imple
         }
 
         const item = await this.model.findClosest(this.idColumn, id);
-        if (item && cache) this.add(item);
+        if (item && cache) this.items.set(this.generateKey(item), item);
         return item ? (key ? item.get(key) : item) : undefined;
     }
 
@@ -119,9 +119,10 @@ export default class MongooseProvider<T extends Document> extends Provider imple
         const item = this.items.get(id) || this.deconstructKey(id);
 
         item[key] = value;
-        this.items.set(id, item);
 
-        return item.save();
+        const q = this.deconstructKey(id);
+        await (this.items.has(id) ? this.model.findOneAndUpdate(q, item) : this.add(item));
+        return item;
     }
 
     public async delete(id: string, key: string): Promise<T | undefined> {
