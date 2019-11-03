@@ -25,7 +25,7 @@ ColorSchema.plugin(autoIncrement, {
 });
 
 ColorSchema.statics.getColorForType = async function(type: string) {
-    const colors = await this.find({})/*.cache(0, "type-colors")*/;
+    const colors = await this.find({});
     const pair = colors.find((c: IColorDocument) => c.key === type);
     if (pair) { return pair.color; } else { return "0x000000"; }
 };

@@ -7,7 +7,7 @@
     "start": "node dist/index.js",
     "prebuild": "npm run lint",
     "build": "rimraf dist/ && tsc -p src/tsconfig.json",
-    "lint": "npx tslint -p src/tsconfig.json --fix",
+    "lint": "npx eslint src/**/*.ts --fix",
     "prepare": "npm run build",
     "preversion": "npm run lint",
     "postversion": "git push && git push --tags"
@@ -30,10 +30,12 @@
     "@types/node-fetch": "^2.5.0",
     "@types/string-similarity": "^3.0.0",
     "@types/ws": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "^2.6.0",
+    "@typescript-eslint/parser": "^2.6.0",
+    "eslint": "^6.6.0",
     "rimraf": "^3.0.0",
-    "tslint": "^5.18.0",
-    "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^3.7.0-beta"
+    "typescript": "^3.7.0-beta",
+    "typescript-eslint": "^0.0.1-alpha.0"
   },
   "dependencies": {
     "common-tags": "^1.8.0",

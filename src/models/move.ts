@@ -24,18 +24,18 @@ export interface IMoveDocument extends Document {
     zmove?: string;
     metronome: boolean;
     tm?: {
-        number: number,
+        number: number;
         martPrice: {
             pokemart: number;
             berryStore?: number;
-        }
+        };
     };
     hm?: {
-        number: number,
+        number: number;
         martPrice: {
             pokemart: number;
             berryStore?: number;
-        }
+        };
     };
 }
 

@@ -34,7 +34,7 @@ AbilitySchema.plugin(autoIncrement, {
 // tslint:disable-next-line: only-arrow-functions
 AbilitySchema.methods.info = function() {
     const embed = new MessageEmbed()
-    .setDescription(this.desc);
+        .setDescription(this.desc);
 
     if (this.announcement) {
         switch (this.announcement) {

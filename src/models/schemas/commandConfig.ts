@@ -5,12 +5,12 @@ export interface ICommandConfigDocument extends Document {
     command: string;
     disabled: boolean;
     channels: Array<{
-        channel_id: Snowflake,
-        disabled: boolean
+        channel_id: Snowflake;
+        disabled: boolean;
     }>;
     roles: Array<{
-        role_id: Snowflake,
-        disabled: boolean
+        role_id: Snowflake;
+        disabled: boolean;
     }>;
 }
 

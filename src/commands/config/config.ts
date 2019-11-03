@@ -184,7 +184,7 @@ export default class ConfigCommand extends KauriCommand {
 
         const save = await channelEdit.reactConfirm(message.author!.id, 300000);
         if (save) {
-           this.saveConfig(message.guild!.id, command, config);
+            this.saveConfig(message.guild!.id, command, config);
         }
 
         collector.stop();

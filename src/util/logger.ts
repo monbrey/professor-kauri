@@ -108,7 +108,7 @@ class CustomLogger {
         this.winston.error(Object.assign({ ...error }, { stack: error.stack }));
     }
 
-    //#region PASSTHROUGH
+    // #region PASSTHROUGH
     public async info(data: any) {
         return this.winston.info(data);
     }
@@ -132,7 +132,7 @@ class CustomLogger {
         };
     }
 
-    //#region EVENTS
+    // #region EVENTS
     public async guildMemberAdd(member: GuildMember) {
         this.winston.info({
             message: "New member joined",
@@ -276,9 +276,9 @@ class CustomLogger {
 
     public async roleUpdate() { }
 
-    //#endregion
+    // #endregion
 
-    //#region COMMANDS
+    // #region COMMANDS
     public async ability(message: Message, query: string, result: string) {
         this.winston.info({
             message: "Abilities searched",
@@ -573,7 +573,7 @@ class CustomLogger {
     }
 
     /*
-    async purchase(message, customer, log) {
+    Async purchase(message, customer, log) {
         this.winston.info({
             "message": `${customer} made a Pokemart purchase`,
             "log": log.url,
