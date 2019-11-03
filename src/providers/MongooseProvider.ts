@@ -3,7 +3,6 @@ import { Collection } from "discord.js";
 import { Document, Model } from "mongoose";
 import strsim from "string-similarity";
 
-// tslint:disable-next-line: interface-over-type-literal
 type IMongooseProvider<T> = {
     get(id: string | string[]): T | undefined;
     get(id: string | string[], key?: string): any | undefined;
@@ -162,9 +161,9 @@ export default class MongooseProvider<T extends Document> extends Provider imple
             d[this.idColumn as string] = id;
         } else {
             const params = id.split(":");
-            // tslint:disable-next-line: forin
             for (const index in params) {
-                d[this.idColumn[index]] = params[index];
+                if(params.hasOwnProperty(index))
+                    d[this.idColumn[index]] = params[index];
             }
         }
 

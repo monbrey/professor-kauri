@@ -7,7 +7,6 @@ export interface ICommandStatsDocument extends Document {
     count: number;
 }
 
-// tslint:disable-next-line: no-empty-interface
 export interface ICommandStats extends ICommandStatsDocument {
     // instance methods
 }

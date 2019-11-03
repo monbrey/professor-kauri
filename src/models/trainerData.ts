@@ -20,7 +20,7 @@ export interface ITrainerDataDocument extends Document {
     admin: boolean;
     active: boolean;
     inventory: ITrainerItemDocument[];
-    balance: { cash: number, contestCredit: number };
+    balance: { cash: number; contestCredit: number };
     balanceString: string;
 }
 
@@ -73,7 +73,7 @@ TrainerSchema.methods.cantAfford = function(cash?: number, contestCredit?: numbe
 
     return cashError && ccError ? "cash and contest credit" :
         cashError ? "cash" :
-        ccError ? "contestCredit" : false;
+            ccError ? "contestCredit" : false;
 };
 
 TrainerSchema.methods.modifyCash = async function(amount: number) {
@@ -117,19 +117,19 @@ TrainerSchema.methods.listPokemon = async function() {
 
 // Adds a new TrainerPokemon for the provided Pokemon ID number
 // TrainerSchema.methods.addNewPokemon = async function(pokemon: IPokemon) {
-    // const tp = new TrainerPokemon({
-    //     trainer: this.id,
-    //     basePokemon: pokemon.id,
-    //     moves: { ...pokemon.moves },
-    //     abilities: { ...pokemon.abilities }
-    // });
+// const tp = new TrainerPokemon({
+//     trainer: this.id,
+//     basePokemon: pokemon.id,
+//     moves: { ...pokemon.moves },
+//     abilities: { ...pokemon.abilities }
+// });
 
-    // for (const method in tp.moves) { for (const m of tp.moves[method]) { m.learned = false; } }
-    // for (const a of tp.abilities) { a.learned = !a.hidden; }
+// for (const method in tp.moves) { for (const m of tp.moves[method]) { m.learned = false; } }
+// for (const a of tp.abilities) { a.learned = !a.hidden; }
 
-    // await tp.save();
-    // this.pokemon.push(tp.id);
-    // return this.save();
+// await tp.save();
+// this.pokemon.push(tp.id);
+// return this.save();
 // };
 
 TrainerSchema.methods.addNewItem = async function(item: IItem, type: string) {

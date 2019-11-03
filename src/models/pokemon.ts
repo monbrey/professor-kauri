@@ -46,7 +46,7 @@ export interface IPokemonDocument extends Document {
     height: number;
     weight: number;
     gender: {
-        male?: boolean
+        male?: boolean;
         female?: boolean;
     };
     martPrice?: {
@@ -235,12 +235,12 @@ PokemonSchema.methods.learnset = function(dex: Message) {
 
     let learnset: { [index: string]: string[] } = {};
     learnset = (Object.entries(this.moves) as [[string, IPokemonMoveDocument[]]])
-    .slice(1).reduce((acc, [method, moves]) => {
-        if (moves.length > 0) {
-            acc[method] = moves.map(m => m.moveName);
-        }
-        return acc;
-    }, learnset);
+        .slice(1).reduce((acc, [method, moves]) => {
+            if (moves.length > 0) {
+                acc[method] = moves.map(m => m.moveName);
+            }
+            return acc;
+        }, learnset);
 
     // 1024 character splitter
     for (const method of Object.keys(learnset)) {

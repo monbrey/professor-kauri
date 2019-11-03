@@ -9,7 +9,7 @@ interface CommandArgs {
 
 interface DexMessage extends Message {
     pokemon: IPokemon;
-    orig_author: User;
+    origAuthor: User;
 }
 
 export default class DexCommand extends KauriCommand {
@@ -45,7 +45,7 @@ export default class DexCommand extends KauriCommand {
 
         const dex: Partial<DexMessage> = await message.channel.send(await pokemon.dex(query)) as Message;
         dex.pokemon = pokemon;
-        dex.orig_author = message.author!;
+        dex.origAuthor = message.author!;
 
         return this.prompt(dex as DexMessage);
 
@@ -54,27 +54,27 @@ export default class DexCommand extends KauriCommand {
     private async prompt(dex: DexMessage) {
         // Set the default filter
         let filter = (reaction: MessageReaction, user: User) =>
-            ["🇲"].includes(reaction.emoji.name) && user.id === dex.orig_author.id;
+            ["🇲"].includes(reaction.emoji.name) && user.id === dex.origAuthor.id;
         await dex.react("🇲");
 
         // One mega override
         if (dex.pokemon.mega.length === 1) {
             await dex.react("🇽");
             filter = (reaction, user) =>
-                ["🇲", "🇽"].includes(reaction.emoji.name) && user.id === dex.orig_author.id;
+                ["🇲", "🇽"].includes(reaction.emoji.name) && user.id === dex.origAuthor.id;
         }
         // Two mega override
         if (dex.pokemon.mega.length === 2) {
             await dex.react("🇽");
             await dex.react("🇾");
             filter = (reaction, user) =>
-                ["🇲", "🇽", "🇾"].includes(reaction.emoji.name) && user.id === dex.orig_author.id;
+                ["🇲", "🇽", "🇾"].includes(reaction.emoji.name) && user.id === dex.origAuthor.id;
         }
         // Primal override
         if (dex.pokemon.primal.length === 1) {
             await dex.react("🇵");
             filter = (reaction, user) =>
-                ["🇲", "🇵"].includes(reaction.emoji.name) && user.id === dex.orig_author.id;
+                ["🇲", "🇵"].includes(reaction.emoji.name) && user.id === dex.origAuthor.id;
         }
 
         const response = await dex.awaitReactions(filter, { max: 1, time: 30000 });

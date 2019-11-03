@@ -113,9 +113,8 @@ export default class ConfigCommand extends KauriCommand {
                 const role = message.guild!.roles.find(r => r.name === arg);
                 if (role) {
                     const index = config.roles.findIndex(r => r.role_id === role.id);
-                    index !== -1
-                        ? config.roles.splice(index, 1)
-                        : config.roles.push({ role_id: role.id, disabled: !gDisabled });
+                    if (index !== -1) config.roles.splice(index, 1);
+                    else config.roles.push({ role_id: role.id, disabled: !gDisabled });
                 }
             }
 
@@ -169,9 +168,8 @@ export default class ConfigCommand extends KauriCommand {
         collector.on("collect", (m: Message) => {
             for (const id of message.mentions.channels.keyArray()) {
                 const index = config.channels.findIndex(c => c.channel_id === id);
-                index !== -1
-                    ? config.channels.splice(index, 1)
-                    : config.channels.push({ channel_id: id, disabled: !gDisabled });
+                if (index !== -1) config.channels.splice(index, 1);
+                else config.channels.push({ channel_id: id, disabled: !gDisabled });
             }
             message.delete();
             evalOverrides();
@@ -239,7 +237,8 @@ export default class ConfigCommand extends KauriCommand {
     private async saveConfig(id: Snowflake, command: KauriCommand, config: ICommandConfigDocument) {
         const configs = this.client.settings.get(id, "commands") as ICommandConfigDocument[];
         const index = configs.findIndex(c => c.command === command.id);
-        index === -1 ? configs.push(config) : configs[index] = config;
+        if (index === -1) configs.push(config);
+        else configs[index] = config;
         return this.client.settings.set(id, "commands", configs);
     }
 

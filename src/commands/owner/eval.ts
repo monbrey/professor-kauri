@@ -1,4 +1,3 @@
-// tslint:disable-next-line: no-var-requires
 const Discord = require("discord.js");
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
@@ -36,7 +35,6 @@ export default class EvalCommand extends KauriCommand {
 
     public async exec(message: Message, { code, silent }: CommandArgs) {
         try {
-            // tslint:disable-next-line: no-eval
             const evaled = await eval(code);
 
             if (silent) {

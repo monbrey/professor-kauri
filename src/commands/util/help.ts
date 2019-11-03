@@ -2,7 +2,6 @@ import { stripIndents } from "common-tags";
 import { PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-// tslint:disable-next-line: no-var-requires
 const pJson = require("../../../package.json");
 
 interface CommandArgs {

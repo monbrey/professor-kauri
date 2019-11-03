@@ -11,9 +11,7 @@ declare module "discord.js" {
     }
 }
 
-// tslint:disable-next-line: no-shadowed-variable
 Structures.extend("GuildMember", GuildMember => {
-    // tslint:disable-next-line: no-shadowed-variable
     class GuildTrainer extends GuildMember {
         public trainer: ITrainer = new Trainer();
 

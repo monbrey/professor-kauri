@@ -1,5 +1,3 @@
-// tslint:disable: no-var-requires
-
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import path from "path";

@@ -6,7 +6,6 @@ export interface IEotDocument extends Document {
     effect: string;
 }
 
-// tslint:disable-next-line: no-empty-interface
 export interface IEot extends IEotDocument {
 
 }

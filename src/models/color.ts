@@ -6,7 +6,6 @@ export interface IColorDocument extends Document {
     color: string;
 }
 
-// tslint:disable-next-line: no-empty-interface
 export interface IColor extends IColorDocument {
 }
 

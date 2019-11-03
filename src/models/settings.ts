@@ -10,7 +10,6 @@ export interface ISettingsDocument extends Document {
     commands: ICommandConfigDocument[];
 }
 
-// tslint:disable-next-line: no-empty-interface
 export interface ISettings extends ISettingsDocument { }
 
 export interface ISettingsModel extends Model<ISettings> { }

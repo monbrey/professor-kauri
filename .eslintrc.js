@@ -35,13 +35,14 @@ module.exports = {
             }
         ],
         "@typescript-eslint/no-empty-function": "off",
-        "@typescript-eslint/no-empty-interface": "error",
+        "@typescript-eslint/no-empty-interface": ["error", {
+            "allowSingleExtends": true
+        }],
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-misused-new": "error",
         "@typescript-eslint/no-namespace": "error",
         "@typescript-eslint/no-parameter-properties": "off",
         "@typescript-eslint/no-use-before-declare": "off",
-        "@typescript-eslint/no-var-requires": "error",
         "@typescript-eslint/prefer-for-of": "error",
         "@typescript-eslint/prefer-function-type": "error",
         "@typescript-eslint/prefer-namespace-keyword": "error",
@@ -55,7 +56,9 @@ module.exports = {
             "error",
             "as-needed"
         ],
-        "camelcase": "error",
+        "camelcase": ["error", {
+            "allow": [".*_id$", ".*_url$"]
+        }],
         "complexity": "off",
         "constructor-super": "error",
         "curly": "off",
@@ -80,7 +83,6 @@ module.exports = {
         "no-console": "off",
         "no-debugger": "error",
         "no-empty": "off",
-        "no-eval": "error",
         "no-fallthrough": "off",
         "no-invalid-this": "off",
         "no-new-wrappers": "error",
@@ -103,7 +105,6 @@ module.exports = {
             "error",
             "never"
         ],
-        "prefer-arrow/prefer-arrow-functions": "error",
         "prefer-const": "error",
         "radix": "error",
         "spaced-comment": "error",
