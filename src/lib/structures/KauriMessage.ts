@@ -3,6 +3,7 @@ import KauriClient from "../../client/KauriClient";
 
 declare module "discord.js" {
     interface Message {
+        client: KauriClient;
         reactConfirm(listenTo: Snowflake, timeout?: number): Promise<boolean>;
         paginate(listenTo: Snowflake, back: boolean, next: boolean, timeout?: number): Promise<boolean>;
     }
