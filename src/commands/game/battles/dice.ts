@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { KauriCommand } from "../../lib/commands/KauriCommand";
+import { KauriCommand } from "../../../lib/commands/KauriCommand";
 
 interface CommandArgs {
     die: string[];
