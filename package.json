@@ -33,7 +33,7 @@
     "rimraf": "^3.0.0",
     "tslint": "^5.18.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.7.0-beta"
   },
   "dependencies": {
     "common-tags": "^1.8.0",
