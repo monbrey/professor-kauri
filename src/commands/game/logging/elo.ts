@@ -1,6 +1,10 @@
 import { Argument, Flag } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
+import Roles from "../../../util/roles";
+import { ITrainerDocument, Trainer } from "../../../models/trainer";
+import emoji from "node-emoji";
+import { stripIndents } from "common-tags";
 
 interface CommandArgs {
     winner: GuildMember;
@@ -14,8 +18,27 @@ export default class EloCommand extends KauriCommand {
             category: "Game",
             description: "Update the ELO rating for two battlers",
             channel: "guild",
-            clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"]
+            clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
+            userRoles: [Roles.Staff, Roles.SeniorReferee, Roles.Referee]
         });
+    }
+
+    public async onBlocked(message: Message) {
+        if (message.util!.parsed?.content) {
+            const { winner } = await this.parse(message, message.util!.parsed?.content!);
+            if (winner) return this.single(message, winner);
+        }
+
+        const data: ITrainerDocument[] = await Trainer.find({ "battleRecord.elo": { $not: { $eq: null } } })
+            .select("_id battleRecord.elo")
+            .sort({ "battleRecord.elo": -1 });
+
+        const validMembers: GuildMember[] = data.filter(d => message.guild?.members.has(d.id)).map(d => message.guild?.members.get(d.id)!);
+        const elos = validMembers.map(m => `${emoji.strip(m.displayName).padEnd(30, " ")} | ${m.trainer.battleRecord.elo}`);
+
+        const ladder = stripIndents`**URPG ELO Ladder\`\`\`${"Battler".padEnd(30, " ")} | ELO\`\`\`**\`\`\`${elos.join("\n")}\`\`\``;
+
+        return message.util!.send(ladder);
     }
 
     public *args(message: Message) {
@@ -27,12 +50,28 @@ export default class EloCommand extends KauriCommand {
             type: Argument.validate("member", member => member.id !== message.author.id)
         };
 
-        if(!winner || !loser) return Flag.fail("Please mention both users");
-
         return { winner, loser };
     }
 
+    private async single(message: Message, battler: GuildMember) {
+        let embed = new MessageEmbed();
+        if (!battler.trainer.battleRecord.elo) {
+            embed
+                .setTitle(`${emoji.strip(battler.displayName)} has not participated in this ladder.`)
+                .setColor(0xBBBBBB);
+        } else {
+            embed
+                .setTitle(`${emoji.strip(battler.displayName)}'s ELO is currently: ${battler.trainer.battleRecord.elo}`)
+                .setColor(0xFFFFFF);
+        }
+
+        embed.setFooter("Partipate in ladder battles to raise your own!");
+        return message.util!.send(embed);
+    }
+
     public async exec(message: Message, { winner, loser }: CommandArgs) {
+        if (!loser) return this.onBlocked(message);
+
         // Get current ratings
         const rA = winner.trainer.battleRecord?.elo || 1500;
         const rB = loser.trainer.battleRecord?.elo || 1500;
