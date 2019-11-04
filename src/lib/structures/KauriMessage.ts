@@ -21,7 +21,7 @@ Structures.extend("Message", Message => {
          * @param {number} [timeout=30000] How long to wait for reactions
          * @returns {Promise<boolean>}
          */
-        public async reactConfirm(listenTo: Snowflake, timeout = 30000) {
+        public async reactConfirm(listenTo: Snowflake, timeout = 60000) {
             await this.react("✅");
             await this.react("❌");
 

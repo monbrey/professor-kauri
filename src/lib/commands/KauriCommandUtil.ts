@@ -11,11 +11,12 @@ declare module "discord-akairo" {
 const EMBED_COLORS: { [index: string]: number } = {
     error: 0xe50000,
     warn: 0xffc107,
-    longwarn: 0xffc107,
     cancel: 0x004a7f,
     success: 0x267f00,
     info: 0xffffff
 };
+
+type EmbedTypes = "error" | "warn" | "cancel" | "success" | "info";
 
 Object.defineProperties(CommandUtil.prototype, {
     embed: {
@@ -24,7 +25,7 @@ Object.defineProperties(CommandUtil.prototype, {
          * @param {String} [description] - Content for the embed
          * @param {Number} [timer] - How long to wait to delete the message in milliseconds
          */
-        async value(this: CommandUtil, type: string, content?: string | { [index: string]: string }) {
+        async value(this: CommandUtil, type: EmbedTypes, content?: string | { [index: string]: string }) {
             if (!type) { throw new Error("A popup type must be specified"); }
 
             let embed = new MessageEmbed({ color: EMBED_COLORS[type] });
