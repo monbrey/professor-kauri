@@ -12,6 +12,8 @@ export default class CommandChannelDisabled extends Inhibitor {
     }
 
     public async exec(message: Message, command: KauriCommand): Promise<boolean> {
+        if (message.author.id === this.client.ownerID) return true;
+
         if (!message.guild) { return false; }
 
         const guildConf = this.client.settings.get(message.guild.id);

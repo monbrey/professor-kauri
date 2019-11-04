@@ -13,6 +13,8 @@ export default class CommandGuildDisabled extends Inhibitor {
     }
 
     public async exec(message: Message, command: Command): Promise<boolean> {
+        if (message.author.id === this.client.ownerID) return true;
+
         if (!message.guild) { return false; }
 
         const guildCommandConfigs = this.client.settings.get(message.guild.id, "commands") as ICommandConfigDocument[];
