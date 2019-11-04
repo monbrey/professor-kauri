@@ -10,7 +10,6 @@ export default class ReloadCommand extends KauriCommand {
         super("reload", {
             aliases: ["reload"],
             category: "Admin",
-            userPermissions: ["ADMINISTRATOR", "MANAGE_GUILD"],
             ownerOnly: true
         });
     }

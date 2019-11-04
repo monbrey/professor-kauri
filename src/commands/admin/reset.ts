@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import { GuildChannel } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
+import Roles from "../../util/roles";
 
 interface CommandArgs {
     target: GuildChannel;
@@ -13,7 +14,7 @@ export default class ResetCommand extends KauriCommand {
             category: "Admin",
             description: "Resets the channel",
             channel: "guild",
-            userPermissions: ["MANAGE_CHANNELS", "MANAGE_MESSAGES"]
+            userRoles: [Roles.Staff]
         });
     }
 

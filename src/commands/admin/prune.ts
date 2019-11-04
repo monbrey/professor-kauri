@@ -1,6 +1,7 @@
 import { Argument } from "discord-akairo";
 import { GuildMember, Message } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
+import Roles from "../../util/roles";
 
 interface CommandArgs {
     count: number;
@@ -15,7 +16,7 @@ export default class PruneCommand extends KauriCommand {
             flags: ["-s"],
             description: "Bulk deletes messages from the channel",
             channel: "guild",
-            userPermissions: ["MANAGE_MESSAGES"]
+            userRoles: [Roles.Staff]
         });
     }
 
