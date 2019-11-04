@@ -2,10 +2,10 @@ import { Inhibitor } from "discord-akairo";
 import { Message } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 
-export default class CommandChannelDisabled extends Inhibitor {
+export default class ChannelConfigInhibitor extends Inhibitor {
     constructor() {
-        super("commandChannelDisabled", {
-            reason: "commandChannelDisabled",
+        super("channelConfigInhbitor", {
+            reason: "Command disabled in channel",
             type: "post",
             priority: 1
         });

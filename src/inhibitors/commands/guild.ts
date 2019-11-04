@@ -3,10 +3,10 @@ import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { ICommandConfigDocument } from "../../models/schemas/commandConfig";
 
-export default class CommandGuildDisabled extends Inhibitor {
+export default class GuildConfigInhibitor extends Inhibitor {
     constructor() {
-        super("commandGuildDisabled", {
-            reason: "commandGuildDisabled",
+        super("guildConfigInhibitor", {
+            reason: "Command disabled in guild",
             type: "post",
             priority: 0
         });
