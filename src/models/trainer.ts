@@ -33,7 +33,7 @@ const TrainerSchema = new Schema({
     _id: { type: String, required: true },
     cash: { type: Number, required: true, default: 0 },
     cc: { type: Number, required: true, default: 0 },
-    battleRecord: { type: BattleRecord },
+    battleRecord: { type: BattleRecord, default: BattleRecord },
     stats: { type: String },
     migrated: { type: Boolean, default: false }
 });

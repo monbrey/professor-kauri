@@ -1,7 +1,5 @@
-import { Argument } from "discord-akairo";
-import { GuildMember, Message } from "discord.js";
-import { MessageEmbed } from "discord.js";
-import KauriClient from "../../../client/KauriClient";
+import { Argument, Flag } from "discord-akairo";
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
 
 interface CommandArgs {
@@ -14,7 +12,7 @@ export default class EloCommand extends KauriCommand {
         super("elo", {
             aliases: ["elo"],
             category: "Game",
-            description: "Update the ELO ratings for two Battlers",
+            description: "Update the ELO rating for two battlers",
             channel: "guild",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"]
         });
@@ -28,6 +26,8 @@ export default class EloCommand extends KauriCommand {
         const loser = yield {
             type: Argument.validate("member", member => member.id !== message.author.id)
         };
+
+        if(!winner || !loser) return Flag.fail("Please mention both users");
 
         return { winner, loser };
     }

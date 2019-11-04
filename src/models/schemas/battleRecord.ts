@@ -11,5 +11,5 @@ export const BattleRecord = new Schema({
     wins: { type: Number, default: 0 },
     losses: { type: Number, default: 0 },
     ffas: { type: Number, default: 0 },
-    elo: { type: Number, default: 1500 }
+    elo: { type: Number }
 }, { _id: false });
