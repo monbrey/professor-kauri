@@ -13,7 +13,7 @@ export default class CommandGuildDisabled extends Inhibitor {
     }
 
     public async exec(message: Message, command: Command): Promise<boolean> {
-        if (message.author.id === this.client.ownerID) return true;
+        if (message.author.id === this.client.ownerID) return false;
 
         if (!message.guild) { return false; }
 

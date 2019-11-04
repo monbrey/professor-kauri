@@ -43,7 +43,7 @@ export default class ConfigCommand extends KauriCommand {
 
         const info = this.generateCommandInfo(message, command, config);
 
-        if (!message.member!.permissions.has("MANAGE_GUILD", true)) {
+        if (!message.member!.permissions.has("MANAGE_GUILD", true) && message.author.id !== this.client.ownerID) {
             return message.util!.send({ embed: info });
         }
 
