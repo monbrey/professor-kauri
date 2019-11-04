@@ -43,7 +43,7 @@ export default class PayCommand extends KauriCommand {
         const reason = yield {
             match: "rest",
             prompt: {
-                start: `What's the reason for this payment?`,
+                start: "What's the reason for this payment?",
             }
         };
 

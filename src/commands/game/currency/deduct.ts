@@ -43,7 +43,7 @@ export default class DeductCommand extends KauriCommand {
         const reason = yield {
             match: "rest",
             prompt: {
-                start: `What's the reason for this deduction?`,
+                start: "What's the reason for this deduction?",
             }
         };
 

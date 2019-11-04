@@ -65,11 +65,11 @@ if (process.env.NODE_ENV === "production") {
     outs.push(
         new transports.File({
             format: logFormat,
-            filename: `./kauri.log`
+            filename: "./kauri.log"
         }),
         new transports.File({
             format: errorFormat,
-            filename: `./kauri-error.log`,
+            filename: "./kauri-error.log",
             level: "error"
         })
     );
@@ -325,8 +325,9 @@ class CustomLogger {
     public async elo(message: Message, winner: GuildMember, loser: GuildMember) {
         this.winston.info({
             message: "ELO updated",
-            winner,
-            loser,
+            winner: winner.id,
+            loser: loser.id,
+            referee: message.author,
             ...this.location(message),
             key: "elo"
         });

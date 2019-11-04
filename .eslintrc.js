@@ -106,6 +106,7 @@ module.exports = {
             "never"
         ],
         "prefer-const": "error",
+        "quotes": ["error", "double"],
         "radix": "error",
         "spaced-comment": "error",
         "use-isnan": "error",
