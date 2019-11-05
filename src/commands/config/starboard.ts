@@ -1,6 +1,7 @@
 import { Argument } from "discord-akairo";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
+import Roles from "../../util/roles";
 
 export default class StarboardCommand extends KauriCommand {
     constructor() {
@@ -8,8 +9,23 @@ export default class StarboardCommand extends KauriCommand {
             aliases: ["starboard"],
             category: "Config",
             description: "View or change the Starboard configuration for this server",
-            channel: "guild"
+            channel: "guild",
+            userRoles: [Roles.Staff]
         });
+    }
+
+    public async onBlocked(message: Message) {
+        if (!message.guild) { return; }
+        const sbConfig = message.guild.starboard;
+
+        const embed = new MessageEmbed().setTitle(`Starboard settings for ${message.guild.name}`).setColor("WHITE");
+        if (sbConfig) {
+            embed.addField("Channel", message.guild.channels.get(sbConfig.channel) || "<#invalid_channel>", true);
+            embed.addField("Emoji", sbConfig.emoji || "⭐", true);
+            embed.addField("Reaction Threshold", sbConfig.minReacts || 1, true);
+        } else {
+            embed.setDescription("No Starboard configuration");
+        }
     }
 
     public async exec(message: Message) {
@@ -23,11 +39,9 @@ export default class StarboardCommand extends KauriCommand {
             embed.addField("Reaction Threshold", sbConfig.minReacts || 1, true);
         } else {
             embed.setDescription("No Starboard configuration");
+            embed.setFooter("Click the pencil to edit the configuration");
         }
 
-        if (!message.member!.permissions.has("MANAGE_GUILD", true)) { return await message.util!.send(embed); }
-
-        embed.setFooter("Click the pencil to edit the configuration");
         const sent = await message.util!.send(embed) as Message;
         embed.setFooter(null);
 
