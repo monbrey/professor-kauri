@@ -1,10 +1,11 @@
 import { stripIndents } from "common-tags";
 import { MessageEmbed } from "discord.js";
-import { connection, Document, Model, Schema } from "mongoose";
+import { Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
-
+import { db } from "../util/db";
 import { Color } from "./color";
 import { IPokemon } from "./pokemon";
+
 
 export interface IMegaDocument extends Document {
     displayName: string;
@@ -87,5 +88,4 @@ MegaSchema.methods.dex = async function(base: IPokemon) {
     return embed;
 };
 
-const db = connection.useDb("monbrey-urpg-v2");
 export const Mega: IMegaModel = db.model<IMega, IMegaModel>("Mega", MegaSchema);

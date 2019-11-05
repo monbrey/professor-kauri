@@ -37,6 +37,9 @@ export default class MessageReactionRemoveListener extends Listener {
     }
 
     public async exec(reaction: MessageReaction, user: User) {
+        // Fetch partial messages
+        if(reaction.message.partial) await reaction.message.fetch();
+
         // Grab the mesasge for processing
         const message = reaction.message;
 
@@ -44,7 +47,7 @@ export default class MessageReactionRemoveListener extends Listener {
         if (!message.guild) { return; }
 
         // Fetch the starboard settings
-        const starboard = this.client.settings.get(message.guild.id, "starboard");
+        const starboard = this.client.settings!.get(message.guild.id, "starboard");
 
         // Check that the starChannel is set
         if (!starboard || !starboard.channel) { return; }

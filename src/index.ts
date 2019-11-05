@@ -1,10 +1,11 @@
 import dotenv from "dotenv";
-import mongoose from "mongoose";
 import path from "path";
 
-import KauriClient from "./client/KauriClient";
-
 dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
+
+import { db } from "./util/db";
+
+import KauriClient from "./client/KauriClient";
 
 // Discord Extensions
 require("./lib/structures/GuildTrainer");
@@ -20,16 +21,6 @@ require("./lib/commands/KauriCommandUtil");
 require("./lib/misc/Model");
 require("./lib/misc/Number");
 
-mongoose.connect(process.env.MONGODB_URI!, {
-    useNewUrlParser: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-    w: "majority"
-});
-mongoose.set("useCreateIndex", true);
-
-const db = mongoose.connection;
-
 const client = new KauriClient({
     disableEveryone: true,
     disabledEvents: [
@@ -37,7 +28,8 @@ const client = new KauriClient({
         "VOICE_STATE_UPDATE",
         "VOICE_SERVER_UPDATE",
         "CHANNEL_PINS_UPDATE"
-    ]
+    ],
+    partials: ["MESSAGE"]
 });
 
 db.once("connected", () => {

@@ -8,6 +8,7 @@ import { Mega } from "./mega";
 import { IPokemonAbilityDocument, PokemonAbility } from "./schemas/pokemonAbility";
 import { IPokemonEvolutionDocument, PokemonEvolution } from "./schemas/pokemonEvolution";
 import { IPokemonMoveDocument, PokemonMove } from "./schemas/pokemonMove";
+import { db } from "../util/db";
 
 export interface IPokemonDocument extends Document {
     dexNumber: number;
@@ -291,5 +292,4 @@ PokemonSchema.methods.primalDex = async function(this: IPokemon, whichPrimal: nu
     return primal.dex(this);
 };
 
-const db = connection.useDb("monbrey-urpg-v2");
 export const Pokemon: IPokemonModel = db.model<IPokemon, IPokemonModel>("Pokemon", PokemonSchema);

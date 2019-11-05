@@ -1,6 +1,7 @@
 import { MessageEmbed } from "discord.js";
-import { connection, Document, Model, Schema } from "mongoose";
+import { Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
+import { db } from "../util/db";
 
 export interface IAbilityDocument extends Document {
     abilityName: string;
@@ -59,5 +60,4 @@ AbilitySchema.methods.info = function() {
     return embed;
 };
 
-const db = connection.useDb("monbrey-urpg-v2");
 export const Ability: IAbilityModel = db.model<IAbility, IAbilityModel>("Ability", AbilitySchema);

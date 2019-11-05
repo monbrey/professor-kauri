@@ -4,6 +4,7 @@ import timestamp from "mongoose-timestamp";
 import { IItem } from "./item";
 import { IPokemon } from "./pokemon";
 import { ITrainerItemDocument, TrainerItem } from "./schemas/trainerItem";
+import { instanceDB } from "../util/db";
 
 export interface ITrainerDataDocument extends Document {
     _id: string;
@@ -137,5 +138,4 @@ TrainerSchema.methods.addNewItem = async function(item: IItem, type: string) {
     return this.save();
 };
 
-const db = connection.useDb(process.env.NODE_ENV || "development");
-export const TrainerData: ITrainerDataModel =  db.model<ITrainerData, ITrainerDataModel>("Model", TrainerSchema);
+export const TrainerData: ITrainerDataModel = instanceDB.model<ITrainerData, ITrainerDataModel>("Model", TrainerSchema);

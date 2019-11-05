@@ -3,6 +3,7 @@ import { Argument, Flag } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
 import { IPokemon } from "../../../models/pokemon";
+import { Roles } from "../../../util/constants";
 
 interface CommandArgs {
     winner: GuildMember;
@@ -26,6 +27,7 @@ export default class BattleLogCommand extends KauriCommand {
             description: "Logs and pays the Battlers and Referee for a battle",
             channel: "guild",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
+            userRoles: [Roles.SeniorReferee, Roles.Referee],
             defaults: { disabled: true }
         });
     }

@@ -1,4 +1,5 @@
 import { Structures } from "discord.js";
+import { connection } from "mongoose";
 import KauriClient from "../../client/KauriClient";
 import { IStarboardConfigDocument } from "../../models/schemas/starboardConfig";
 
@@ -17,11 +18,11 @@ Structures.extend("Guild", Guild => {
         }
 
         public get starboard() {
-            return this.client.settings.get(this.id, "starboard");
+            return this.client.settings!.get(this.id, "starboard");
         }
 
         public get logChannel() {
-            const logs = this.client.settings.get(this.id, "logs");
+            const logs = this.client.settings!.get(this.id, "logs");
             return logs;
         }
     }

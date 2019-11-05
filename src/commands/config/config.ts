@@ -6,6 +6,7 @@ import { User } from "discord.js";
 import { Snowflake } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { ICommandConfigDocument } from "../../models/schemas/commandConfig";
+import { Roles } from "../../util/constants";
 
 interface CommandArgs {
     command: KauriCommand;
@@ -16,8 +17,9 @@ export default class ConfigCommand extends KauriCommand {
         super("config", {
             aliases: ["config"],
             category: "Config",
-            description: "Change command configuration in this server.",
+            description: "Change command options in this server.",
             channel: "guild",
+            userRoles: [Roles.Staff]
         });
     }
 
@@ -32,23 +34,37 @@ export default class ConfigCommand extends KauriCommand {
         return { command };
     }
 
+    public async onBlocked(message: Message) {
+        if (!message.guild) { return; }
+
+        const { content } = await this.handler.parseCommand(message);
+        if (!content) return;
+
+        const { command } = await this.parse(message, content);
+
+        if (command.ownerOnly) { return; }
+
+        const commandConfigs = this.client.settings!.get(message.guild.id, "commands") as ICommandConfigDocument[];
+        const config = (commandConfigs.find(c => c.command === command.id) || { command: command.id } as ICommandConfigDocument);
+
+        const info = this.generateCommandInfo(message, command, config);
+
+        return await message.util!.send(info);
+    }
+
     public async exec(message: Message, { command }: CommandArgs) {
         if (!message.guild) { return; }
 
         // Dont provide any config for owner-only commands
         if (command.ownerOnly) { return; }
 
-        const commandConfigs = this.client.settings.get(message.guild.id, "commands") as ICommandConfigDocument[];
+        const commandConfigs = this.client.settings!.get(message.guild.id, "commands") as ICommandConfigDocument[];
         const config = (commandConfigs.find(c => c.command === command.id) || { command: command.id } as ICommandConfigDocument);
 
         const info = this.generateCommandInfo(message, command, config);
-
-        if (!message.member!.permissions.has("MANAGE_GUILD", true) && message.author.id !== this.client.ownerID) {
-            return message.util!.send({ embed: info });
-        }
-
         info.setFooter("Click the pencil to edit the configuration");
-        const sent = await message.channel.send(info);
+
+        const sent = await message.util!.send(info);
         info.setFooter("");
         await sent.react("✏");
 
@@ -63,15 +79,16 @@ export default class ConfigCommand extends KauriCommand {
     }
 
     private async reset(message: Message, command: KauriCommand) {
-        const configs = this.client.settings.get(message.guild!.id, "commands") as ICommandConfigDocument[];
+        const configs = this.client.settings!.get(message.guild!.id, "commands") as ICommandConfigDocument[];
         const index = configs.findIndex(c => c.command === command.id);
 
         if (index !== -1) {
             configs.splice(index, 1);
-            this.client.settings.set(message.guild!.id, "commands", configs);
+            this.client.settings!.set(message.guild!.id, "commands", configs);
         }
     }
 
+    /* DISABLED - URPG will have hard-coded role restrictions
     private async manageRoles(message: Message, command: KauriCommand, config: ICommandConfigDocument) {
         const { roles } = message.guild!;
         const gDisabled = config.disabled || command.defaults.disabled || false;
@@ -133,6 +150,7 @@ export default class ConfigCommand extends KauriCommand {
         }
         collector.stop();
     }
+    */
 
     private async manageChannels(message: Message, command: KauriCommand, config: ICommandConfigDocument) {
         const { channels } = message.guild!;
@@ -195,7 +213,7 @@ export default class ConfigCommand extends KauriCommand {
      * @param {KauriCommand} command
      */
     private async configure(message: Message, sent: Message, command: KauriCommand, config: ICommandConfigDocument) {
-        const reacts = ["✅", "❌", "🔲", "🚫", "🔄"].filter(e =>
+        const reacts = ["✅", "❌", "🔲", "🔄"].filter(e =>
             sent.embeds[0].fields[sent.embeds[0].fields.length - 1].value.includes(e)
         );
         try {
@@ -220,8 +238,6 @@ export default class ConfigCommand extends KauriCommand {
                         return this.toggleCommand(message, command, config);
                     case "🔲":
                         return this.manageChannels(message, command, config);
-                    case "🚫":
-                        return this.manageRoles(message, command, config);
                     case "🔄":
                         return this.reset(message, command);
                 }
@@ -235,11 +251,11 @@ export default class ConfigCommand extends KauriCommand {
     }
 
     private async saveConfig(id: Snowflake, command: KauriCommand, config: ICommandConfigDocument) {
-        const configs = this.client.settings.get(id, "commands") as ICommandConfigDocument[];
+        const configs = this.client.settings!.get(id, "commands") as ICommandConfigDocument[];
         const index = configs.findIndex(c => c.command === command.id);
         if (index === -1) configs.push(config);
         else configs[index] = config;
-        return this.client.settings.set(id, "commands", configs);
+        return this.client.settings!.set(id, "commands", configs);
     }
 
     private async toggleCommand(message: Message, command: KauriCommand, config: ICommandConfigDocument) {

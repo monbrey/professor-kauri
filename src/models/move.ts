@@ -4,6 +4,7 @@ import { connection, Document, model, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
 
 import { Color } from "./color";
+import { db } from "../util/db";
 
 export interface IMoveDocument extends Document {
     moveName: string;
@@ -128,5 +129,4 @@ MoveSchema.methods.info = async function() {
     return embed;
 };
 
-const db = connection.useDb("monbrey-urpg-v2");
 export const Move: IMoveModel = db.model<IMove, IMoveModel>("Move", MoveSchema);

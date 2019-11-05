@@ -1,6 +1,6 @@
 import { GuildMember, Message, Role } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import Roles from "../../util/roles";
+import { Roles } from "../../util/constants";
 
 interface ICommandArgs {
     role: Role;

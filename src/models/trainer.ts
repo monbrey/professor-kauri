@@ -4,6 +4,7 @@ import { connection, Document, Model, Schema } from "mongoose";
 import timestamp from "mongoose-timestamp";
 
 import { BattleRecord, IBattleRecordDocument } from "./schemas/battleRecord";
+import { instanceDB } from "../util/db";
 
 export interface ICurrency {
     cash?: number;
@@ -108,5 +109,4 @@ TrainerSchema.methods.modifyBalances = async function(amount: ICurrency) {
 //     return this.save();
 // };
 
-const db = connection.useDb(process.env.NODE_ENV || "development");
-export const Trainer: ITrainerModel = db.model<ITrainer, ITrainerModel>("Trainer", TrainerSchema);
+export const Trainer: ITrainerModel = instanceDB.model<ITrainer, ITrainerModel>("Trainer", TrainerSchema);

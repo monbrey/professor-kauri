@@ -1,7 +1,6 @@
 import { Command, CommandOptions } from "discord-akairo";
-import { RoleResolvable } from "discord.js";
-import Roles from "../../util/roles";
 import { Message } from "discord.js";
+import { Roles } from "../../util/constants";
 
 declare module "discord-akairo" {
     interface Command {

@@ -1,7 +1,7 @@
 import { Argument } from "discord-akairo";
 import { GuildMember, Message } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import Roles from "../../util/roles";
+import { Roles } from "../../util/constants";
 
 interface CommandArgs {
     count: number;

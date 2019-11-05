@@ -17,7 +17,7 @@ export default class GuildConfigInhibitor extends Inhibitor {
 
         if (!message.guild) { return false; }
 
-        const guildCommandConfigs = this.client.settings.get(message.guild.id, "commands") as ICommandConfigDocument[];
+        const guildCommandConfigs = this.client.settings!.get(message.guild.id, "commands") as ICommandConfigDocument[];
         if (!guildCommandConfigs) { return command.defaults.disabled; }
 
         const commandConf = guildCommandConfigs.find(c => c.command === command.id);

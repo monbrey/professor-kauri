@@ -1,7 +1,8 @@
 import { Argument } from "discord-akairo";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import Roles from "../../util/roles";
+import { Roles } from "../../util/constants";
+import { IStarboardConfigDocument } from "../../models/schemas/starboardConfig";
 
 export default class StarboardCommand extends KauriCommand {
     constructor() {
@@ -46,7 +47,7 @@ export default class StarboardCommand extends KauriCommand {
         embed.setFooter(null);
 
         await sent.react("✏");
-        const filter = ({ emoji }: MessageReaction, u: User) => emoji.name === "📝" && u.id === message.author!.id;
+        const filter = ({ emoji }: MessageReaction, u: User) => emoji.name === "✏" && u.id === message.author!.id;
         const edit = await sent.awaitReactions(filter, { time: 30000, max: 1 });
 
         sent.reactions.removeAll();
@@ -56,9 +57,9 @@ export default class StarboardCommand extends KauriCommand {
     }
 
     private async configureStarboard(message: Message, embed: MessageEmbed) {
-        const sbConfig = message.guild!.starboard!;
+        if (!message.guild) { return; }
 
-        if (!message.guild || !sbConfig) { return; }
+        const sbConfig = message.guild.starboard || {} as IStarboardConfigDocument;
 
         const arg1 = new Argument(this, {
             type: ["channel", "emoji", "threshold"],
@@ -105,7 +106,7 @@ export default class StarboardCommand extends KauriCommand {
                 if (!channel) { break; }
 
                 sbConfig["channel"] = channel.id;
-                await this.client.settings.set(message.guild.id, "starboard", sbConfig);
+                await this.client.settings!.set(message.guild.id, "starboard", sbConfig);
                 message.util!.lastResponse!.delete();
                 this.exec(message);
             }
@@ -134,7 +135,7 @@ export default class StarboardCommand extends KauriCommand {
                 if (!emoji) { return; }
 
                 sbConfig["emoji"] = emoji;
-                await this.client.settings.set(message.guild.id, "starboard", sbConfig);
+                await this.client.settings!.set(message.guild.id, "starboard", sbConfig);
                 message.util!.lastResponse!.delete();
                 this.exec(message);
                 return;
@@ -165,7 +166,7 @@ export default class StarboardCommand extends KauriCommand {
                 if (!min) { return; }
 
                 sbConfig["minReacts"] = min;
-                await this.client.settings.set(message.guild.id, "starboard", sbConfig);
+                await this.client.settings!.set(message.guild.id, "starboard", sbConfig);
                 message.util!.lastResponse!.delete();
                 this.exec(message);
                 return;
@@ -252,7 +253,7 @@ export default class StarboardCommand extends KauriCommand {
 
         embed.spliceField(embed.fields.length - 1, 1);
 
-        await this.client.settings.set(message.guild.id, "starboard", {
+        await this.client.settings!.set(message.guild.id, "starboard", {
             channel: channel.id, emoji, minReacts: min
         });
 

@@ -11,10 +11,10 @@ export default class GuildCreateListener extends Listener {
     }
 
     public async exec(guild: Guild) {
-        const config = this.client.settings.get(guild.id);
+        const config = this.client.settings!.get(guild.id);
 
         if (!config) {
-            this.client.settings.add(
+            this.client.settings!.add(
                 new Settings({ guild_id: guild.id })
             );
         }

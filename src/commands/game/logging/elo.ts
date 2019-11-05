@@ -1,7 +1,7 @@
 import { Argument, Flag } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
-import Roles from "../../../util/roles";
+import { Roles } from "../../../util/constants";
 import { ITrainerDocument, Trainer } from "../../../models/trainer";
 import emoji from "node-emoji";
 import { stripIndents } from "common-tags";
@@ -33,6 +33,11 @@ export default class EloCommand extends KauriCommand {
             .select("_id battleRecord.elo")
             .sort({ "battleRecord.elo": -1 });
 
+        if (data.length === 0)
+            return new MessageEmbed()
+                .setTitle("Nobody has joined this ladder yet")
+                .setFooter("Partipate in ladder battles to raise your ranking!");
+
         const validMembers: GuildMember[] = data.filter(d => message.guild?.members.has(d.id)).map(d => message.guild?.members.get(d.id)!);
         const elos = validMembers.map(m => `${emoji.strip(m.displayName).padEnd(30, " ")} | ${m.trainer.battleRecord.elo}`);
 
@@ -54,7 +59,7 @@ export default class EloCommand extends KauriCommand {
     }
 
     private async single(message: Message, battler: GuildMember) {
-        let embed = new MessageEmbed();
+        const embed = new MessageEmbed();
         if (!battler.trainer.battleRecord.elo) {
             embed
                 .setTitle(`${emoji.strip(battler.displayName)} has not participated in this ladder.`)
@@ -65,7 +70,7 @@ export default class EloCommand extends KauriCommand {
                 .setColor(0xFFFFFF);
         }
 
-        embed.setFooter("Partipate in ladder battles to raise your own!");
+        embed.setFooter("Partipate in ladder battles to raise your ranking!");
         return message.util!.send(embed);
     }
 

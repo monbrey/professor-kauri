@@ -1,7 +1,7 @@
 import { Inhibitor } from "discord-akairo";
 import { Message } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import Roles from "../../util/roles";
+import { Roles } from "../../util/constants";
 
 export default class RoleConfigInhibitor extends Inhibitor {
     constructor() {

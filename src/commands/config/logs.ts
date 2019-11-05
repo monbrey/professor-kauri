@@ -58,7 +58,7 @@ export default class LogsCommand extends KauriCommand {
         const channel = await arg1.collect(message);
         if (!channel) { return; }
 
-        await this.client.settings.set(message.guild.id, "logs", channel.id);
+        await this.client.settings!.set(message.guild.id, "logs", channel.id);
         message.util!.lastResponse!.delete();
         this.exec(message);
     }

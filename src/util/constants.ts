@@ -1,4 +1,4 @@
-enum Roles {
+export enum Roles {
     Head = "584793134475771934",
     Staff = "135868852092403713",
     Approver = "457003662217052163",
@@ -18,4 +18,9 @@ enum Roles {
     FFA = "575087931824275466"
 }
 
-export default Roles;
+export const MongooseOptions = {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+    w: "majority"
+}

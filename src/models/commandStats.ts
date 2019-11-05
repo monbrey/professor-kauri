@@ -1,5 +1,6 @@
-import { connection, Document, Model, Schema } from "mongoose";
+import { Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
+import { instanceDB } from "../util/db";
 
 export interface ICommandStatsDocument extends Document {
     guild_id: string;
@@ -26,5 +27,4 @@ CommandStatsSchema.plugin(autoIncrement, {
     startAt: 1
 });
 
-const db = connection.useDb(process.env.NODE_ENV || "development");
-export const CommandStats: ICommandStatsModel =  db.model<ICommandStats, ICommandStatsModel>("CommandStats", CommandStatsSchema);
+export const CommandStats: ICommandStatsModel =  instanceDB.model<ICommandStats, ICommandStatsModel>("CommandStats", CommandStatsSchema);

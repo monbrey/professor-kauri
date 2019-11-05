@@ -141,7 +141,7 @@ class CustomLogger {
             key: "guildMemberAdd"
         });
 
-        const logChannel = member.guild.channels.get(this.client.settings.get(member.guild.id, "logs"));
+        const logChannel = member.guild.channels.get(this.client.settings!.get(member.guild.id, "logs"));
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
@@ -182,7 +182,7 @@ class CustomLogger {
                 .setFooter(`Member removed (${action})`);
         }
 
-        const logChannel = member.guild.channels.get(this.client.settings.get(member.guild.id, "logs"));
+        const logChannel = member.guild.channels.get(this.client.settings!.get(member.guild.id, "logs"));
         if (logChannel && logChannel instanceof TextChannel) { return logChannel.send(embed); }
     }
 
@@ -215,7 +215,7 @@ class CustomLogger {
         });
 
         if (!message.guild) { return; }
-        const logChannel = message.guild.channels.get(this.client.settings.get(message.guild.id, "logs"));
+        const logChannel = message.guild.channels.get(this.client.settings!.get(message.guild.id, "logs"));
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
@@ -298,7 +298,7 @@ class CustomLogger {
         });
 
         if (!message.guild) { return; }
-        const logChannel = message.guild.channels.get(this.client.settings.get(message.guild.id, "logs"));
+        const logChannel = message.guild.channels.get(this.client.settings!.get(message.guild.id, "logs"));
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
@@ -333,7 +333,7 @@ class CustomLogger {
         });
 
         if (!message.guild) { return; }
-        const logChannel = message.guild.channels.get(this.client.settings.get(winner.guild.id, "logs"));
+        const logChannel = message.guild.channels.get(this.client.settings!.get(winner.guild.id, "logs"));
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
@@ -369,7 +369,7 @@ class CustomLogger {
         });
 
         if (!message.guild) { return; }
-        const logChannel = message.guild.channels.get(this.client.settings.get(message.guild.id, "logs"));
+        const logChannel = message.guild.channels.get(this.client.settings!.get(message.guild.id, "logs"));
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
@@ -395,7 +395,7 @@ class CustomLogger {
         });
 
         if (!message.guild) { return; }
-        const logChannel = message.guild.channels.get(this.client.settings.get(message.guild.id, "logs"));
+        const logChannel = message.guild.channels.get(this.client.settings!.get(message.guild.id, "logs"));
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
@@ -430,7 +430,7 @@ class CustomLogger {
         });
 
         if (!message.guild) { return; }
-        const logChannel = message.guild.channels.get(this.client.settings.get(message.guild.id, "logs"));
+        const logChannel = message.guild.channels.get(this.client.settings!.get(message.guild.id, "logs"));
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
@@ -454,7 +454,7 @@ class CustomLogger {
         });
 
         if (!message.guild) { return; }
-        const logChannel = message.guild.channels.get(this.client.settings.get(message.guild.id, "logs"));
+        const logChannel = message.guild.channels.get(this.client.settings!.get(message.guild.id, "logs"));
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
@@ -487,7 +487,7 @@ class CustomLogger {
         });
 
         if (!message.guild) { return; }
-        const logChannel = message.guild.channels.get(this.client.settings.get(message.guild.id, "logs"));
+        const logChannel = message.guild.channels.get(this.client.settings!.get(message.guild.id, "logs"));
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
@@ -523,7 +523,7 @@ class CustomLogger {
         });
 
         if (!message.guild) { return; }
-        const logChannel = message.guild.channels.get(this.client.settings.get(message.guild.id, "logs"));
+        const logChannel = message.guild.channels.get(this.client.settings!.get(message.guild.id, "logs"));
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
@@ -548,7 +548,7 @@ class CustomLogger {
         });
 
         if (!message.guild) { return; }
-        const logChannel = message.guild.channels.get(this.client.settings.get(message.guild.id, "logs"));
+        const logChannel = message.guild.channels.get(this.client.settings!.get(message.guild.id, "logs"));
         if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()

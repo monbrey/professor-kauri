@@ -1,6 +1,7 @@
-import { connection, Document, Model, Schema } from "mongoose";
+import { Document, Model, Schema } from "mongoose";
 import { CommandConfig, ICommandConfigDocument } from "./schemas/commandConfig";
 import { IStarboardConfigDocument, StarboardConfig } from "./schemas/starboardConfig";
+import { instanceDB } from "../util/db";
 
 export interface ISettingsDocument extends Document {
     guild_id: string;
@@ -22,5 +23,4 @@ const SettingsSchema: Schema = new Schema({
     commands: [CommandConfig]
 }, { collection: "settings" });
 
-const db = connection.useDb(process.env.NODE_ENV || "development");
-export const Settings: ISettingsModel = db.model<ISettings, ISettingsModel>("Settings", SettingsSchema);
+export const Settings: ISettingsModel = instanceDB.model<ISettings, ISettingsModel>("Settings", SettingsSchema);

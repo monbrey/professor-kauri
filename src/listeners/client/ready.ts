@@ -13,10 +13,10 @@ export default class ReadyListener extends Listener {
         this.client.logger.info(`Logged in as "${this.client.user!.username}"`);
 
         for (const [id, guild] of this.client.guilds) {
-            const config = await this.client.settings.resolve(id);
+            const config = await this.client.settings!.resolve(id);
 
             if (!config) {
-                this.client.settings.add(new Settings({
+                this.client.settings!.add(new Settings({
                     guild_id: guild.id
                 }));
             }
