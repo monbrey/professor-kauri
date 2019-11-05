@@ -7,7 +7,7 @@ interface ICommandArgs {
     member: GuildMember;
 }
 
-export default class removeRoleRoleCommand extends KauriCommand {
+export default class RemoveRoleCommand extends KauriCommand {
     constructor() {
         super("removeRole", {
             aliases: ["removeRole"],

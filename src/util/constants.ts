@@ -23,4 +23,4 @@ export const MongooseOptions = {
     useFindAndModify: false,
     useUnifiedTopology: true,
     w: "majority"
-}
+};
