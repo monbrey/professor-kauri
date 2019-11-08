@@ -1,3 +1,4 @@
+import { stripIndents } from "common-tags";
 import { GuildMember, Message, Role } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Roles } from "../../util/constants";
@@ -44,7 +45,7 @@ export default class AddRoleCommand extends KauriCommand {
         if (!role || !member) return;
 
         if (member.id === message.author.id) {
-            return message.util!.embed("error", "You cannot addRole roles to yourself");
+            return message.util!.embed("error", "You cannot add roles to yourself");
         }
 
         if (message.author.id === this.client.ownerID || message.member?.roles.has(Roles.Head)) return this.addRole(message, role, member);
@@ -77,7 +78,8 @@ export default class AddRoleCommand extends KauriCommand {
                 if ([Roles.Head, Roles.Staff, Roles.ElderArbiter].some(r => message.member?.roles.has(r)))
                     return this.addRole(message, role, member);
             default:
-                return message.util!.embed("warn", "That role is not managed by this command.");
+                return message.util!.embed("warn", stripIndents`${role} is not managed by this command.
+                    If you think it should be, please open an issue on [GitHub](url)`);
         }
     }
 }

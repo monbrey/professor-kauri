@@ -1,6 +1,7 @@
 import { GuildMember, Message, Role } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Roles } from "../../util/constants";
+import { stripIndents } from "common-tags";
 
 interface ICommandArgs {
     role: Role;
@@ -34,7 +35,7 @@ export default class RemoveRoleCommand extends KauriCommand {
     private async removeRole(message: Message, role: Role, member: GuildMember) {
         try {
             await member.roles.remove(role);
-            return message.util!.embed("success", `${role} removeRoled from ${member}`);
+            return message.util!.embed("success", `${role} removed from ${member}`);
         } catch (e) {
             return message.util!.embed("error", { title: "Error removing role", description: e.message });
         }
@@ -44,7 +45,7 @@ export default class RemoveRoleCommand extends KauriCommand {
         if (!role || !member) return;
 
         if (member.id === message.author.id) {
-            return message.util!.embed("error", "You cannot removeRole roles yourself");
+            return message.util!.embed("error", "You cannot remove roles from yourself");
         }
 
         if (message.author.id === this.client.ownerID || message.member?.roles.has(Roles.Head)) return this.removeRole(message, role, member);
@@ -77,7 +78,8 @@ export default class RemoveRoleCommand extends KauriCommand {
                 if ([Roles.Head, Roles.Staff, Roles.ElderArbiter].some(r => message.member?.roles.has(r)))
                     return this.removeRole(message, role, member);
             default:
-                return message.util!.embed("warn", "That role is not managed by this command.");
+                return message.util!.embed("warn", stripIndents`${role} is not managed by this command.
+                If you think it should be, please open an issue on [GitHub](url)`);
         }
     }
 }

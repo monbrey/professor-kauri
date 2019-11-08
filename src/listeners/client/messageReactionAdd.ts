@@ -32,11 +32,13 @@ export default class MessageReactionAddListener extends Listener {
     }
 
     public async exec(reaction: MessageReaction, user: User) {
-        // Fetch partial messages
-        if(reaction.message.partial) await reaction.message.fetch();
+        const { message, emoji, users, count } = reaction;
 
-        // Grab the mesasge for processing
-        const message = reaction.message;
+        // Fetch partial messages
+        if (message.partial) {
+            await message.fetch();
+            await users.fetch();
+        }
 
         // Ignore messages that arent in a guild
         if (!message.guild) { return; }
@@ -54,7 +56,7 @@ export default class MessageReactionAddListener extends Listener {
         const minReacts = starboard.minReacts || 1;
 
         // If this isnt a starboard reaction, we dont need to process it here
-        if (reaction.emoji.toString() !== starEmoji) { return; }
+        if (emoji.toString() !== starEmoji) { return; }
 
         // Clear out any messages which were cached over a minute ago
         this.messageCache = this.messageCache.filter(m => m < Date.now() - 60000);
@@ -84,7 +86,7 @@ export default class MessageReactionAddListener extends Listener {
         }
 
         // Check that the minimum number of reactions has been reached
-        if (reaction.count < minReacts) { return; }
+        if ((users.has(user.id) ? count - 1 : reaction) < minReacts) { return; }
 
         // If we've passed ALL the checks, we can add this to the queue
         this.client.reactionQueue.add(async () => {
