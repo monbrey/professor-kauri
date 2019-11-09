@@ -1,0 +1,33 @@
+name: Deploy
+
+on: [release]
+  
+jobs:
+  FTP-Deploy-Action:
+    name: FTP-Deploy-Action
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - name: Use Node v12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+        
+    - name: Build Project
+      run:
+        npm install
+        npm run build-prod --if-present
+        
+    - name: List output files
+      run: ls
+      
+    - name: FTP-Deploy-Action
+      uses: SamKirkland/FTP-Deploy-Action@2.0.0
+      env:
+        FTP_SERVER: 20.188.248.237
+        FTP_USERNAME: github-sftp
+        FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        LOCAL_DIR: dist
+        REMOTE_DIR: /bots/professor-kauri
+        ARGS: --delete
