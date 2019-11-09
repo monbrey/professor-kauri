@@ -26,7 +26,8 @@ export default class PayCommand extends KauriCommand {
             type: "member",
             prompt: {
                 start: "Which URPG member are you paying?",
-                retry: "Please mention someone, or provide their name (case-sensitive)"
+                retry: new MessageEmbed().setDescription("Please mention someone, or provide their name (case-sensitive)").setFooter(`Reply with "cancel" to end the command`),
+                retries: 3
             }
         };
 
@@ -35,8 +36,8 @@ export default class PayCommand extends KauriCommand {
             type: "currency",
             prompt: {
                 start: `How much is ${member} getting paid?`,
-                retry: "Please provide a valid integer > 0",
-                retries: 100
+                retry: new MessageEmbed().setDescription("Please provide a valid integer > 0").setFooter(`Reply with "cancel" to end the command`),
+                retries: 3
             }
         };
 
