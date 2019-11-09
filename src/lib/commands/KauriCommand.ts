@@ -33,6 +33,6 @@ export class KauriCommand extends Command {
         this.userRoles = options?.userRoles;
     }
 
-    public afterCancel?(): void;
-    public async onBlocked?(message: Message): Promise<any>;
+    public afterCancel?(): any;
+    public onBlocked?(message: Message): any;
 }

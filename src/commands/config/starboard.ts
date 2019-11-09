@@ -27,9 +27,11 @@ export default class StarboardCommand extends KauriCommand {
         } else {
             embed.setDescription("No Starboard configuration");
         }
+
+        return message.util?.send(embed);
     }
 
-    public async exec(message: Message) {
+    public async exec(message: Message): Promise<void> {
         if (!message.guild) { return; }
         const sbConfig = message.guild.starboard;
 
@@ -56,7 +58,7 @@ export default class StarboardCommand extends KauriCommand {
         }
     }
 
-    private async configureStarboard(message: Message, embed: MessageEmbed) {
+    private async configureStarboard(message: Message, embed: MessageEmbed): Promise<void> {
         if (!message.guild) { return; }
 
         const sbConfig = message.guild.starboard || {} as IStarboardConfigDocument;
@@ -137,8 +139,7 @@ export default class StarboardCommand extends KauriCommand {
                 sbConfig["emoji"] = emoji;
                 await this.client.settings!.set(message.guild.id, "starboard", sbConfig);
                 message.util!.lastResponse!.delete();
-                this.exec(message);
-                return;
+                return this.exec(message);
             }
             case "threshold": {
                 embed.fields[1].value = "\u200b";
@@ -168,13 +169,12 @@ export default class StarboardCommand extends KauriCommand {
                 sbConfig["minReacts"] = min;
                 await this.client.settings!.set(message.guild.id, "starboard", sbConfig);
                 message.util!.lastResponse!.delete();
-                this.exec(message);
-                return;
+                return this.exec(message);  
             }
         }
     }
 
-    private async newStarboard(message: Message, embed: MessageEmbed) {
+    private async newStarboard(message: Message, embed: MessageEmbed): Promise<void> {
         if (!message.guild) { return; }
 
         embed.setColor("GREEN").setDescription("");

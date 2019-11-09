@@ -1,9 +1,7 @@
 import { Argument } from "discord-akairo";
-import { Message } from "discord.js";
-import { MessageEmbed } from "discord.js";
-import { MessageReaction } from "discord.js";
-import { User } from "discord.js";
+import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
+import { Roles } from "../../util/constants";
 
 export default class LogsCommand extends KauriCommand {
     constructor() {
@@ -11,8 +9,19 @@ export default class LogsCommand extends KauriCommand {
             aliases: ["logs"],
             category: "Config",
             description: "View or change the logging configuration for this server",
-            channel: "guild"
+            channel: "guild",
+            userRoles: [Roles.Staff]
         });
+    }
+
+    public async onBlocked(message: Message) {
+        if (!message.guild) { return; }
+        const logConfig = message.guild.logChannel;
+
+        const embed = new MessageEmbed().setTitle(`Log settings for ${message.guild.name}`).setColor("WHITE");
+        embed.addField("Log Channel", logConfig ? message.guild.channels.get(logConfig) || "<#invalid_channel>" : "No logging configured");
+
+        return message.util!.send(embed);
     }
 
     public async exec(message: Message) {
@@ -21,12 +30,9 @@ export default class LogsCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setTitle(`Log settings for ${message.guild.name}`).setColor("WHITE");
         embed.addField("Log Channel", logConfig ? message.guild.channels.get(logConfig) || "<#invalid_channel>" : "No logging configured");
-
-        if (!message.member!.permissions.has("MANAGE_GUILD", true)) { return await message.util!.send(embed); }
-
         embed.setFooter("Click the pencil to edit the configuration");
-        const sent = await message.util!.send(embed) as Message;
-        embed.setFooter("");
+
+        const sent = await message.util!.send(embed);
 
         await sent.react("✏");
         const filter = ({ emoji }: MessageReaction, u: User) => emoji.name === "✏" && u.id === message.author!.id;

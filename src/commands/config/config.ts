@@ -49,7 +49,7 @@ export default class ConfigCommand extends KauriCommand {
 
         const info = this.generateCommandInfo(message, command, config);
 
-        return await message.util!.send(info);
+        return message.util!.send(info);
     }
 
     public async exec(message: Message, { command }: CommandArgs) {
