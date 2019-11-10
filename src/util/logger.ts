@@ -339,7 +339,7 @@ class CustomLogger {
         const embed = new MessageEmbed()
             .setFooter("elo")
             .setColor(0x1f8b4c)
-            .setDescription(`${message.member} updated the ELOs of <@${winner}> and <@${loser}>`)
+            .setDescription(`${message.member} updated the ELOs of ${winner} and ${loser}`)
             .setTimestamp();
 
         try {
