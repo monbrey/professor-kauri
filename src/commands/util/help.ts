@@ -2,7 +2,6 @@ import { stripIndents } from "common-tags";
 import { PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-const pJson = require("../../../package.json");
 
 interface CommandArgs {
     command: KauriCommand;
@@ -32,10 +31,9 @@ export default class HelpCommand extends KauriCommand {
         if (!command) {
             const embed = new MessageEmbed()
                 .setAuthor("Professor Kauri", undefined, "https://github.com/Monbrey/professor-kauri-v2")
-                .setDescription(stripIndents`Report issues or contribute to development on [Github](https://github.com/Monbrey/professor-kauri-v2)
-                Current Version: v${pJson.version}`)
-                .addField("Commands", stripIndents`A list of commands available, based on your permission levels`);
-                //  For additional information on a command, type ${prefix}help <command>`);
+                .setDescription(`Report issues or contribute to development on [Github](https://github.com/Monbrey/professor-kauri-v2)`)
+                .addField("Commands", `A list of commands available, based on your permission levels`);
+            //  For additional information on a command, type ${prefix}help <command>`);
 
             for (const [catId, cat] of this.handler.categories) {
                 const cmds = (

@@ -99,7 +99,7 @@ export default class KauriClient extends AkairoClient {
 
     public async start() {
         await this.init();
-        return this.login(process.env.DISCORD_TOKEN).catch(e => this.logger.parseError(e));
+        return this.login(process.env.KAURI_TOKEN).catch(e => this.logger.parseError(e));
     }
 
     private async init() {

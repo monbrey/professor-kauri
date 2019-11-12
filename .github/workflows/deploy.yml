@@ -1,33 +1,55 @@
 name: Deploy
 
-on: [release]
-  
+on:
+  release:
+    types: [published]
+
 jobs:
-  FTP-Deploy-Action:
-    name: FTP-Deploy-Action
+  SSH-Deploy-Action:
+    name: SSH Deploy
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    
+
     - name: Use Node v12
       uses: actions/setup-node@v1
       with:
         node-version: 12
-        
+
     - name: Build Project
       run:
         npm install
-        npm run build-prod --if-present
-        
+
     - name: List output files
       run: ls
-      
-    - name: FTP-Deploy-Action
-      uses: SamKirkland/FTP-Deploy-Action@2.0.0
+
+    - name: Deploy Dist
+      uses: easingthemes/ssh-deploy@v2.0.7
       env:
-        FTP_SERVER: 20.188.248.237
-        FTP_USERNAME: github-sftp
-        FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-        LOCAL_DIR: dist
-        REMOTE_DIR: /bots/professor-kauri
-        ARGS: --delete
+        SSH_PRIVATE_KEY: ${{ secrets.AZURE_PRIVATE_KEY }}
+        ARGS: "-av"
+        SOURCE: "dist/"
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: ${{ secrets.REMOTE_TARGET }}
+
+    - name: Deploy Package
+      uses: easingthemes/ssh-deploy@v2.0.7
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.AZURE_PRIVATE_KEY }}
+        ARGS: "-av"
+        SOURCE: "package.json"
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: ${{ secrets.REMOTE_TARGET }}
+
+    - name: Restart Bot
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.AZURE_PRIVATE_KEY }}
+        script: |
+          cd professor-kauri
+          npm install
+          pm2 restart "Professor Kauri"
