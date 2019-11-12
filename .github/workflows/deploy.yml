@@ -23,7 +23,7 @@ jobs:
       run: ls
       
     - name: Deploy
-      uses: easingthemes/ssh-deploy
+      uses: easingthemes/ssh-deploy@latest
       env:
         SSH_PRIVATE_KEY: ${{ secrets.AZURE_PRIVATE_KEY }}
         ARGS: "-rltgoDzvO"
