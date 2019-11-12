@@ -3,8 +3,8 @@ name: Deploy
 on: [release]
   
 jobs:
-  FTP-Deploy-Action:
-    name: FTP-Deploy-Action
+  SSH-Deploy-Action:
+    name: SSH Deploy
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -22,12 +22,12 @@ jobs:
     - name: List output files
       run: ls
       
-    - name: FTP-Deploy-Action
-      uses: SamKirkland/FTP-Deploy-Action@2.0.0
+    - name: Deploy
+      uses: easingthemes/ssh-deploy
       env:
-        FTP_SERVER: 20.188.248.237
-        FTP_USERNAME: github-sftp
-        FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-        LOCAL_DIR: dist
-        REMOTE_DIR: /bots/professor-kauri
-        ARGS: --delete
+        SSH_PRIVATE_KEY: ${{ secrets.AZURE_PRIVATE_KEY }}
+        ARGS: "-rltgoDzvO"
+        SOURCE: "dist/"
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: ${{ secrets.REMOTE_TARGET }}
