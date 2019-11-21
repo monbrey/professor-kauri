@@ -4,7 +4,7 @@ import { GuildAuditLogsEntry } from "discord.js";
 import { User } from "discord.js";
 import { MessageReaction } from "discord.js";
 import { TextChannel } from "discord.js";
-import { createLogger, format, LeveledLogMethod, Logger, transports } from "winston";
+import { createLogger, format, Logger, transports } from "winston";
 import KauriClient from "../client/KauriClient";
 import { KauriCommand } from "../lib/commands/KauriCommand";
 
@@ -15,9 +15,9 @@ const logFormat = format.combine(
     format.label({ label: process.env.NODE_ENV }),
     format.timestamp(),
     format.json(),
-    format.printf(info => {
-        const message = (info.message as any) instanceof Object ? JSON.stringify(info.message) : info.message;
-        return `[${info.timestamp}] ${info.level}: ${message}`;
+    format.printf((info: any) => {
+        const message = info instanceof Object ? JSON.stringify(info) : info.message;
+        return message;
     })
 );
 
@@ -61,15 +61,15 @@ const outs: any[] = [
     })
 ];
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "development") {
     outs.push(
         new transports.File({
             format: logFormat,
-            filename: "./kauri.log"
+            filename: "./logs/professor-kauri.log"
         }),
         new transports.File({
             format: errorFormat,
-            filename: "./kauri-error.log",
+            filename: "./logs/professor-kauri-error.log",
             level: "error"
         })
     );
