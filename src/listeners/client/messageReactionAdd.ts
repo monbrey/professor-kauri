@@ -32,13 +32,14 @@ export default class MessageReactionAddListener extends Listener {
     }
 
     public async exec(reaction: MessageReaction, user: User) {
+        // Fetch partial messages
+        if (reaction.message.partial) {
+            await reaction.message.fetch();
+            await reaction.users.fetch();
+        }
+
         const { message, emoji, users, count } = reaction;
 
-        // Fetch partial messages
-        if (message.partial) {
-            await message.fetch();
-            await users.fetch();
-        }
 
         // Ignore messages that arent in a guild
         if (!message.guild) { return; }
@@ -85,8 +86,10 @@ export default class MessageReactionAddListener extends Listener {
                 : message.channel.send(`You cannot ${starEmoji} your own messages`);
         }
 
+        const stars = users.has(message.author.id) ? count - 1 : count;
+
         // Check that the minimum number of reactions has been reached
-        if ((users.has(user.id) ? count - 1 : reaction) < minReacts) { return; }
+        if (stars < minReacts) { return; }
 
         // If we've passed ALL the checks, we can add this to the queue
         this.client.reactionQueue.add(async () => {
@@ -102,8 +105,6 @@ export default class MessageReactionAddListener extends Listener {
                 }
             );
 
-            // Regex to check how many stars the embed has.
-            const star = previous ? parseInt(previous.embeds[0].fields[0].value, 10) + 1 : minReacts;
             // We use the this.extension function to see if there is anything attached to the message.
             const image = getImage(message);
             // If the message is empty, we don't allow the user to star the message.
@@ -115,7 +116,7 @@ export default class MessageReactionAddListener extends Listener {
                 .setColor(previous ? previous.embeds[0].color : 15844367)
                 .setAuthor(message.author!.tag, message.author!.displayAvatarURL())
                 .setTimestamp()
-                .addField(`Votes ${starEmoji}`, star, true)
+                .addField(`Votes ${starEmoji}`, stars, true)
                 .addField("Link", `[Jump to message](${message.url})`, true)
                 .setFooter(`⭐ | ${message.id}`)
                 .setImage(image || "");

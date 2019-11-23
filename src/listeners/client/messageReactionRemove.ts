@@ -37,14 +37,16 @@ export default class MessageReactionRemoveListener extends Listener {
     }
 
     public async exec(reaction: MessageReaction, user: User) {
-        // Fetch partial messages
-        if(reaction.message.partial) await reaction.message.fetch();
-
-        // Grab the mesasge for processing
-        const message = reaction.message;
+        const { message, emoji, users, count } = reaction;
 
         // Ignore messages that arent in a guild
         if (!message.guild) { return; }
+
+        // Fetch partial messages
+        if (message.partial) {
+            await message.fetch();
+            await users.fetch();
+        }
 
         // Fetch the starboard settings
         const starboard = this.client.settings!.get(message.guild.id, "starboard");
@@ -68,7 +70,9 @@ export default class MessageReactionRemoveListener extends Listener {
         if (message.author && message.author.id === user.id) { return; }
 
         // Check for the star emoji
-        if (reaction.emoji.toString() !== starEmoji) { return; }
+        if (emoji.toString() !== starEmoji) { return; }
+
+        const stars = users.has(message.author.id) ? count - 1 : count
 
         // If we've passed ALL the checks, we can add this to the queue
         this.client.reactionQueue.add(async () => {
@@ -84,7 +88,7 @@ export default class MessageReactionRemoveListener extends Listener {
             if (previous) {
                 const star = parseInt(previous.embeds[0].fields[0].value, 10);
                 const starMsg = await starChannel.messages.fetch(previous.id);
-                if ((star - 1) < minReacts) {
+                if (stars < minReacts) {
                     return starMsg.delete();
                 }
 
@@ -94,7 +98,7 @@ export default class MessageReactionRemoveListener extends Listener {
                     .setDescription(previous.embeds[0].description)
                     .setAuthor(message.author!.tag, message.author!.displayAvatarURL())
                     .setTimestamp()
-                    .addField(`Votes ${starEmoji}`, star - 1, true)
+                    .addField(`Votes ${starEmoji}`, stars, true)
                     .addField("Link", `[Jump to message](${message.url})`, true)
                     .setFooter(`⭐ | ${message.id}`)
                     .setImage(image || "");
