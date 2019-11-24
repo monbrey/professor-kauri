@@ -47,9 +47,9 @@ export default class RankCommand extends KauriCommand {
     }
 
     public async exec(message: Message, { query }: CommandArgs) {
-        const rankQ = new RegExp(query, "i");
-
-        if (sRanks.find(r => rankQ.exec(r.name))) {
+        const sRank = sRanks.find(r => query.toLowerCase() === r.name);
+        if (sRank) {
+            const rankQ = new RegExp(`^${sRank.name}$`, "i");
             try {
                 const rankedPokemon = await Pokemon
                     .find({ $or: [{ "rank.story": rankQ }, { "rank.art": rankQ }] })
@@ -67,7 +67,9 @@ export default class RankCommand extends KauriCommand {
             }
         }
 
-        if (pRanks.find(r => rankQ.exec(r.name))) {
+        const pRank = pRanks.find(r => query.toLowerCase() === r.name);
+        if (pRank) {
+            const rankQ = new RegExp(`^${pRank.name}$`, "i");
             try {
                 const rankedPokemon = await Pokemon.find({ "rank.park": rankQ })
                     .sort("dexNumber")
@@ -126,12 +128,13 @@ export default class RankCommand extends KauriCommand {
             4: rankedPokemon.filter(p => p.dexNumber.between(387, 493)).map(p => p.displayName),
             5: rankedPokemon.filter(p => p.dexNumber.between(494, 649)).map(p => p.displayName),
             6: rankedPokemon.filter(p => p.dexNumber.between(650, 721)).map(p => p.displayName),
-            7: rankedPokemon.filter(p => p.dexNumber >= 722).map(p => p.displayName)
+            7: rankedPokemon.filter(p => p.dexNumber.between(722, 809)).map(p => p.displayName),
+            8: rankedPokemon.filter(p => p.dexNumber >= 810).map(p => p.displayName)
         };
 
         const embed = new MessageEmbed().setTitle(`${rank} Story / Art Rank Pokemon | ${range} characters`);
 
-        Object.keys(gens).forEach(key => { if (gens[key].length > 0) { embed.addField(`Gen ${key}`, gens[key].join(", ")); } });
+        Object.keys(gens).forEach(key => { if (gens[key].length > 0) { embed.addField(`**Gen ${key}**`, gens[key].join(", ")); } });
 
         return embed;
     }
@@ -149,7 +152,7 @@ export default class RankCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setTitle(`${rank} Park Rank Pokemon | ${mcr} characters`);
 
-        Object.keys(locations).forEach(key => { if (locations[key].length > 0) { embed.addField(key, locations[key].join(", ")); } });
+        Object.keys(locations).forEach(key => { if (locations[key].length > 0) { embed.addField(`**${key}**`, locations[key].join(", ")); } });
 
         return embed;
     }
@@ -166,7 +169,7 @@ export default class RankCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setTitle(`Park Pokemon found in ${location}`);
 
-        Object.keys(ranks).forEach(key => { if (ranks[key].length > 0) { embed.addField(key, ranks[key].join(", ")); } });
+        Object.keys(ranks).forEach(key => { if (ranks[key].length > 0) { embed.addField(`**${key}**`, ranks[key].join(", ")); } });
 
         return embed;
     }
@@ -182,9 +185,9 @@ export default class RankCommand extends KauriCommand {
         const embed = new MessageEmbed()
             .setTitle(`${pokemon.displayName} Ranks and Location`)
             .setColor(await Color.getColorForType(pokemon.type1.toLowerCase()))
-            .addField("Story", sRank ? `${rank.story} | ${sRank.min.toLocaleString()} - ${sRank.max.toLocaleString()} characters` : "Not available")
-            .addField("Art", aRank ? `${rank.art}` : "Not available")
-            .addField("Park", pRank ? `${rank.park} | ${pokemon.parkLocation} | ${pRank.mcr} characters` : "Not available");
+            .addField("**Story**", sRank ? `${rank.story} | ${sRank.min.toLocaleString()} - ${sRank.max.toLocaleString()} characters` : "Not available")
+            .addField("**Art**", aRank ? `${rank.art}` : "Not available")
+            .addField("**Park**", pRank ? `${rank.park} | ${pokemon.parkLocation} | ${pRank.mcr} characters` : "Not available");
 
         return embed;
     }
