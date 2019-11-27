@@ -11,7 +11,7 @@ export interface IColor extends IColorDocument {
 }
 
 export interface IColorModel extends Model<IColorDocument> {
-    getColorForType(type: string): string;
+    getColorForType(type: string): Promise<string>;
 }
 
 const ColorSchema = new Schema({

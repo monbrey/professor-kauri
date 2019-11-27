@@ -1,9 +1,6 @@
+import { stripIndents } from "common-tags";
 import { Command } from "discord-akairo";
-import { Message } from "discord.js";
-import { MessageEmbed } from "discord.js";
-import { MessageReaction } from "discord.js";
-import { User } from "discord.js";
-import { Snowflake } from "discord.js";
+import { Message, MessageEmbed, MessageReaction, Snowflake, User } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { ICommandConfigDocument } from "../../models/schemas/commandConfig";
 import { Roles } from "../../util/constants";
@@ -272,8 +269,7 @@ export default class ConfigCommand extends KauriCommand {
     private addEditControls(message: Message, info: MessageEmbed, command: KauriCommand, config: ICommandConfigDocument) {
         const gDisabled = config.disabled || command.defaults.disabled || false;
         const enableLine = gDisabled ? "\\✅ - Enable this command for the server" : "\\❌ - Disable this command for the server";
-        info.addField("Toggles", `
-            ${enableLine}
+        info.addField("Controls", stripIndents`${enableLine}
             \\🔲 - Edit Channel overrides for this command
             \\🚫 - Edit Role restrictions for this command
             \\🔄 - Reset all server configuration for this command`);
@@ -297,7 +293,7 @@ export default class ConfigCommand extends KauriCommand {
             const channels = config.channels
                 .filter(c => c.disabled !== gDisabled)
                 .map(c => message.guild!.channels.get(c.channel_id));
-            embed.addField(`Channels ${gDisabled ? "Enabled" : "Disabled"}`, config.channels.join(" "));
+            embed.addField(`Channels ${gDisabled ? "Enabled" : "Disabled"}`, channels.join(" "));
         }
 
         // if (config.roles && config.roles.length) {

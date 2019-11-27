@@ -86,13 +86,12 @@ export default class MessageReactionRemoveListener extends Listener {
             });
 
             if (previous) {
-                const star = parseInt(previous.embeds[0].fields[0].value, 10);
                 const starMsg = await starChannel.messages.fetch(previous.id);
                 if (stars < minReacts) {
                     return starMsg.delete();
                 }
 
-                const image = message.attachments.size > 0 ? await getImage(message) : "";
+                const image = message.attachments.size > 0 ? getImage(message) : "";
                 const embed = new MessageEmbed()
                     .setColor(previous.embeds[0].color)
                     .setDescription(previous.embeds[0].description)
