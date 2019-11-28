@@ -72,7 +72,7 @@ export default class MessageReactionRemoveListener extends Listener {
         // Check for the star emoji
         if (emoji.toString() !== starEmoji) { return; }
 
-        const stars = users.has(message.author.id) ? count - 1 : count
+        const stars = users.has(message.author.id) ? count - 1 : count;
 
         // If we've passed ALL the checks, we can add this to the queue
         this.client.reactionQueue.add(async () => {

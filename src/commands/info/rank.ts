@@ -103,7 +103,7 @@ export default class RankCommand extends KauriCommand {
         // Find the actual Pokemon
         try {
 
-            const pokemon = query.match(/^\d+$/) ? await Pokemon.findOne({ dexNumber: parseInt(query) }) : await Pokemon.findClosest("uniqueName", query);
+            const pokemon = query.match(/^\d+$/) ? await Pokemon.findOne({ dexNumber: parseInt(query, 10) }) : await Pokemon.findClosest("uniqueName", query);
 
             if (pokemon) {
                 this.client.logger.rank(message, query, 1);
