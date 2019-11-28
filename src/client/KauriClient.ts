@@ -1,16 +1,14 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
-import { ClientOptions } from "discord.js";
-import { Message } from "discord.js";
+import { ClientOptions, Message } from "discord.js";
 import queue from "p-queue";
 import { join } from "path";
-import { ISettings, Settings } from "../models/settings";
-import MongooseProvider from "../providers/MongooseProvider";
-import Logger from "../util/logger";
-
-// Models
 import { Ability, IAbility } from "../models/ability";
 import { IMove, Move } from "../models/move";
 import { IPokemon, Pokemon } from "../models/pokemon";
+import { ISettings, Settings } from "../models/settings";
+import MongooseProvider from "../providers/MongooseProvider";
+import Logger from "../util/logger";
+import { UrpgClient } from "urpg.js";
 
 declare module "discord-akairo" {
     interface AkairoClient {
@@ -38,11 +36,14 @@ export default class KauriClient extends AkairoClient {
     public inhibitorHandler: InhibitorHandler;
     public listenerHandler: ListenerHandler;
 
+    public urpgApi: UrpgClient;
+
     constructor(options: ClientOptions = {}) {
         super({ ownerID: "122157285790187530" }, options);
 
         this.logger = new Logger(this);
         this.settings = new MongooseProvider(Settings, "guild_id");
+        this.urpgApi = new UrpgClient();
 
         this.reactionQueue = new queue({
             concurrency: 1,
@@ -66,6 +67,10 @@ export default class KauriClient extends AkairoClient {
             .addType("pokemon", (message: Message, phrase: string) => {
                 if (!phrase) return;
                 return Provider.Pokemon.resolveClosest(phrase);
+            })
+            .addType("api-pokemon", (message: Message, phrase: string) => {
+                if(!phrase) return;
+                return this.urpgApi.pokemon.getClosest(phrase);
             })
             .addType("pokemonTeam", (message: Message, phrase: string) => {
                 if (!phrase) return;
