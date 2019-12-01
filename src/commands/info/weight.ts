@@ -2,10 +2,11 @@ import { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Pokemon } from "../../models/pokemon";
+import { IPokemon } from "urpg.js";
 
 interface CommandArgs {
-    query: string;
-    target: string;
+    query: IPokemon;
+    target: IPokemon;
 }
 
 module.exports = class WeightCommand extends KauriCommand {
@@ -21,62 +22,51 @@ module.exports = class WeightCommand extends KauriCommand {
 
     public *args() {
         const query = yield {
+            type: "api-pokemon",
             prompt: {
                 start: "> Please provide the name of a Pokemon to lookup"
             }
         };
 
-        const target = yield {};
+        const target = yield {
+            type: "api-pokemon"
+        };
 
         return { query, target };
     }
 
     public async exec(message: Message, { query, target }: CommandArgs) {
-        if (target) {
-            const p1 = await Pokemon.findClosest("uniqueName", query);
-            const p2 = await Pokemon.findClosest("uniqueName", target);
-            if (p1 && p2) {
-                this.client.logger.info({
-                    key: "weight",
-                    search: query,
-                    result: `${p1.uniqueName} and ${p2.uniqueName}`
-                });
-                const embed = new MessageEmbed()
-                    .setTitle(`${p1.uniqueName} vs ${p2.uniqueName}`)
-                    .setDescription("Using Heat Crash or Heavy Slam")
-                    .addField(`${p1.uniqueName}`, `${p1.weight}kg`, true)
-                    .addField(`${p2.uniqueName}`, `${p2.weight}kg`, true)
-                    .addField("Move Power", `${this.calcTwo(p1.weight, p2.weight)} BP`, true);
+        if (query && target) {
+            // this.client.logger.info({
+            //     key: "weight",
+            //     search: query,
+            //     result: `${query.name} and ${target.name}`
+            // });
+            const embed = new MessageEmbed()
+                .setTitle(`${query.name} vs ${target.name}`)
+                .setDescription("Using Heat Crash or Heavy Slam")
+                .addField(`${query.name}`, `${query.weight}kg`, true)
+                .addField(`${target.name}`, `${target.weight}kg`, true)
+                .addField("Move Power", `${this.calcTwo(query.weight, target.weight)} BP`, true);
 
-                return message.util!.send(embed);
-            }
-            if (!p1) {
-                this.client.logger.info({ key: "dex", search: query, result: "none" });
-                message.channel.embed("warn", `No results found for ${query}`);
-            }
-            if (!p2) {
-                this.client.logger.info({ key: "dex", search: target, result: "none" });
-                message.channel.embed("warn", `No results found for ${target}`);
-            }
-            return;
+            return message.util!.send(embed);
         }
 
-        const pokemon = await Pokemon.findClosest("uniqueName", query);
-        if (pokemon) {
-            this.client.logger.info({
-                key: "weight",
-                search: query,
-                result: pokemon.uniqueName
-            });
+        if (query) {
+            // this.client.logger.info({
+            //     key: "weight",
+            //     search: query,
+            //     result: query.name
+            // });
             const embed = new MessageEmbed()
-                .setTitle(pokemon.uniqueName)
+                .setTitle(query.name)
                 .setDescription("As the target of Grass Knot or Low Kick")
-                .addField("Weight", `${pokemon.weight}kg`, true)
-                .addField("Move Power", `${this.calcOne(pokemon.weight)} BP`, true);
+                .addField("Weight", `${query.weight}kg`, true)
+                .addField("Move Power", `${this.calcOne(query.weight)} BP`, true);
 
             return message.channel.send(embed);
         } else {
-            this.client.logger.info({ key: "dex", search: query, result: "none" });
+            // this.client.logger.info({ key: "dex", search: query, result: "none" });
             message.channel.embed("warn", `No results found for ${query}`);
         }
     }

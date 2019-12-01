@@ -48,6 +48,7 @@
     "node-fetch": "^2.6.0",
     "p-queue": "^6.1.1",
     "string-similarity": "^3.0.0",
+    "urpg.js": "github:Monbrey/urpg.js",
     "winston": "^3.2.1"
   }
 }
