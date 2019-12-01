@@ -68,9 +68,11 @@ export default class KauriClient extends AkairoClient {
                 if (!phrase) return;
                 return Provider.Pokemon.resolveClosest(phrase);
             })
-            .addType("api-pokemon", (message: Message, phrase: string) => {
-                if(!phrase) return;
-                return this.urpgApi.pokemon.getClosest(phrase);
+            .addType("api-pokemon", async (message: Message, phrase: string) => {
+                if (!phrase) return;
+
+                const response = await this.urpgApi.pokemon.getClosest(phrase);
+                if (response) return response.value;
             })
             .addType("pokemonTeam", (message: Message, phrase: string) => {
                 if (!phrase) return;
