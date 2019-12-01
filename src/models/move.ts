@@ -41,7 +41,7 @@ export interface IMoveDocument extends Document {
 }
 
 export interface IMove extends IMoveDocument {
-    info(): MessageEmbed;
+    info(): Promise<MessageEmbed>;
 }
 
 export interface IMoveModel extends Model<IMove> {

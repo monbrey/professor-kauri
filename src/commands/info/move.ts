@@ -21,7 +21,7 @@ export default class MoveCommand extends KauriCommand {
             type: "string",
             match: "text",
             prompt: {
-                start: "> Please provide the name of an Move to lookup"
+                start: "> Please provide the name of a move to lookup"
             }
         };
 
