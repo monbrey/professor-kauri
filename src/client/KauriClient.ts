@@ -86,14 +86,6 @@ export default class KauriClient extends AkairoClient {
                 if (!phrase) return;
                 return Provider.Move.fetchClosest(phrase);
             })
-            .addType("currency", (message: Message, phrase: string) => {
-                const matches = /(\$)*([\d,]+)([cC]{2})*/.exec(phrase);
-                if (!matches) { return null; }
-                if (!matches[2]) { return null; }
-                const a = parseInt(matches[2].replace(",", ""), 10);
-                if (!a) { return null; }
-                return [a, matches[3] ? "CC" : "$"];
-            });
 
         this.inhibitorHandler = new InhibitorHandler(this, {
             directory: join(__dirname, "..", "inhibitors"),
