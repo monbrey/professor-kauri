@@ -6,7 +6,6 @@ import { KauriCommand } from "../../../lib/commands/KauriCommand";
 interface CommandArgs {
     member: GuildMember;
     amount: number;
-    currency: string;
     reason: string;
 }
 
