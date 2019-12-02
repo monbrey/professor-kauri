@@ -138,9 +138,11 @@ export default class BattleLogCommand extends KauriCommand {
         const confirm = await this.logMessage.reactConfirm(message.author!.id, 120000);
         if (confirm) {
             try {
-                await winner.trainer.modifyBalances({ cash: payments.winner });
-                await loser.trainer.modifyBalances({ cash: payments.loser });
-                await ref.trainer.modifyBalances({ cash: payments.ref });
+                await Promise.all([
+                    winner.trainer.pay(payments.winner),
+                    loser.trainer.pay(payments.loser),
+                    ref.trainer.pay(payments.ref)
+                ]);
             } catch (e) {
                 this.client.logger.parseError(e);
                 return message.channel.embed("error", "Error encountered while logging payments to databse.");
