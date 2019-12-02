@@ -17,10 +17,5 @@ Object.defineProperties(Number.prototype, {
         value(): string {
             return `$${this.toLocaleString()}`;
         }
-    },
-    toCC: {
-        value(): string {
-            return `${this.toLocaleString()} CC`;
-        }
     }
 });

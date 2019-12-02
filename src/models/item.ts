@@ -1,7 +1,6 @@
 import { MessageEmbed } from "discord.js";
-import { connection, Document, Model, Schema } from "mongoose";
+import { Document, Model, model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
-import { model } from "mongoose";
 
 // import { paginate } from "./plugins/paginator";
 
@@ -46,8 +45,8 @@ ItemSchema.virtual("priceString").get(function(this: IItemDocument) {
     if (this.martPrice.pokemart && this.martPrice.berryStore) {
         return `$${this.martPrice.pokemart.toLocaleString()} | ${this.martPrice.berryStore.toLocaleString()} CC`;
     }
-    if (this.martPrice.pokemart) { return `$${this.martPrice.pokemart.toLocaleString()}`; }
-    if (this.martPrice.berryStore) { return `${this.martPrice.berryStore.toLocaleString()} CC`; }
+    if (this.martPrice.pokemart) { return `$${this.martPrice.pokemart.to$()}`; }
+    if (this.martPrice.berryStore) { return `${this.martPrice.berryStore.to$()}`; }
 });
 
 ItemSchema.statics.findExact = function(itemNames: string[], query: any = {}) {
@@ -70,7 +69,7 @@ ItemSchema.statics.findPartial = function(itemName: string) {
 ItemSchema.methods.info = function() {
     const embed = new MessageEmbed().setTitle(this.itemName).setDescription(this.desc);
 
-    if (this.price) { embed.addField("Mart Price", `$${this.price}`); }
+    if (this.priceString) { embed.addField("Mart Price", `${this.priceString}`); }
 
     return embed;
 };
