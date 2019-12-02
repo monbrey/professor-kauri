@@ -187,6 +187,7 @@ PokemonSchema.methods.dex = async function(query?: string) {
 
     const embed = new MessageEmbed()
         .setTitle(title)
+        .setURL(`https://pokemonurpg.com/pokemon/${this.uniqueName}`)
         .setColor(color)
         .setThumbnail(this.assets.icon)
         .setImage(this.assets.image)
