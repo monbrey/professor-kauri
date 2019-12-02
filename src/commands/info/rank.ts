@@ -89,7 +89,7 @@ export default class RankCommand extends KauriCommand {
         // Search by location
         try {
             // eslint-disable-next-line no-unused-vars
-            const rankedPokemon = await Pokemon.findAllClosest("parkLocation", query);
+            const rankedPokemon = await Pokemon.findAllClosest("parkLocation", query, 0.75);
 
             if (rankedPokemon && rankedPokemon.length !== 0) {
                 this.client.logger.rank(message, query, rankedPokemon.length);
@@ -102,7 +102,6 @@ export default class RankCommand extends KauriCommand {
 
         // Find the actual Pokemon
         try {
-
             const pokemon = query.match(/^\d+$/) ? await Pokemon.findOne({ dexNumber: parseInt(query, 10) }) : await Pokemon.findClosest("uniqueName", query);
 
             if (pokemon) {
