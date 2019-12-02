@@ -6,36 +6,37 @@ import { KauriCommand } from "../../../lib/commands/KauriCommand";
 interface CommandArgs {
     member: GuildMember;
     amount: number;
-    currency: string;
     reason: string;
 }
 
-export default class PayCommand extends KauriCommand {
+export default class CashModCommand extends KauriCommand {
     constructor() {
-        super("pay", {
-            aliases: ["pay"],
+        super("cashMod", {
+            aliases: ["pay", "deduct"],
             category: "Game",
-            description: "Adds money to a user's account",
+            description: "Adds or subtracts money for a trainer's account",
             channel: "guild",
             defaults: { disabled: true }
         });
     }
 
-    public *args() {
+    public *args(message: Message) {
+        const alias = message.util?.parsed?.alias;
+
         const member = yield {
             type: "member",
             prompt: {
-                start: "Which URPG member are you paying?",
+                start: `Which URPG member are you ${alias}ing?`,
                 retry: new MessageEmbed().setDescription("Please mention someone, or provide their name (case-sensitive)").setFooter(`Reply with "cancel" to end the command`),
                 retries: 3
             }
         };
 
-        const [amount, currency] = yield {
+        const amount = yield {
             id: "amount",
-            type: "currency",
+            type: "integer",
             prompt: {
-                start: `How much is ${member} getting paid?`,
+                start: `How much should I ${alias} ${member}`,
                 retry: new MessageEmbed().setDescription("Please provide a valid integer > 0").setFooter(`Reply with "cancel" to end the command`),
                 retries: 3
             }
@@ -44,14 +45,16 @@ export default class PayCommand extends KauriCommand {
         const reason = yield {
             match: "rest",
             prompt: {
-                start: "What's the reason for this payment?",
+                start: "What's the reason for this?",
             }
         };
 
-        return { member, amount, currency, reason };
+        return { member, amount, reason };
     }
 
-    public async exec(message: Message, { member, amount, currency, reason }: CommandArgs) {
+    public async exec(message: Message, { member, amount, reason }: CommandArgs) {
+        const alias = message.util?.parsed?.alias;
+
         if (!member.trainer) {
             return message.channel.embed(
                 "warn",
@@ -59,13 +62,11 @@ export default class PayCommand extends KauriCommand {
             );
         }
 
-        const currencyString = currency === "$" ? `$${amount.toLocaleString()}` : `${amount.toLocaleString()} CC`;
-
         const embed = new MessageEmbed()
-            .setTitle(`Payment to ${member.displayName} (Pending)`)
+            .setTitle(`${alias === "pay" ? "Payment to" : "Deduction from"} ${member.displayName} (Pending)`)
             .setDescription(reason)
-            .addField("Amount", `${currencyString}`, true)
-            .setFooter("React to confirm that this payment is correct");
+            .addField("Amount", `${amount.to$()}`, true)
+            .setFooter(`React to confirm that this ${alias === "pay" ? "payment" : "deduction"} is correct`);
 
         try {
             const prompt = await message.channel.send(embed);
@@ -74,18 +75,17 @@ export default class PayCommand extends KauriCommand {
                 prompt.reactions.removeAll();
 
                 try {
-                    if (currency === "$") await member.trainer.modifyBalances({ cash: amount });
-                    else await member.trainer.modifyBalances({ cc: amount });
+                    await member.trainer.pay(alias === "pay" ? amount : -amount);
                 } catch (e) {
                     this.client.logger.parseError(e);
                 }
 
                 embed
-                    .setTitle(`Payment to ${member.displayName}`)
-                    .addField("Updated Balance", member.trainer.balance);
+                    .setTitle(`${alias === "pay" ? "Payment to" : "Deduction from"} ${member.displayName}`)
+                    .addField("Updated Balance", member.trainer.cash.to$());
 
                 prompt.edit(embed);
-                return this.client.logger.pay(message, prompt);
+                return this.client.logger[alias as "pay"|"deduct"](message, prompt);
             }
         } catch (e) {
             this.client.logger.parseError(e);

@@ -211,8 +211,8 @@ PokemonSchema.methods.dex = async function(query?: string) {
     if (rank.length) { embed.addField("Creative Ranks", rank.join(" | ")); }
 
     const prices = [];
-    if (this.martPrice.pokemart) { prices.push(`${this.martPrice.pokemart.toLocaleString()}`); }
-    if (this.martPrice.berryStore) { prices.push(`${this.martPrice.berryStore.toLocaleString()} CC`); }
+    if (this.martPrice.pokemart) { prices.push(`${this.martPrice.pokemart.to$()}`); }
+    if (this.martPrice.berryStore) { prices.push(`${this.martPrice.berryStore.to$()}`); }
     if (prices.length) { embed.addField("Price", `${prices.join(" | ")}`); }
 
     const stats: number[] = Object.values(this.stats.toObject());

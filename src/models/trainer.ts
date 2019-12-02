@@ -6,24 +6,17 @@ import timestamp from "mongoose-timestamp";
 import { BattleRecord, IBattleRecordDocument } from "./schemas/battleRecord";
 import { instanceDB } from "../util/db";
 
-export interface ICurrency {
-    cash?: number;
-    cc?: number;
-}
-
 export interface ITrainerDocument extends Document {
     _id: Snowflake;
     cash: number;
-    cc: number;
     battleRecord: IBattleRecordDocument;
     stats?: string;
-    balance: string;
     migrated: boolean;
 }
 
 export interface ITrainer extends ITrainerDocument {
-    canAfford(amount: ICurrency): boolean;
-    modifyBalances(amount: ICurrency): Promise<ITrainer>;
+    canAfford(amount: number): boolean;
+    pay(amount: number): Promise<ITrainer>
 }
 
 export interface ITrainerModel extends Model<ITrainer> {
@@ -33,7 +26,6 @@ export interface ITrainerModel extends Model<ITrainer> {
 const TrainerSchema = new Schema({
     _id: { type: String, required: true },
     cash: { type: Number, required: true, default: 0 },
-    cc: { type: Number, required: true, default: 0 },
     battleRecord: { type: BattleRecord, default: BattleRecord },
     stats: { type: String },
     migrated: { type: Boolean, default: false }
@@ -41,20 +33,12 @@ const TrainerSchema = new Schema({
 
 TrainerSchema.plugin(timestamp);
 
-TrainerSchema.virtual("balance").get(function(this: ITrainer) {
-    return `${this.cash.to$()} | ${this.cc.toCC()}`;
-});
-
-TrainerSchema.methods.canAfford = function(amount: ICurrency) {
-    const cash = amount.cash && amount.cash < this.cash;
-    const cc = amount.cc && amount.cc < this.cc;
-
-    return cash && cc;
+TrainerSchema.methods.canAfford = function(amount: number) {
+    return amount < this.cash;
 };
 
-TrainerSchema.methods.modifyBalances = async function(amount: ICurrency) {
-    if (amount.cash) this.cash += amount.cash;
-    if (amount.cc) this.cc += amount.cc;
+TrainerSchema.methods.pay = async function(amount: number) {
+    this.cash += amount;
     return this.save();
 };
 
