@@ -13,7 +13,7 @@ interface CommandArgs {
 export default class CashModCommand extends KauriCommand {
     constructor() {
         super("cashMod", {
-            aliases: ["pay","deduct"],
+            aliases: ["pay", "deduct"],
             category: "Game",
             description: "Adds or subtracts money for a trainer's account",
             channel: "guild",
@@ -67,7 +67,7 @@ export default class CashModCommand extends KauriCommand {
             .setTitle(`${alias === "pay" ? "Payment to" : "Deduction from"} ${member.displayName} (Pending)`)
             .setDescription(reason)
             .addField("Amount", `${amount.to$()}`, true)
-            .setFooter(`React to confirm that this ${ alias === "pay" ? "payment" : "deduction" } is correct`);
+            .setFooter(`React to confirm that this ${alias === "pay" ? "payment" : "deduction"} is correct`);
 
         try {
             const prompt = await message.channel.send(embed);
@@ -86,7 +86,7 @@ export default class CashModCommand extends KauriCommand {
                     .addField("Updated Balance", member.trainer.cash.to$());
 
                 prompt.edit(embed);
-                return this.client.logger.pay(message, prompt);
+                return this.client.logger[alias as "pay"|"deduct"](message, prompt);
             }
         } catch (e) {
             this.client.logger.parseError(e);
