@@ -69,7 +69,7 @@ export interface IPokemonDocument extends Document {
 }
 
 export interface IPokemon extends IPokemonDocument {
-    dex(query?: string): MessageEmbed;
+    dex(query?: string): Promise<MessageEmbed>;
     learnset(dex: Message): MessageEmbed;
     megaDex(whichMega: number): MessageEmbed;
     primalDex(whichPrimal: number): MessageEmbed;
@@ -187,7 +187,7 @@ PokemonSchema.methods.dex = async function(query?: string) {
 
     const embed = new MessageEmbed()
         .setTitle(title)
-        .setURL(`https://pokemonurpg.com/pokemon/${this.uniqueName}`)
+        .setURL(`https://pokemonurpg.com/pokemon/${encodeURIComponent(this.uniqueName)}`)
         .setColor(color)
         .setThumbnail(this.assets.icon)
         .setImage(this.assets.image)

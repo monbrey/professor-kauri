@@ -85,7 +85,7 @@ export default class KauriClient extends AkairoClient {
             .addType("move", (message: Message, phrase: string) => {
                 if (!phrase) return;
                 return Provider.Move.fetchClosest(phrase);
-            })
+            });
 
         this.inhibitorHandler = new InhibitorHandler(this, {
             directory: join(__dirname, "..", "inhibitors"),

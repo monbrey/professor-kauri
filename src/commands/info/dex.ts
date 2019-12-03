@@ -43,11 +43,15 @@ export default class DexCommand extends KauriCommand {
             result: pokemon.uniqueName
         });
 
-        const dex: Partial<DexMessage> = await message.channel.send(await pokemon.dex(query)) as Message;
-        dex.pokemon = pokemon;
-        dex.origAuthor = message.author!;
+        try {
+            const dex: Partial<DexMessage> = await message.channel.send(await pokemon.dex(query)) as Message;
+            dex.pokemon = pokemon;
+            dex.origAuthor = message.author!;
 
-        return this.prompt(dex as DexMessage);
+            return this.prompt(dex as DexMessage);
+        } catch (e) {
+            this.client.logger.parseError(e);
+        }
 
     }
 

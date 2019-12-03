@@ -27,7 +27,7 @@ export default class CashModCommand extends KauriCommand {
             type: "member",
             prompt: {
                 start: `Which URPG member are you ${alias}ing?`,
-                retry: new MessageEmbed().setDescription("Please mention someone, or provide their name (case-sensitive)").setFooter(`Reply with "cancel" to end the command`),
+                retry: new MessageEmbed().setDescription("Please mention someone, or provide their name (case-sensitive)").setFooter("Reply with \"cancel\" to end the command"),
                 retries: 3
             }
         };
@@ -37,7 +37,7 @@ export default class CashModCommand extends KauriCommand {
             type: "integer",
             prompt: {
                 start: `How much should I ${alias} ${member}`,
-                retry: new MessageEmbed().setDescription("Please provide a valid integer > 0").setFooter(`Reply with "cancel" to end the command`),
+                retry: new MessageEmbed().setDescription("Please provide a valid integer > 0").setFooter("Reply with \"cancel\" to end the command"),
                 retries: 3
             }
         };
