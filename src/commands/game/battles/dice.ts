@@ -31,7 +31,13 @@ export default class DiceCommand extends KauriCommand {
     }
 
     public async exec(message: Message, { die, verify }: CommandArgs) {
-        const valid = die.filter(d => /^[1-9]\d*(?:[,d]?[1-9]\d*)?$/.test(d));
+        let reduction = true;
+        const valid = die.reduce((acc,d) => {
+            if(/^[1-9]\d*(?:[,d]?[1-9]\d*)?$/.test(d) && reduction)
+                acc.push(d);
+            else reduction = false;
+            return acc;
+        }, [] as string[]);
 
         if (valid.length === 0) return;
 
