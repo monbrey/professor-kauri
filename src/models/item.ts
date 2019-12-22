@@ -43,10 +43,10 @@ ItemSchema.plugin(autoIncrement, {
 ItemSchema.virtual("priceString").get(function(this: IItemDocument) {
     if (!this.martPrice) { return ""; }
     if (this.martPrice.pokemart && this.martPrice.berryStore) {
-        return `$${this.martPrice.pokemart.toLocaleString()} | ${this.martPrice.berryStore.toLocaleString()} CC`;
+        return `Pokemart: ${this.martPrice.pokemart.toLocaleString()} | Berry Store: ${this.martPrice.berryStore.toLocaleString()} CC`;
     }
-    if (this.martPrice.pokemart) { return `${this.martPrice.pokemart.to$()}`; }
-    if (this.martPrice.berryStore) { return `${this.martPrice.berryStore.to$()}`; }
+    if (this.martPrice.pokemart) { return `Pokemart: ${this.martPrice.pokemart.to$()}`; }
+    if (this.martPrice.berryStore) { return `Berry Store: ${this.martPrice.berryStore.to$()}`; }
 });
 
 ItemSchema.statics.findExact = function(itemNames: string[], query: any = {}) {
