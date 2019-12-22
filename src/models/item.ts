@@ -45,7 +45,7 @@ ItemSchema.virtual("priceString").get(function(this: IItemDocument) {
     if (this.martPrice.pokemart && this.martPrice.berryStore) {
         return `$${this.martPrice.pokemart.toLocaleString()} | ${this.martPrice.berryStore.toLocaleString()} CC`;
     }
-    if (this.martPrice.pokemart) { return `$${this.martPrice.pokemart.to$()}`; }
+    if (this.martPrice.pokemart) { return `${this.martPrice.pokemart.to$()}`; }
     if (this.martPrice.berryStore) { return `${this.martPrice.berryStore.to$()}`; }
 });
 
