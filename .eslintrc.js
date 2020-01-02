@@ -1,6 +1,6 @@
-module.exports = {
+export default {
     "env": {
-        "browser": true,
+        "browser": false,
         "node": true
     },
     "parser": "@typescript-eslint/parser",
