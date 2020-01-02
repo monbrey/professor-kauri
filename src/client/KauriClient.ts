@@ -39,7 +39,7 @@ export default class KauriClient extends AkairoClient {
     public urpgApi: UrpgClient;
 
     constructor(options: ClientOptions = {}) {
-        super({ ownerID: "122157285790187530" }, options);
+        super({ ownerID: "122157285790187530", fetchAllMembers: true }, options);
 
         this.logger = new Logger(this);
         this.settings = new MongooseProvider(Settings, "guild_id");
