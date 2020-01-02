@@ -59,9 +59,19 @@ export default class AddRoleCommand extends KauriCommand {
             If you think this is an error, please open an issue on [GitHub](url)`);
 
         const role = message.guild?.roles.get(config.role_id);
-        if(!role) return message.util!.embed("warn", stripIndents`That role is no longer present in the server`);
+        if (!role) return message.util!.embed("warn", stripIndents`That role is no longer present in the server`);
 
-        const roleFunc = this[alias as keyof this] || member?.roles.has(role.id) || message.member?.roles.has(role.id) ? this.removeRole : this.addRole;
+        const roleFunc = ((alias: string) => {
+            switch (alias) {
+                case "addRole": return this.addRole;
+                case "removeRole": return this.removeRole;
+                case "role": return (member ? member.roles.has(role.id) : message.member?.roles.has(role.id)) ? this.removeRole : this.addRole;
+                default: return;
+            }
+        })(alias);
+
+        if (typeof roleFunc !== "function") return;
+
         if (!member) {
             if (!config.self) return;
             return roleFunc(message, role, message.member!);
