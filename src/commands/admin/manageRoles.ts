@@ -1,10 +1,10 @@
 import { stripIndents } from "common-tags";
 import { GuildMember, Message, Role } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { RoleConfig } from "../../models/roleConfig";
+import { IRoleConfig } from "../../models/roleConfig";
 
 interface ICommandArgs {
-    role: Role;
+    config: IRoleConfig;
     member: GuildMember;
 }
 
@@ -20,8 +20,8 @@ export default class AddRoleCommand extends KauriCommand {
     }
 
     public *args() {
-        const role = yield {
-            type: "role",
+        const config = yield {
+            type: "roleConfig",
             unordered: true
         };
 
@@ -30,7 +30,7 @@ export default class AddRoleCommand extends KauriCommand {
             unordered: true
         };
 
-        return { role, member };
+        return { config, member };
     }
 
     private async addRole(message: Message, role: Role, member: GuildMember) {
@@ -51,23 +51,21 @@ export default class AddRoleCommand extends KauriCommand {
         }
     }
 
-    public async exec(message: Message, { role, member }: ICommandArgs) {
+    public async exec(message: Message, { config, member }: ICommandArgs) {
         const alias = message.util?.parsed?.alias;
 
         if (!alias) return;
-        if (!role) return;
+        if (!config) return message.util!.embed("warn", stripIndents`No configuration for that role was found.
+            If you think this is an error, please open an issue on [GitHub](url)`);
 
-        const config = await RoleConfig.findOne({ role_id: role.id });
-        if (!config) return message.util!.embed("warn", stripIndents`${role} is not managed by this command.
-            If you think this is an error, please open an issue on [GitHub](url)`);;
+        const role = message.guild?.roles.get(config.role_id);
+        if(!role) return message.util!.embed("warn", stripIndents`That role is no longer present in the server`);
 
         const roleFunc = this[alias as keyof this] || member?.roles.has(role.id) || message.member?.roles.has(role.id) ? this.removeRole : this.addRole;
-
         if (!member) {
             if (!config.self) return;
             return roleFunc(message, role, message.member!);
         }
-
 
         if (message.author.id === this.client.ownerID || config.parents?.some(p => message.member?.roles.has(p)))
             return roleFunc(message, role, member);
