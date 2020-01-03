@@ -31,8 +31,8 @@ export default class HelpCommand extends KauriCommand {
         if (!command) {
             const embed = new MessageEmbed()
                 .setAuthor("Professor Kauri", undefined, "https://github.com/Monbrey/professor-kauri-v2")
-                .setDescription(`Report issues or contribute to development on [Github](https://github.com/Monbrey/professor-kauri-v2)`)
-                .addField("Commands", `A list of commands available, based on your permission levels`);
+                .setDescription("Report issues or contribute to development on [Github](https://github.com/Monbrey/professor-kauri-v2)")
+                .addField("Commands", "A list of commands available, based on your permission levels");
             //  For additional information on a command, type ${prefix}help <command>`);
 
             for (const [catId, cat] of this.handler.categories) {

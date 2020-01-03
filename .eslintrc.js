@@ -1,11 +1,10 @@
-export default {
+module.exports = {
     "env": {
         "browser": false,
         "node": true
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "project": "tsconfig.json",
         "sourceType": "module"
     },
     "plugins": [
