@@ -90,7 +90,7 @@ export default class KauriClient extends AkairoClient {
             .addType("roleConfig", (message: Message, phrase: string) => {
                 if(!phrase) return;
                 return this.roleConfigs.fetchClosest(phrase);
-            })
+            });
 
         this.inhibitorHandler = new InhibitorHandler(this, {
             directory: join(__dirname, "..", "inhibitors"),

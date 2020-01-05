@@ -70,7 +70,7 @@ export interface IPokemonDocument extends Document {
 
 export interface IPokemon extends IPokemonDocument {
     dex(query?: string): Promise<MessageEmbed>;
-    learnset(dex: Message): MessageEmbed;
+    learnset(query?: string): Promise<MessageEmbed>;
     megaDex(whichMega: number): MessageEmbed;
     primalDex(whichPrimal: number): MessageEmbed;
 }
@@ -141,7 +141,7 @@ PokemonSchema.plugin(autoIncrement, {
 });
 // PokemonSchema.plugin(paginate);
 
-PokemonSchema.virtual("priceString").get(function(this: IPokemon) {
+PokemonSchema.virtual("priceString").get(function (this: IPokemon) {
     if (!this.martPrice) { return ""; }
     if (this.martPrice.pokemart && this.martPrice.berryStore) {
         return `$${this.martPrice.pokemart.toLocaleString()} | ${this.martPrice.berryStore.toLocaleString()} CC`;
@@ -150,7 +150,7 @@ PokemonSchema.virtual("priceString").get(function(this: IPokemon) {
     if (this.martPrice.berryStore) { return `${this.martPrice.berryStore.toLocaleString()} CC`; }
 });
 
-PokemonSchema.statics.getMartPokemon = async function(page: number = 0) {
+PokemonSchema.statics.getMartPokemon = async function (page: number = 0) {
     return await this.paginate(
         { "martPrice.pokemart": { $not: { $eq: null } } },
         { select: "dexNumber uniqueName martPrice.pokemart" },
@@ -162,20 +162,20 @@ PokemonSchema.statics.getMartPokemon = async function(page: number = 0) {
     );
 };
 
-PokemonSchema.statics.findExact = function(uniqueNames: string[], query: any = {}) {
+PokemonSchema.statics.findExact = function (uniqueNames: string[], query: any = {}) {
     const namesRe = uniqueNames.map(name => new RegExp(`^${name}$`, "i"));
     return this.find(Object.assign(query, { uniqueName: { $in: namesRe } }));
 };
 
-PokemonSchema.statics.findOneExact = function(uniqueName: string, query: any = {}) {
+PokemonSchema.statics.findOneExact = function (uniqueName: string, query: any = {}) {
     return this.findOne(Object.assign(query, { uniqueName: new RegExp(`^${uniqueName}$`, "i") }));
 };
 
-PokemonSchema.statics.findPartial = function(uniqueName: string, query: any = {}) {
+PokemonSchema.statics.findPartial = function (uniqueName: string, query: any = {}) {
     return this.find(Object.assign(query, { uniqueName: new RegExp(uniqueName, "i") }));
 };
 
-PokemonSchema.methods.dex = async function(query?: string) {
+PokemonSchema.methods.dex = async function (query?: string) {
     const color = await Color.getColorForType(this.type1.toLowerCase());
     const dexString = this.dexNumber.toString().padStart(3, "0");
     const title = `URPG Ultradex - ${this.displayName} (#${dexString})`;
@@ -227,13 +227,19 @@ PokemonSchema.methods.dex = async function(query?: string) {
     return embed;
 };
 
-PokemonSchema.methods.learnset = function(dex: Message) {
+PokemonSchema.methods.learnset = async function (query?: string) {
     const moveTypes: IPokemonMoveDocument[][] = (Object.values(this.moves.toObject()) as IPokemonMoveDocument[][]).slice(1);
     const moveCount = moveTypes.reduce((acc, obj) => acc + (obj ? obj.length : 0), 0);
+    const color = await Color.getColorForType(this.type1.toLowerCase());
 
     const embed = new MessageEmbed()
         .setTitle(`${this.displayName} can learn ${moveCount} move(s)`)
-        .setColor(dex.embeds[0].color);
+        .setColor(color);
+
+    if (this.matchRating !== 1 && query) {
+        const percent = Math.round(this.matchRating * 100);
+        embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
+    }
 
     let learnset: { [index: string]: string[] } = {};
     learnset = (Object.entries(this.moves) as [[string, IPokemonMoveDocument[]]])
@@ -281,13 +287,13 @@ PokemonSchema.methods.learnset = function(dex: Message) {
     return embed;
 };
 
-PokemonSchema.methods.megaDex = async function(this: IPokemon, whichMega: number) {
+PokemonSchema.methods.megaDex = async function (this: IPokemon, whichMega: number) {
     const mega = await Mega.findById(this.mega[whichMega].megaId);
     if (!mega) { return; }
     return mega.dex(this);
 };
 
-PokemonSchema.methods.primalDex = async function(this: IPokemon, whichPrimal: number) {
+PokemonSchema.methods.primalDex = async function (this: IPokemon, whichPrimal: number) {
     const primal = await Mega.findById(this.primal[whichPrimal].primalId);
     if (!primal) { return; }
     return primal.dex(this);
