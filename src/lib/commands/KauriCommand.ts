@@ -11,7 +11,7 @@ declare module "discord-akairo" {
             disabled: boolean;
             configurable: boolean;
         };
-        usage?: string | string[]
+        usage?: string | string[];
         userRoles?: Roles[];
     }
 }
@@ -21,7 +21,7 @@ interface KauriCommandOptions extends CommandOptions {
         disabled?: boolean;
         configurable?: boolean;
     };
-    usage?: string | string[]
+    usage?: string | string[];
     userRoles?: Roles[];
 }
 
@@ -50,9 +50,9 @@ export class KauriCommand extends Command {
             .setDescription(`Command prefix: \`${prefix}\`\nArguments: \`<required>\` | \`[optional]\``)
             .addField("**Aliases**", this.aliases.map(a => `\`${a}\``).join(", "));
 
-        if(this.usage) {
-            if(typeof this.usage === "string") embed.addField("**Usage**", `\`${prefix}${this.usage}\``)
-            else embed.addField("**Usage**", this.usage.map(u => `\`${prefix}${u}\``).join("\n"))
+        if (this.usage) {
+            if (typeof this.usage === "string") embed.addField("**Usage**", `\`${prefix}${this.usage}\``);
+            else embed.addField("**Usage**", this.usage.map(u => `\`${prefix}${u}\``).join("\n"));
         }
 
         return embed;

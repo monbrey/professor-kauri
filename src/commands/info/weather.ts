@@ -33,9 +33,9 @@ module.exports = class WeatherCommand extends KauriCommand {
             const list = weathers.map(w => `${this.client.emojis.get(w.emoji) ?? w.emoji} ${w.weatherName} - \`[${w.shortCode}]\``);
 
             const embed = new MessageEmbed()
-            .setTitle("Weather Conditions")
-            .setColor(0xFFFFFF)
-            .setDescription(`${list.join('\n')}\n\nFor more information on any weather condition, use \`!weather [name/code]\``);
+                .setTitle("Weather Conditions")
+                .setColor(0xFFFFFF)
+                .setDescription(`${list.join("\n")}\n\nFor more information on any weather condition, use \`!weather [name/code]\``);
 
             return message.util?.send(embed);
         }
