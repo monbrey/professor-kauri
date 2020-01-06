@@ -66,7 +66,7 @@ export default class CashModCommand extends KauriCommand {
         const embed = new MessageEmbed()
             .setTitle(`${alias === "pay" ? "Payment to" : "Deduction from"} ${member.displayName} (Pending)`)
             .setDescription(reason)
-            .addField("Amount", `${amount.to$()}`, true)
+            .addField("**Amount**", `${amount.to$()}`, true)
             .setFooter(`React to confirm that this ${alias === "pay" ? "payment" : "deduction"} is correct`);
 
         try {
@@ -83,7 +83,7 @@ export default class CashModCommand extends KauriCommand {
 
                 embed
                     .setTitle(`${alias === "pay" ? "Payment to" : "Deduction from"} ${member.displayName}`)
-                    .addField("Updated Balance", member.trainer.cash.to$());
+                    .addField("**Updated Balance**", member.trainer.cash.to$());
 
                 prompt.edit(embed);
                 return this.client.logger[alias as "pay"|"deduct"](message, prompt);

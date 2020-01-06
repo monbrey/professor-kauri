@@ -75,8 +75,8 @@ MegaSchema.methods.dex = async function(base: IPokemon) {
             `${this.type2 ? "Types" : "Type"}`,
             `${this.type1}${this.type2 ? ` | ${this.type2}` : ""}`
         )
-        .addField("Ability", `${this.ability.abilityName}`)
-        .addField("Height and Weight", `${this.height}m, ${this.weight}kg`);
+        .addField("**Ability**", `${this.ability.abilityName}`)
+        .addField("**Height and Weight**", `${this.height}m, ${this.weight}kg`);
 
     const stats: number[] = Object.values({ hp: base.stats.hp, ...this.stats.toObject() });
     embed.addField(

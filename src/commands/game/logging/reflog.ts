@@ -44,7 +44,7 @@ export default class BattleLogCommand extends KauriCommand {
                 Reply **\`back\`** to return to the previous field and edit a response.
                 Reply **\`cancel\`** to stop the command.`)
             .setThumbnail("https://i.imgur.com/jBRd5cN.png")
-            .addField("Winning Trainer", "\u200b", true);
+            .addField("**Winning Trainer**", "\u200b", true);
 
         this.logMessage = await message.channel.send({ embed: this.logEmbed });
     }
@@ -129,7 +129,7 @@ export default class BattleLogCommand extends KauriCommand {
 
         const payments = this.calcPayments(size, venue);
 
-        this.logEmbed.addField("Payments", stripIndents`
+        this.logEmbed.addField("**Payments**", stripIndents`
         ${winner.displayName}: **${payments.winner.to$()}**
         ${loser.displayName}: **${payments.loser.to$()}**
         ${ref.displayName}: **${payments.ref.to$()}**`)
@@ -200,7 +200,7 @@ export default class BattleLogCommand extends KauriCommand {
                 break;
             case "winningTeam":
                 this.logEmbed.fields[0].value = value.map((p: IPokemon) => p.uniqueName).join("\n");
-                this.logEmbed.addField("Losing Trainer", "\u200b", true);
+                this.logEmbed.addField("**Losing Trainer**", "\u200b", true);
                 break;
             case "loser":
                 this.logEmbed.fields[1].name = value.displayName;
@@ -210,8 +210,8 @@ export default class BattleLogCommand extends KauriCommand {
                 this.logEmbed.fields[1].value = value.map((p: IPokemon) => p.uniqueName).join("\n");
                 const size = Math.max(...this.logEmbed.fields.map(f => f.value.split("\n").length));
                 this.logEmbed.setTitle(`${size}v${size} Battle Log`);
-                if (size > 2) this.logEmbed.addField("Special Venue", "`Gym | E4 | LD | None`");
-                else this.logEmbed.addField("Description", "`Please provide a battle description, including ruleset and clauses (5 minutes)`");
+                if (size > 2) this.logEmbed.addField("**Special Venue**", "`Gym | E4 | LD | None`");
+                else this.logEmbed.addField("**Description**", "`Please provide a battle description, including ruleset and clauses (5 minutes)`");
                 break;
             case "venue":
                 if (value !== "None") this.logEmbed.title += ` [${value}]`;

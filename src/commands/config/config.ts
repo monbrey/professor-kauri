@@ -103,7 +103,7 @@ export default class ConfigCommand extends KauriCommand {
                 Click \\✅ when finished to save changes, or \\❌ to cancel
                 Changes will be automatically cancelled after 5 minutes`
             )
-            .addField("Role / Permissions restrictions", "\u200B");
+            .addField("**Role / Permissions restrictions**", "\u200B");
 
         const evalAuthorisations = () => {
             const authorisations = roles.filter(role => {
@@ -160,8 +160,8 @@ export default class ConfigCommand extends KauriCommand {
                 Click \\✅ when finished to save changes, or \\❌ to cancel
                 Changes will be automatically cancelled after 5 minutes`
             )
-            .addField("Server setting", `${gDisabled ? "Disabled" : "Enabled"} `)
-            .addField(`Channel ${gDisabled ? "Enabled" : "Disabled"}`, "\u200B");
+            .addField("**Server setting**", `${gDisabled ? "Disabled" : "Enabled"} `)
+            .addField(`**Channel ${gDisabled ? "Enabled" : "Disabled"}**`, "\u200B");
 
         const evalOverrides = () => {
             const overrides = channels.filter(
@@ -270,7 +270,7 @@ export default class ConfigCommand extends KauriCommand {
     private addEditControls(message: Message, info: MessageEmbed, command: KauriCommand, config: ICommandConfigDocument) {
         const gDisabled = config.disabled || command.defaults.disabled || false;
         const enableLine = gDisabled ? "\\✅ - Enable this command for the server" : "\\❌ - Disable this command for the server";
-        info.addField("Controls", stripIndents`${enableLine}
+        info.addField("**Controls**", stripIndents`${enableLine}
             \\🔲 - Edit Channel overrides for this command
             \\🚫 - Edit Role restrictions for this command
             \\🔄 - Reset all server configuration for this command`);
@@ -289,16 +289,16 @@ export default class ConfigCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setColor("WHITE")
             .setTitle(`Configuration settings for ${command.id} in ${message.guild!.name}`)
-            .addField("Server level", gDisabled ? "Disabled" : "Enabled");
+            .addField("**Server level**", gDisabled ? "Disabled" : "Enabled");
         if (config.channels && config.channels.length) {
             const channels = config.channels
                 .filter(c => c.disabled !== gDisabled)
                 .map(c => message.guild!.channels.get(c.channel_id));
-            embed.addField(`Channels ${gDisabled ? "Enabled" : "Disabled"}`, channels.join(" "));
+            embed.addField(`**Channels ${gDisabled ? "Enabled" : "Disabled"}**`, channels.join(" "));
         }
 
         // if (config.roles && config.roles.length) {
-        //     embed.addField("Role required", config.roles.map(r => message.guild!.roles.get(r.role_id)).join(" "));
+        //     embed.addField("**Role required**", config.roles.map(r => message.guild!.roles.get(r.role_id)).join(" "));
         // }
 
         return embed;

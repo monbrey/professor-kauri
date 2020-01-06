@@ -46,7 +46,7 @@ export default class EotCommand extends KauriCommand {
         const embed = new MessageEmbed()
             .setTitle(effect.effect)
             .setDescription(`${effect.effect} occurs at position ${effect.order}`)
-            .addField("Surrounding Effects", groupString);
+            .addField("**Surrounding Effects**", groupString);
 
         return message.util!.send(embed);
     }

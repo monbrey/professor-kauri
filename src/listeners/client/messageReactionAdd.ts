@@ -111,8 +111,8 @@ export default class MessageReactionAddListener extends Listener {
                 .setColor(previous ? previous.embeds[0].color : 15844367)
                 .setAuthor(message.author!.tag, message.author!.displayAvatarURL())
                 .setTimestamp()
-                .addField(`Votes ${starEmoji}`, stars, true)
-                .addField("Link", `[Jump to message](${message.url})`, true)
+                .addField(`**Votes ${starEmoji}**`, stars, true)
+                .addField("**Link**", `[Jump to message](${message.url})`, true)
                 .setFooter(`⭐ | ${message.id}`)
                 .setImage(image || "");
 

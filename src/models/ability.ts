@@ -51,7 +51,7 @@ AbilitySchema.methods.info = function() {
     }
 
     if (this.affects) {
-        embed.addField("Interacts with", this.affects);
+        embed.addField("**Interacts with**", this.affects);
     }
     if (this.additional) {
         embed.setFooter(this.additional);

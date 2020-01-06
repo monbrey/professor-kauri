@@ -22,9 +22,9 @@ export default class StarboardCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setTitle(`Starboard settings for ${message.guild.name}`).setColor("WHITE");
         if (sbConfig) {
-            embed.addField("Channel", message.guild.channels.get(sbConfig.channel) || "<#invalid_channel>", true);
-            embed.addField("Emoji", sbConfig.emoji || "⭐", true);
-            embed.addField("Reaction Threshold", sbConfig.minReacts || 1, true);
+            embed.addField("**Channel**", message.guild.channels.get(sbConfig.channel) || "<#invalid_channel>", true);
+            embed.addField("**Emoji**", sbConfig.emoji || "⭐", true);
+            embed.addField("**Reaction Threshold**", sbConfig.minReacts || 1, true);
         } else {
             embed.setDescription("No Starboard configuration");
         }
@@ -38,9 +38,9 @@ export default class StarboardCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setTitle(`Starboard settings for ${message.guild.name}`).setColor("WHITE");
         if (sbConfig) {
-            embed.addField("Channel", message.guild.channels.get(sbConfig.channel) || "<#invalid_channel>", true);
-            embed.addField("Emoji", sbConfig.emoji || "⭐", true);
-            embed.addField("Reaction Threshold", sbConfig.minReacts || 1, true);
+            embed.addField("**Channel**", message.guild.channels.get(sbConfig.channel) || "<#invalid_channel>", true);
+            embed.addField("**Emoji**", sbConfig.emoji || "⭐", true);
+            embed.addField("**Reaction Threshold**", sbConfig.minReacts || 1, true);
         } else {
             embed.setDescription("No Starboard configuration");
             embed.setFooter("Click the pencil to edit the configuration");
@@ -67,7 +67,7 @@ export default class StarboardCommand extends KauriCommand {
         const arg1 = new Argument(this, {
             type: ["channel", "emoji", "threshold"],
             prompt: {
-                start: embed.setColor("GREEN").addField("Which setting would you like to configure?", "`channel`, `emoji` or `threshold`"),
+                start: embed.setColor("GREEN").addField("**Which setting would you like to configure?**", "`channel`, `emoji` or `threshold`"),
                 modifyRetry: () => {
                     embed.spliceField(embed.fields.length - 1, 1, "Which setting would you like to configure?", "Response should be one of `channel`, `emoji` or `threshold`");
                     message.util!.lastResponse!.edit(embed.setColor("ORANGE"));
@@ -179,12 +179,12 @@ export default class StarboardCommand extends KauriCommand {
         if (!message.guild) { return; }
 
         embed.setColor("GREEN").setDescription("");
-        embed.addField("Channel", "\u200b", true).addField("Emoji", "\u200b", true).addField("Reaction Threshold", "\u200b", true);
+        embed.addField("**Channel**", "\u200b", true).addField("**Emoji**", "\u200b", true).addField("**Reaction Threshold**", "\u200b", true);
 
         const arg1 = new Argument(this, {
             type: "textChannel",
             prompt: {
-                start: embed.addField("Which channel should be used as the Starboard?", "\u200b"),
+                start: embed.addField("**Which channel should be used as the Starboard?**", "\u200b"),
                 modifyRetry: () => {
                     embed.fields[embed.fields.length - 1].value = "Please mention a valid TextChannel";
                     message.util!.lastResponse!.edit(embed.setColor("ORANGE"));

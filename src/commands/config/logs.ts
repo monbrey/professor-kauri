@@ -20,7 +20,7 @@ export default class LogsCommand extends KauriCommand {
         const logConfig = message.guild.logChannel;
 
         const embed = new MessageEmbed().setTitle(`Log settings for ${message.guild.name}`).setColor("WHITE");
-        embed.addField("Log Channel", logConfig ? message.guild.channels.get(logConfig) || "<#invalid_channel>" : "No logging configured");
+        embed.addField("**Log Channel**", logConfig ? message.guild.channels.get(logConfig) || "<#invalid_channel>" : "No logging configured");
 
         return message.util!.send(embed);
     }
@@ -30,7 +30,7 @@ export default class LogsCommand extends KauriCommand {
         const logConfig = message.guild.logChannel;
 
         const embed = new MessageEmbed().setTitle(`Log settings for ${message.guild.name}`).setColor("WHITE");
-        embed.addField("Log Channel", logConfig ? message.guild.channels.get(logConfig) || "<#invalid_channel>" : "No logging configured");
+        embed.addField("**Log Channel**", logConfig ? message.guild.channels.get(logConfig) || "<#invalid_channel>" : "No logging configured");
         embed.setFooter("Click the pencil to edit the configuration");
 
         const sent = await message.util!.send(embed);
@@ -49,7 +49,7 @@ export default class LogsCommand extends KauriCommand {
         const arg1 = new Argument(this, {
             type: "textChannel",
             prompt: {
-                start: embed.setColor("GREEN").addField("Which channel should logs go to?", "\u200b"),
+                start: embed.setColor("GREEN").addField("**Which channel should logs go to?**", "\u200b"),
                 modifyRetry: () => {
                     embed.fields[embed.fields.length - 1].value = "Please mention a valid TextChannel";
                     message.util!.lastResponse!.edit(embed.setColor("ORANGE"));

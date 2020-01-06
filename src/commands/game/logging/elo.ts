@@ -96,8 +96,8 @@ export default class EloCommand extends KauriCommand {
 
         const embed = new MessageEmbed()
             .setTitle("ELO Rating Update (Pending)")
-            .addField("Battler", `${winner}\n${loser}`, true)
-            .addField("ELO", `${rA} => ${nA}\n${rB} => ${nB}`, true)
+            .addField("**Battler**", `${winner}\n${loser}`, true)
+            .addField("**ELO**", `${rA} => ${nA}\n${rB} => ${nB}`, true)
             .setColor(0x1f8b4c)
             .setFooter("React to confirm the ELO changes");
 

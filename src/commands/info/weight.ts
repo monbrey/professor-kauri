@@ -46,9 +46,9 @@ module.exports = class WeightCommand extends KauriCommand {
             const embed = new MessageEmbed()
                 .setTitle(`${query.name} vs ${target.name}`)
                 .setDescription("Using Heat Crash or Heavy Slam")
-                .addField(`${query.name}`, `${query.weight}kg`, true)
-                .addField(`${target.name}`, `${target.weight}kg`, true)
-                .addField("Move Power", `${this.calcTwo(query.weight, target.weight)} BP`, true);
+                .addField(`**${query.name}**`, `${query.weight}kg`, true)
+                .addField(`**${target.name}**`, `${target.weight}kg`, true)
+                .addField("**Move Power**", `${this.calcTwo(query.weight, target.weight)} BP`, true);
 
             return message.util!.send(embed);
         }
@@ -62,8 +62,8 @@ module.exports = class WeightCommand extends KauriCommand {
             const embed = new MessageEmbed()
                 .setTitle(query.name)
                 .setDescription("As the target of Grass Knot or Low Kick")
-                .addField("Weight", `${query.weight}kg`, true)
-                .addField("Move Power", `${this.calcOne(query.weight)} BP`, true);
+                .addField("**Weight**", `${query.weight}kg`, true)
+                .addField("**Move Power**", `${this.calcOne(query.weight)} BP`, true);
 
             return message.channel.send(embed);
         } else {

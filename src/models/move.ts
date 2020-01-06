@@ -117,14 +117,14 @@ MoveSchema.methods.info = async function() {
         .setFooter(this.note || "")
         .setColor(await Color.getColorForType(this.moveType.toLowerCase()));
 
-    if (this.additional) { embed.addField("Additional note", this.additional); }
-    if (this.list && this.list.length !== 0) { embed.addField("Helpful data", this.list.join("\n")); }
+    if (this.additional) { embed.addField("**Additional note**", this.additional); }
+    if (this.list && this.list.length !== 0) { embed.addField("**Helpful data**", this.list.join("\n")); }
     if (this.tm.number && this.tm.martPrice) {
         const tmNum = this.tm.number.toString().padStart(2, 0);
         const tmPrice = this.tm.martPrice.pokemart.toLocaleString();
-        embed.addField("TM", `Taught by TM${tmNum} ($${tmPrice})`);
+        embed.addField("**TM**", `Taught by TM${tmNum} ($${tmPrice})`);
     }
-    if (this.zmove) { embed.addField("Z-Move", this.zmove); }
+    if (this.zmove) { embed.addField("**Z-Move**", this.zmove); }
 
     return embed;
 };
