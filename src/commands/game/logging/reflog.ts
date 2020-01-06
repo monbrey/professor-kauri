@@ -21,10 +21,11 @@ export default class BattleLogCommand extends KauriCommand {
     private logMessage?: Message;
 
     public constructor() {
-        super("battlelog", {
+        super("Battle Log", {
             aliases: ["battlelog", "bl", "reflog", "rl"],
             category: "Game",
             description: "Logs and pays the Battlers and Referee for a battle",
+            usage: ["bl"],
             channel: "guild",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
             userRoles: [Roles.SeniorReferee, Roles.Referee],

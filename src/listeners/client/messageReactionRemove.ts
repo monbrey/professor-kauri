@@ -31,16 +31,14 @@ export default class MessageReactionRemoveListener extends Listener {
     }
 
     public async exec(reaction: MessageReaction, user: User) {
+        // Fetch partial messages
+        if (reaction.message.partial) await reaction.message.fetch();
+        if (reaction.partial) await reaction.fetch();
+
         const { message, emoji, users, count } = reaction;
 
         // Ignore messages that arent in a guild
         if (!message.guild) { return; }
-
-        // Fetch partial messages
-        if (message.partial) {
-            await message.fetch();
-            await users.fetch();
-        }
 
         // Fetch the starboard settings
         const starboard = this.client.settings!.get(message.guild.id, "starboard");
@@ -66,7 +64,7 @@ export default class MessageReactionRemoveListener extends Listener {
         // Check for the star emoji
         if (emoji.toString() !== starEmoji) { return; }
 
-        const stars = users.has(message.author.id) ? count - 1 : count;
+        const stars = users.has(message.author.id) && count ? count - 1 : count || 0;
 
         // If we've passed ALL the checks, we can add this to the queue
         this.client.reactionQueue.add(async () => {

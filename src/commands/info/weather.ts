@@ -9,12 +9,12 @@ interface CommandArgs {
 
 module.exports = class WeatherCommand extends KauriCommand {
     constructor() {
-        super("weather", {
+        super("Weather", {
             aliases: ["weather"],
             category: "Info",
             description: "Provides weather information",
+            usage: "weather [name]",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
-
         });
     }
 

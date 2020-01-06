@@ -9,10 +9,11 @@ interface CommandArgs {
 
 export default class ResetCommand extends KauriCommand {
     constructor() {
-        super("reset", {
+        super("Reset Channel", {
             aliases: ["reset"],
             category: "Admin",
-            description: "Resets the channel",
+            description: "Resets a channel by cloning it and deleting the original.\nIf no channel is provided, the current channel is targetted.",
+            usage: "reset [channel]",
             channel: "guild",
             userRoles: [Roles.Staff]
         });

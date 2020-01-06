@@ -24,7 +24,7 @@ const client = new KauriClient({
         "VOICE_SERVER_UPDATE",
         "CHANNEL_PINS_UPDATE"
     ],
-    partials: ["MESSAGE"]
+    partials: ["MESSAGE","CHANNEL","REACTION"]
 });
 
 db.once("connected", () => {

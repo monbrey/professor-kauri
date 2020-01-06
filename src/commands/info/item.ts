@@ -8,10 +8,11 @@ interface CommandArgs {
 
 export default class ItemCommand extends KauriCommand {
     constructor() {
-        super("item", {
+        super("Item Lookup", {
             aliases: ["item"],
             category: "Info",
             description: "Provides Item information",
+            usage: "item <name>",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
         });
     }

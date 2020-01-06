@@ -8,10 +8,11 @@ interface CommandArgs {
 
 export default class MoveCommand extends KauriCommand {
     constructor() {
-        super("move", {
+        super("Move Lookup", {
             aliases: ["move"],
             category: "Info",
             description: "Provides Move information",
+            usage: "move <name>",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
         });
     }

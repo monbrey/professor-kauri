@@ -4,10 +4,11 @@ import { Move } from "../../../models/move";
 
 export default class MetronomeCommand extends KauriCommand {
     constructor() {
-        super("metronome", {
+        super("Metronome", {
             aliases: ["metronome"],
             category: "Game",
-            description: "Select a random move",
+            description: "Select a random move.",
+            usage: "metronome",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"]
         });
     }

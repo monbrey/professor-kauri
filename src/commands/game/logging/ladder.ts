@@ -6,10 +6,11 @@ import { ITrainerDocument, Trainer } from "../../../models/trainer";
 
 module.exports = class LadderCommand extends KauriCommand {
     constructor() {
-        super("ladder", {
+        super("ELO Ladder", {
             aliases: ["ladder"],
             category: "Game",
             description: "View the ELO rankings",
+            usage: "ladder",
             channel: "guild",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"]
         });

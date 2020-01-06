@@ -31,13 +31,10 @@ export default class MessageReactionAddListener extends Listener {
 
     public async exec(reaction: MessageReaction, user: User) {
         // Fetch partial messages
-        if (reaction.message.partial) {
-            await reaction.message.fetch();
-            await reaction.users.fetch();
-        }
+        if (reaction.message.partial) await reaction.message.fetch();
+        if (reaction.partial) await reaction.fetch();
 
         const { message, emoji, users, count } = reaction;
-
 
         // Ignore messages that arent in a guild
         if (!message.guild) { return; }
@@ -84,7 +81,7 @@ export default class MessageReactionAddListener extends Listener {
                 : message.channel.send(`You cannot ${starEmoji} your own messages`);
         }
 
-        const stars = users.has(message.author.id) ? count - 1 : count;
+        const stars = users.has(message.author.id) && count ? count - 1 : count || 0;
 
         // Check that the minimum number of reactions has been reached
         if (stars < minReacts) { return; }
@@ -131,9 +128,7 @@ export default class MessageReactionAddListener extends Listener {
                     embed
                 });
             } else { return await starChannel.send(embed); }
-        },
-        { priority: 1 }
-        );
+        }, { priority: 1 });
 
         return this.client.logger.messageReactionAdd(reaction, user);
     }

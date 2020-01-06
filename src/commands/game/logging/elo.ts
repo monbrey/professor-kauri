@@ -13,10 +13,11 @@ interface CommandArgs {
 
 export default class EloCommand extends KauriCommand {
     constructor() {
-        super("elo", {
+        super("ELO Update", {
             aliases: ["elo"],
             category: "Game",
             description: "Update the ELO rating for two battlers",
+            usage: "elo <winner> <loser>",
             channel: "guild",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
             userRoles: [Roles.Staff, Roles.SeniorReferee, Roles.Referee]

@@ -8,10 +8,11 @@ interface CommandArgs {
 
 export default class EotCommand extends KauriCommand {
     constructor() {
-        super("eot", {
+        super("EOT", {
             aliases: ["eot"],
             category: "Info",
             description: "Provides End-of-Turn effect information from the Refpedia",
+            usage: "eot <effect>",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
         });
     }

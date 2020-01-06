@@ -11,10 +11,11 @@ interface CommandArgs {
 
 export default class CashModCommand extends KauriCommand {
     constructor() {
-        super("cashMod", {
+        super("Cash Modifier", {
             aliases: ["pay", "deduct"],
             category: "Game",
-            description: "Adds or subtracts money for a trainer's account",
+            description: "Adds or subtracts money for a trainer's account.",
+            usage: ["pay <member> <amount>", "deduct <member> <amount>"],
             channel: "guild",
             defaults: { disabled: true }
         });

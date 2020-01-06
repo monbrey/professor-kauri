@@ -8,10 +8,11 @@ interface CommandArgs {
 
 export default class AbilityCommand extends KauriCommand {
     constructor() {
-        super("ability", {
+        super("Ability Lookup", {
             aliases: ["ability"],
             category: "Info",
             description: "Provides information on Pokemon Abilities",
+            usage: "ability <name>",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
         });
     }

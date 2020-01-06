@@ -11,11 +11,12 @@ interface CommandArgs {
 
 module.exports = class WeightCommand extends KauriCommand {
     constructor() {
-        super("weight", {
+        super("Weight", {
             aliases: ["weight"],
             category: "Info",
             separator: ",",
             description: "Provides information on weight-based moves for a specific Pokemon, or interaction between two Pokemon",
+            usage: ["weight <pokemon>", "weight <attacker>, <target>"],
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
         });
     }

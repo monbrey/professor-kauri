@@ -5,10 +5,11 @@ import { Roles } from "../../util/constants";
 
 export default class LogsCommand extends KauriCommand {
     constructor() {
-        super("logs", {
+        super("Logs", {
             aliases: ["logs"],
             category: "Config",
             description: "View or change the logging configuration for this server",
+            usage: "logs",
             channel: "guild",
             userRoles: [Roles.Staff]
         });

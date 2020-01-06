@@ -8,11 +8,12 @@ interface CommandArgs {
 
 export default class DiceCommand extends KauriCommand {
     constructor() {
-        super("dice", {
+        super("Dice", {
             aliases: ["dice", "d"],
             category: "Game",
             flags: ["-v", "--verify"],
             description: "Rolls one or more x-sided dice",
+            usage: ["d 100","d 2,100","d 2d100"]
         });
     }
 

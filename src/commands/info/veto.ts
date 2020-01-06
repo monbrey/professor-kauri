@@ -4,10 +4,11 @@ import { KauriCommand } from "../../lib/commands/KauriCommand";
 
 module.exports = class VetoCommand extends KauriCommand {
     constructor() {
-        super("veto", {
+        super("Veto Tiers", {
             aliases: ["veto"],
             category: "Info",
             description: "Provides Veto Tier informaion from the Refpedia",
+            usage: "veto",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
         });
     }

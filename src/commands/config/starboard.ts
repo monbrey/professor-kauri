@@ -6,10 +6,11 @@ import { IStarboardConfigDocument } from "../../models/schemas/starboardConfig";
 
 export default class StarboardCommand extends KauriCommand {
     constructor() {
-        super("starboard", {
+        super("Starboard", {
             aliases: ["starboard"],
             category: "Config",
             description: "View or change the Starboard configuration for this server",
+            usage: "starboard",
             channel: "guild",
             userRoles: [Roles.Staff]
         });
@@ -169,7 +170,7 @@ export default class StarboardCommand extends KauriCommand {
                 sbConfig["minReacts"] = min;
                 await this.client.settings!.set(message.guild.id, "starboard", sbConfig);
                 message.util!.lastResponse!.delete();
-                return this.exec(message);  
+                return this.exec(message);
             }
         }
     }

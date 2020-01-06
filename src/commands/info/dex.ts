@@ -14,10 +14,11 @@ interface DexMessage extends Message {
 
 export default class DexCommand extends KauriCommand {
     constructor() {
-        super("dex", {
+        super("Ultradex Lookup", {
             aliases: ["dex", "learnset"],
             category: "Info",
             description: "Get Ultradex data for a Pokemon",
+            usage: ["dex <pokemon>", "learnset <pokemon>"],
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"]
         });
     }

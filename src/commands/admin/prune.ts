@@ -10,12 +10,12 @@ interface CommandArgs {
 
 export default class PruneCommand extends KauriCommand {
     constructor() {
-        super("prune", {
+        super("Prune Messages", {
             aliases: ["prune", "purge"],
             category: "Admin",
-            flags: ["-s"],
-            description: "Bulk deletes messages from the channel",
+            description: "Bulk deletes messages from the channel.\nCan be targetted at a specific user.",
             channel: "guild",
+            usage: "prune [1-100] [user]",
             userRoles: [Roles.Staff]
         });
     }
