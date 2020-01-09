@@ -22,8 +22,8 @@ export class Pokemon {
     name: string;
     displayName: string;
     dexno: number;
-    type1: PokemonType;
-    type2: PokemonType;
+    type1: string;
+    type2?: string;
     abilities: PokemonAbility[];
     attacks: PokemonAttack[];
     maleAllowed: boolean;
@@ -56,7 +56,7 @@ export class Pokemon {
         this.displayName = data.displayName;
         this.dexno = data.dexno;
         this.type1 = data.type1;
-        this.type2 = data.type2;
+        this.type2 = data.type2 !== "NONE" ? data.type2 : undefined;
         this.abilities = data.abilities;
         this.attacks = data.attacks;
         this.maleAllowed = data.maleAllowed;
@@ -81,6 +81,7 @@ export class Pokemon {
         this.parkLocation = data.parkLocation.name !== "Not Found" ? data.parkLocation : undefined;
 
         this.mega = data.megaEvolutions;
+        this.mega.forEach(m => m.type2 = m.type2 !== "NONE" ? m.type2 : undefined);
 
         this.matchRating = rating;
     }
@@ -223,7 +224,7 @@ export class Pokemon {
             .setColor(color)
             .setThumbnail(`${ICON_BASE}${mega.dexno}${mega.name.replace(this.name, "").toLowerCase()}.png`)
             .setImage(`${SPRITE_BASE}${mega.dexno}${mega.name.replace(this.name, "").toLowerCase()}.gif`)
-            .addField(`** ${mega.type2 ? "Types" : "Type"} ** `, `${t1} ${mega.type1.toTitleCase()}${mega.type2 ? ` | ${this.type2.toTitleCase()} ${t2}` : ""}`)
+            .addField(`** ${mega.type2 ? "Types" : "Type"} ** `, `${t1} ${mega.type1.toTitleCase()}${mega.type2 ? ` | ${mega.type2.toTitleCase()} ${t2}` : ""}`)
             .addField("**Ability**", mega.ability.name)
             .addField("**Legal Genders**", this.genders.join(" | "))
             .addField("**Height and Weight**", `${mega.height}m, ${mega.weight}kg`)

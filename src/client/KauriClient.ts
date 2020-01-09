@@ -122,7 +122,8 @@ export default class KauriClient extends AkairoClient {
         this.listenerHandler.loadAll();
     }
 
-    public getTypeEmoji(type: string, reverse: boolean = false) {
+    public getTypeEmoji(type?: string, reverse: boolean = false) {
+        if (!type) return;
         return this.emojis.find(x => x.name === `type_${type.toLowerCase()}${reverse ? "_rev" : ""}`);
     }
 }
