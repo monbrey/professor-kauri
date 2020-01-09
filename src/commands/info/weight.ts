@@ -69,7 +69,7 @@ module.exports = class WeightCommand extends KauriCommand {
 
             return message.channel.send(embed);
         } else {
-            this.client.logger.info({ key: "dex", search: query, result: "none" });
+            this.client.logger.info({ key: "weight", search: query, result: "none" });
             message.channel.embed("warn", `No results found for ${query}`);
         }
     }
