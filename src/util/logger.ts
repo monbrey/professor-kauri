@@ -17,7 +17,7 @@ const logFormat = format.combine(
     format.json(),
     format.printf((info: any) => {
         const message = info instanceof Object ? JSON.stringify(info) : info.message;
-        return message;
+        return `[${info.timestamp}] ${message}`;
     })
 );
 
