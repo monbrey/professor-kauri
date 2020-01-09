@@ -18,6 +18,9 @@ export enum Roles {
     FFA = "575087931824275466"
 }
 
+export const SPRITE_BASE = "https://pokemonurpg.com/img/sprites/";
+export const ICON_BASE = "https://pokemonurpg.com/img/icons/";
+
 export const MongooseOptions = {
     useNewUrlParser: true,
     useFindAndModify: false,

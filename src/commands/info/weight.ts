@@ -1,12 +1,10 @@
-import { Message } from "discord.js";
-import { MessageEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
+import { Pokemon } from "urpg.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { Pokemon } from "../../models/pokemon";
-import { IPokemon } from "urpg.js";
 
 interface CommandArgs {
-    query: IPokemon;
-    target: IPokemon;
+    query: Pokemon;
+    target: Pokemon;
 }
 
 module.exports = class WeightCommand extends KauriCommand {
@@ -33,16 +31,18 @@ module.exports = class WeightCommand extends KauriCommand {
             type: "api-pokemon"
         };
 
-        return { query, target };
+        return { query: query.value, target: target.value };
     }
 
     public async exec(message: Message, { query, target }: CommandArgs) {
         if (query && target) {
-            // this.client.logger.info({
-            //     key: "weight",
-            //     search: query,
-            //     result: `${query.name} and ${target.name}`
-            // });
+
+            this.client.logger.info({
+                key: "weight",
+                search: query,
+                result: `${query.name} and ${target.name}`
+            });
+
             const embed = new MessageEmbed()
                 .setTitle(`${query.name} vs ${target.name}`)
                 .setDescription("Using Heat Crash or Heavy Slam")
@@ -54,11 +54,13 @@ module.exports = class WeightCommand extends KauriCommand {
         }
 
         if (query) {
-            // this.client.logger.info({
-            //     key: "weight",
-            //     search: query,
-            //     result: query.name
-            // });
+
+            this.client.logger.info({
+                key: "weight",
+                search: query,
+                result: query.name
+            });
+
             const embed = new MessageEmbed()
                 .setTitle(query.name)
                 .setDescription("As the target of Grass Knot or Low Kick")
@@ -67,7 +69,7 @@ module.exports = class WeightCommand extends KauriCommand {
 
             return message.channel.send(embed);
         } else {
-            // this.client.logger.info({ key: "dex", search: query, result: "none" });
+            this.client.logger.info({ key: "dex", search: query, result: "none" });
             message.channel.embed("warn", `No results found for ${query}`);
         }
     }

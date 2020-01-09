@@ -2,7 +2,7 @@ import { stripIndents } from "common-tags";
 import { Argument, Flag } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
-import { IPokemon } from "../../../models/pokemon";
+import { IPokemon } from "../../../models/mongo/pokemon";
 import { Roles } from "../../../util/constants";
 
 interface CommandArgs {

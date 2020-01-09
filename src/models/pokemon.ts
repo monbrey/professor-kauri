@@ -1,302 +1,239 @@
-// import { paginate } from "./plugins/paginator";
-import { Message, MessageEmbed } from "discord.js";
-import { connection, Document, model, Model, Schema } from "mongoose";
-import { autoIncrement } from "mongoose-plugin-autoinc";
-
+import { MessageEmbed } from "discord.js";
+import { CreativeRank, Location, Matched, Pokemon as ApiPokemon, PokemonAbility, PokemonAttack, PokemonMega, PokemonType } from "urpg.js";
+import KauriClient from "../client/KauriClient";
+import { ICON_BASE, SPRITE_BASE } from "../util/constants";
 import { Color } from "./color";
-import { Mega } from "./mega";
-import { IPokemonAbilityDocument, PokemonAbility } from "./schemas/pokemonAbility";
-import { IPokemonEvolutionDocument, PokemonEvolution } from "./schemas/pokemonEvolution";
-import { IPokemonMoveDocument, PokemonMove } from "./schemas/pokemonMove";
-import { db } from "../util/db";
 
-export interface IPokemonDocument extends Document {
-    dexNumber: number;
-    speciesName: string;
-    uniqueName: string;
+export class Pokemon {
+    // alteredForms: any;
+    // uniqueMoves: any;
+    // evolutionFamily: Evolution[][];
+    // megaEvolutions: PokemonMega[];
+    // evolvesFrom: EvolvesFrom;
+    // megaEvolvesFrom: MegaEvolvesFrom;
+    // classification: string;
+    // storyRank: CreativeRank;
+    // artRank: CreativeRank;
+    // parkRank: CreativeRank;
+    // parkLocation: Location;
+    // formName: string;
+    // typeMatchups: TypeMatchup[];
+
+    name: string;
     displayName: string;
-    spriteCode?: string;
-    type1: string;
-    type2?: string;
-    abilities: IPokemonAbilityDocument[];
-    moves: {
-        level: IPokemonMoveDocument[];
-        tm: IPokemonMoveDocument[];
-        hm: IPokemonMoveDocument[];
-        bm: IPokemonMoveDocument[];
-        mt: IPokemonMoveDocument[];
-        sm: IPokemonMoveDocument[];
-    };
-    evolution: IPokemonEvolutionDocument[];
-    mega: Array<{
-        megaId: number;
-        displayName?: string;
-    }>;
-    primal: Array<{
-        primalId: number;
-        displayName?: string;
-    }>;
-    stats: {
-        hp: number;
-        attack: number;
-        defence: number;
-        specialAttack: number;
-        specialDefence: number;
-        speed: number;
-    };
-    height: number;
-    weight: number;
-    gender: {
-        male?: boolean;
-        female?: boolean;
-    };
-    martPrice?: {
-        pokemart?: number;
-        berryStore?: number;
-    };
-    rank?: {
-        story?: string;
-        art?: string;
-        park?: string;
-    };
-    assets?: {
-        image?: string;
-        icon?: string;
-    };
-    parkLocation?: string;
-    starterEligible: boolean;
-    priceString: string;
-}
+    dexno: number;
+    type1: PokemonType;
+    type2: PokemonType;
+    abilities: PokemonAbility[];
+    attacks: PokemonAttack[];
+    maleAllowed: boolean;
+    femaleAllowed: boolean;
 
-export interface IPokemon extends IPokemonDocument {
-    dex(query?: string): Promise<MessageEmbed>;
-    learnset(query?: string): Promise<MessageEmbed>;
-    megaDex(whichMega: number): MessageEmbed;
-    primalDex(whichPrimal: number): MessageEmbed;
-}
+    hp: number;
+    attack: number;
+    defense: number;
+    specialDefense: number;
+    specialAttack: number;
+    speed: number;
 
-export interface IPokemonModel extends Model<IPokemon> {
-    getMartPokemon(page: number): any[];
-    findExact(uniqueNames: string[], query?: any): IPokemon[];
-    findOneExact(uniqueName: string, query?: any): IPokemon;
-    findPartial(uniqueName: string, query?: any): IPokemon[];
-}
+    height: any;
+    weight: any;
 
-const PokemonSchema = new Schema({
-    dexNumber: { type: Number, required: true, index: true },
-    speciesName: { type: String, required: true },
-    uniqueName: { type: String, required: true, index: true },
-    displayName: { type: String, required: true },
-    spriteCode: { type: String },
-    type1: { type: String, required: true },
-    type2: { type: String },
-    abilities: [PokemonAbility],
-    moves: {
-        level: [PokemonMove],
-        tm: [PokemonMove],
-        hm: [PokemonMove],
-        bm: [PokemonMove],
-        mt: [PokemonMove],
-        sm: [PokemonMove]
-    },
-    evolution: [PokemonEvolution],
-    mega: [{
-        megaId: { type: Number, ref: "Mega" },
-        displayName: { type: String },
-        _id: false
-    }],
-    primal: [{
-        primalId: { type: Number, ref: "Mega" },
-        displayName: { type: String },
-        _id: false
-    }],
-    stats: {
-        hp: { type: Number, required: true },
-        attack: { type: Number, required: true },
-        defence: { type: Number, required: true },
-        specialAttack: { type: Number, required: true },
-        specialDefence: { type: Number, required: true },
-        speed: { type: Number, required: true }
-    },
-    height: { type: Number },
-    weight: { type: Number },
-    gender: { male: { type: Boolean }, female: { type: Boolean } },
-    martPrice: { pokemart: { type: Number }, berryStore: { type: Number } },
-    rank: {
-        story: { type: String },
-        art: { type: String },
-        park: { type: String }
-    },
-    assets: {
-        image: { type: String },
-        icon: { type: String }
-    },
-    parkLocation: { type: String },
-    starterEligible: { type: Boolean, required: true }
-}, { collection: "pokemon" });
+    pokemart?: number;
+    berryStore?: number;
 
-PokemonSchema.plugin(autoIncrement, {
-    model: "Pokemon",
-    startAt: 1
-});
-// PokemonSchema.plugin(paginate);
+    storyRank?: CreativeRank;
+    artRank?: CreativeRank;
+    parkRank?: CreativeRank;
+    parkLocation?: Location;
 
-PokemonSchema.virtual("priceString").get(function (this: IPokemon) {
-    if (!this.martPrice) { return ""; }
-    if (this.martPrice.pokemart && this.martPrice.berryStore) {
-        return `$${this.martPrice.pokemart.toLocaleString()} | ${this.martPrice.berryStore.toLocaleString()} CC`;
-    }
-    if (this.martPrice.pokemart) { return `$${this.martPrice.pokemart.toLocaleString()}`; }
-    if (this.martPrice.berryStore) { return `${this.martPrice.berryStore.toLocaleString()} CC`; }
-});
+    mega: PokemonMega[];
 
-PokemonSchema.statics.getMartPokemon = async function (page: number = 0) {
-    return await this.paginate(
-        { "martPrice.pokemart": { $not: { $eq: null } } },
-        { select: "dexNumber uniqueName martPrice.pokemart" },
-        (a: IPokemon, b: IPokemon) => {
-            return a.dexNumber - b.dexNumber;
-        },
-        page,
-        12
-    );
-};
+    matchRating: number;
 
-PokemonSchema.statics.findExact = function (uniqueNames: string[], query: any = {}) {
-    const namesRe = uniqueNames.map(name => new RegExp(`^${name}$`, "i"));
-    return this.find(Object.assign(query, { uniqueName: { $in: namesRe } }));
-};
+    constructor({ value: data, rating }: Matched<ApiPokemon>) {
+        this.name = data.name;
+        this.displayName = data.displayName;
+        this.dexno = data.dexno;
+        this.type1 = data.type1;
+        this.type2 = data.type2;
+        this.abilities = data.abilities;
+        this.attacks = data.attacks;
+        this.maleAllowed = data.maleAllowed;
+        this.femaleAllowed = data.femaleAllowed;
 
-PokemonSchema.statics.findOneExact = function (uniqueName: string, query: any = {}) {
-    return this.findOne(Object.assign(query, { uniqueName: new RegExp(`^${uniqueName}$`, "i") }));
-};
+        this.hp = data.hp;
+        this.attack = data.attack;
+        this.defense = data.defense;
+        this.specialAttack = data.specialAttack;
+        this.specialDefense = data.specialDefense;
+        this.speed = data.speed;
 
-PokemonSchema.statics.findPartial = function (uniqueName: string, query: any = {}) {
-    return this.find(Object.assign(query, { uniqueName: new RegExp(uniqueName, "i") }));
-};
+        this.height = data.height;
+        this.weight = data.weight;
 
-PokemonSchema.methods.dex = async function (query?: string) {
-    const color = await Color.getColorForType(this.type1.toLowerCase());
-    const dexString = this.dexNumber.toString().padStart(3, "0");
-    const title = `URPG Ultradex - ${this.displayName} (#${dexString})`;
-    const types = `${this.type1}${this.type2 ? ` | ${this.type2}` : ""}`;
-    const abilities = this.abilities.map((a: IPokemonAbilityDocument) => (a.hidden ? `${a.abilityName} (HA)` : a.abilityName));
-    const genders = Object.keys(this.gender.toObject())
-        .filter(k => this.gender[k])
-        .map(k => `${k.charAt(0).toUpperCase()}${k.slice(1)}`);
+        this.pokemart = data.pokemart > 0 ? data.pokemart : undefined;
+        this.berryStore = data.contestCredits > 0 ? data.contestCredits : undefined;
 
-    const embed = new MessageEmbed()
-        .setTitle(title)
-        .setURL(`https://pokemonurpg.com/pokemon/${encodeURIComponent(this.uniqueName)}`)
-        .setColor(color)
-        .setThumbnail(this.assets.icon)
-        .setImage(this.assets.image)
-        .addField(`**${this.type2 ? "Types" : "Type"}**`, types)
-        .addField("**Abilities**", abilities.join(" | "))
-        .addField("**Legal Genders**", genders.length ? genders.join(" | ") : "Genderless")
-        .addField("**Height and Weight**", `${this.height}m, ${this.weight}kg`)
-        .setFooter("Reactions | [M] View Moves ");
+        this.storyRank = data.storyRank.name !== "Unavailable" ? data.storyRank : undefined;
+        this.artRank = data.artRank.name !== "Unavailable" ? data.artRank : undefined;
+        this.parkRank = data.parkRank.name !== "Unavailable" ? data.parkRank : undefined;
+        this.parkLocation = data.parkLocation.name !== "Not Found" ? data.parkLocation : undefined;
 
-    if (this.matchRating !== 1 && query) {
-        const percent = Math.round(this.matchRating * 100);
-        embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
+        this.mega = data.megaEvolutions;
+
+        this.matchRating = rating;
     }
 
-    const rank = [];
-    if (this.rank.story) { rank.push(`Story - ${this.rank.story}`); }
-    if (this.rank.art) { rank.push(`Art - ${this.rank.art}`); }
-    if (this.rank.park && this.parkLocation) {
-        rank.push(`Park - ${this.rank.park} (${this.parkLocation})`);
-    }
-    if (rank.length) { embed.addField("**Creative Ranks**", rank.join(" | ")); }
-
-    const prices = [];
-    if (this.martPrice.pokemart) { prices.push(`${this.martPrice.pokemart.to$()}`); }
-    if (this.martPrice.berryStore) { prices.push(`${this.martPrice.berryStore.to$()}`); }
-    if (prices.length) { embed.addField("**Price**", `${prices.join(" | ")}`); }
-
-    const stats: number[] = Object.values(this.stats.toObject());
-    const statsStringArray = stats.map(s => s.toString().padEnd(3, " "));
-    const statsStrings = `HP  | Att | Def | SpA | SpD | Spe\n${statsStringArray.join(" | ")}`;
-    embed.addField("**Stats**", `\`\`\`${statsStrings}\`\`\``);
-
-    if (this.mega.length === 1) { embed.footer!.text += "| [X] View Mega form"; }
-    if (this.mega.length === 2) { embed.footer!.text += "| [X] View X Mega form | [Y] View Y Mega Form"; }
-    if (this.primal.length === 1) { embed.footer!.text += "| [🇵] View Primal form"; }
-
-    return embed;
-};
-
-PokemonSchema.methods.learnset = async function (query?: string) {
-    const moveTypes: IPokemonMoveDocument[][] = (Object.values(this.moves.toObject()) as IPokemonMoveDocument[][]).slice(1);
-    const moveCount = moveTypes.reduce((acc, obj) => acc + (obj ? obj.length : 0), 0);
-    const color = await Color.getColorForType(this.type1.toLowerCase());
-
-    const embed = new MessageEmbed()
-        .setTitle(`${this.displayName} can learn ${moveCount} move(s)`)
-        .setColor(color);
-
-    if (this.matchRating !== 1 && query) {
-        const percent = Math.round(this.matchRating * 100);
-        embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
+    private get genders() {
+        if (this.maleAllowed && this.femaleAllowed) return ["Male", "Female"];
+        if (this.maleAllowed) return ["Male"];
+        if (this.femaleAllowed) return ["Female"];
+        return ["Genderless"];
     }
 
-    let learnset: { [index: string]: string[] } = {};
-    learnset = (Object.entries(this.moves) as [[string, IPokemonMoveDocument[]]])
-        .slice(1).reduce((acc, [method, moves]) => {
-            if (moves.length > 0) {
-                acc[method] = moves.map(m => m.moveName);
-            }
-            return acc;
-        }, learnset);
+    private get prices() {
+        if (this.pokemart && this.berryStore) return [`Pokemart: ${this.pokemart.to$()}`, `Berry Store: ${this.berryStore.to$()}`];
+        if (this.pokemart) return [`Pokemart: ${this.pokemart.to$()}`];
+        if (this.berryStore) return [`Berry Store: ${this.berryStore.to$()}`];
+        return null;
+    }
 
-    // 1024 character splitter
-    for (const method of Object.keys(learnset)) {
-        learnset[method] = learnset[method].sort();
-        let remainingLearnset = learnset[method].join(", ");
-        let counter = 1;
-        let pieces = Math.ceil(remainingLearnset.length / 1024);
+    private get stats() {
+        const { hp, attack, defense, specialAttack, specialDefense, speed } = this;
+        return { hp, attack, defense, specialAttack, specialDefense, speed };
+    }
 
-        while (remainingLearnset.length > 1024) {
-            const splitPoint = remainingLearnset.lastIndexOf(
-                ", ",
-                Math.floor(remainingLearnset.length / pieces--)
-            );
-            learnset[`${method}${counter++}`] = remainingLearnset
-                .substring(0, splitPoint)
-                .split(", ");
-            remainingLearnset = remainingLearnset.substring(splitPoint + 2);
-            delete learnset[method];
-            if (remainingLearnset.length < 1024) {
-                learnset[`${method}${counter++}`] = remainingLearnset.split(", ");
+    private megaStats(index: number) {
+        const { hp, attack, defense, specialAttack, specialDefense, speed } = this.mega[index];
+        return { hp, attack, defense, specialAttack, specialDefense, speed };
+    }
+
+    private attacksByMethod(method: string) {
+        return this.attacks.reduce((acc, val) => val.method === method ? [...acc, val.name] : acc, [] as string[]);
+    }
+
+    async dex(client: KauriClient, query?: string) {
+        const color = await Color.getColorForType(this.type1.toLowerCase());
+        const [t1, t2] = [client.getTypeEmoji(this.type1), client.getTypeEmoji(this.type2, true)];
+
+        const embed = new MessageEmbed()
+            .setTitle(`URPG Ultradex - ${this.displayName} (#${this.dexno.toString().padStart(3, "0")})`)
+            .setURL(`https://pokemonurpg.com/pokemon/${encodeURIComponent(this.name)}`)
+            .setColor(color)
+            .setThumbnail(`${ICON_BASE}${this.dexno}.png`)
+            .setImage(`${SPRITE_BASE}${this.dexno}.gif`)
+            .addField(`**${this.type2 ? "Types" : "Type"}**`, `${t1} ${this.type1.toTitleCase()}${this.type2 ? ` | ${this.type2.toTitleCase()} ${t2}` : ""}`)
+            .addField("**Abilities**", this.abilities.map(a => (a.hidden ? `${a.name} (HA)` : a.name)).join(" | "))
+            .addField("**Legal Genders**", this.genders.join(" | "))
+            .addField("**Height and Weight**", `${this.height}m, ${this.weight}kg`)
+            .setFooter("Reactions | [M] View Moves ");
+
+        if (this.matchRating !== 1 && query) {
+            const percent = Math.round(this.matchRating * 100);
+            embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
+        }
+
+        const rank = [];
+        if (this.storyRank) { rank.push(`Story: ${this.storyRank.name}`); }
+        if (this.artRank) { rank.push(`Art: ${this.artRank.name}`); }
+        if (this.parkRank && this.parkLocation) {
+            rank.push(`Park: ${this.parkRank.name} (${this.parkLocation.name})`);
+        }
+        if (rank.length) { embed.addField("**Creative Ranks**", rank.join(" | ")); }
+
+        if (this.prices) { embed.addField("**Price**", `${this.prices.join(" | ")}`); }
+
+        const stats = Object.values(this.stats);
+        const statsStringArray = stats.map(s => s.toString().padEnd(3, " "));
+        const statsStrings = `HP  | Att | Def | SpA | SpD | Spe\n${statsStringArray.join(" | ")}`;
+        embed.addField("**Stats**", `\`\`\`${statsStrings}\`\`\``);
+
+        if (this.mega.length === 1) {
+            const mp = this.mega[0].name.split("-")[1];
+            embed.footer!.text += `| [${mp === "Mega" ? "X" : "P"}] View ${mp}`;
+        }
+        if (this.mega.length === 2) { embed.footer!.text += "| [X] View Mega-X | [Y] View Mega-Y"; }
+
+        return embed;
+    }
+
+    async learnset(query?: string) {
+        const color = await Color.getColorForType(this.type1.toLowerCase());
+        const count = this.attacks.filter(a => a.method !== "LEVEL-UP").length;
+
+        const embed = new MessageEmbed()
+            .setTitle(`${this.displayName} can learn ${count} move(s)`)
+            .setColor(color)
+            .setFooter("Reactions | ⬅️ Back ");
+
+        if (this.matchRating !== 1 && query) {
+            const percent = Math.round(this.matchRating * 100);
+            embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
+        }
+
+        const learnset: { [index: string]: string[] } = {};
+
+        if (this.attacks.find(a => a.method === "LEVEL-UP")) learnset["By Level"] = this.attacksByMethod("LEVEL-UP");
+        if (this.attacks.find(a => a.method === "TM")) learnset["By TM"] = this.attacksByMethod("TM");
+        if (this.attacks.find(a => a.method === "HM")) learnset["By HM"] = this.attacksByMethod("HM");
+        if (this.attacks.find(a => a.method === "BREEDING")) learnset["By BM"] = this.attacksByMethod("BREEDING");
+        if (this.attacks.find(a => a.method === "MOVE TUTOR")) learnset["By MT"] = this.attacksByMethod("MOVE TUTOR");
+        if (this.attacks.find(a => a.method === "SPECIAL")) learnset["By SM"] = this.attacksByMethod("SPECIAL");
+
+        // 1024 character splitter
+        for (const method of Object.keys(learnset)) {
+            learnset[method] = learnset[method].sort();
+            let remainingLearnset = learnset[method].join(", ");
+            let counter = 1;
+            let pieces = Math.ceil(remainingLearnset.length / 1024);
+
+            while (remainingLearnset.length > 1024) {
+                delete learnset[method];
+                const splitPoint = remainingLearnset.lastIndexOf(
+                    ", ",
+                    Math.floor(remainingLearnset.length / pieces--)
+                );
+                learnset[`${method} (${counter})`] = remainingLearnset.substring(0, splitPoint).split(", ");
+                remainingLearnset = remainingLearnset.substring(splitPoint + 2);
+                delete learnset[method];
+                if (remainingLearnset.length < 1024) {
+                    learnset[`${method}${counter++}`] = remainingLearnset.split(", ");
+                }
             }
         }
+
+        for (const [name, value] of Object.entries(learnset)) {
+            embed.addField(`**${name}**`, value.join(", "));
+        }
+
+        return embed;
     }
 
-    // Construct the embed fields
-    if (learnset["level"]) { embed.addField("**By Level**", learnset["level"].join(", ")); }
-    if (learnset["tm"]) { embed.addField("**By TM**", learnset["tm"].join(", ")); }
-    if (learnset["tm1"]) { embed.addField("**By TM**", learnset["tm1"].join(", ")); }
-    if (learnset["tm2"]) { embed.addField("**By TM (cont)**", learnset["tm2"].join(", ")); }
-    if (learnset["tm3"]) { embed.addField("**By TM (cont)**", learnset["tm3"].join(", ")); }
-    if (learnset["hm"]) { embed.addField("**By HM**", learnset["hm"].join(", ")); }
-    if (learnset["bm"]) { embed.addField("**By BM**", learnset["bm"].join(", ")); }
-    if (learnset["mt"]) { embed.addField("**By MT**", learnset["mt"].join(", ")); }
-    if (learnset["sm"]) { embed.addField("**By SM**", learnset["sm"].join(", ")); }
+    async megaDex(client: KauriClient, whichMega: number) {
+        const mega = this.mega[whichMega];
+        if (!mega) { return; }
 
-    return embed;
-};
+        const color = await Color.getColorForType(this.type1.toLowerCase());
+        const [t1, t2] = [client.getTypeEmoji(this.type1), client.getTypeEmoji(this.type2, true)];
 
-PokemonSchema.methods.megaDex = async function (this: IPokemon, whichMega: number) {
-    const mega = await Mega.findById(this.mega[whichMega].megaId);
-    if (!mega) { return; }
-    return mega.dex(this);
-};
+        const embed = new MessageEmbed()
+            .setTitle(`URPG Ultradex - ${mega.displayName} (#${mega.dexno.toString().padStart(3, "0")})`)
+            .setURL(`https://pokemonurpg.com/pokemon/${encodeURIComponent(this.name)}`)
+            .setColor(color)
+            .setThumbnail(`${ICON_BASE}${mega.dexno}${mega.name.replace(this.name, "").toLowerCase()}.png`)
+            .setImage(`${SPRITE_BASE}${mega.dexno}${mega.name.replace(this.name, "").toLowerCase()}.gif`)
+            .addField(`** ${mega.type2 ? "Types" : "Type"} ** `, `${t1} ${mega.type1.toTitleCase()}${mega.type2 ? ` | ${this.type2.toTitleCase()} ${t2}` : ""}`)
+            .addField("**Ability**", mega.ability.name)
+            .addField("**Legal Genders**", this.genders.join(" | "))
+            .addField("**Height and Weight**", `${mega.height}m, ${mega.weight}kg`)
+            .setFooter("Reactions | ⬅️ Back ");
 
-PokemonSchema.methods.primalDex = async function (this: IPokemon, whichPrimal: number) {
-    const primal = await Mega.findById(this.primal[whichPrimal].primalId);
-    if (!primal) { return; }
-    return primal.dex(this);
-};
+        const stats = Object.values(this.megaStats(whichMega));
+        const statsStringArray = stats.map(s => s.toString().padEnd(3, " "));
+        const statsStrings = `HP  | Att | Def | SpA | SpD | Spe\n${statsStringArray.join(" | ")} `;
+        embed.addField("**Stats**", `\`\`\`${statsStrings}\`\`\``);
 
-export const Pokemon: IPokemonModel = db.model<IPokemon, IPokemonModel>("Pokemon", PokemonSchema);
+        return embed;
+    }
+}

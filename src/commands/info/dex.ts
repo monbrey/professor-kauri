@@ -1,14 +1,15 @@
-import { Message, MessageReaction, User } from "discord.js";
-import { MessageEmbed } from "discord.js";
+import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
+import { Matched, Pokemon as ApiPokemon } from "urpg.js";
+import KauriClient from "../../client/KauriClient";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { IPokemon, Pokemon } from "../../models/pokemon";
+import { Pokemon } from "../../models/Pokemon";
 
 interface CommandArgs {
-    pokemon: IPokemon;
+    match: Matched<ApiPokemon>;
 }
 
 interface DexMessage extends Message {
-    pokemon: IPokemon;
+    pokemon: Pokemon;
     origAuthor: User;
 }
 
@@ -24,30 +25,32 @@ export default class DexCommand extends KauriCommand {
     }
 
     public *args() {
-        const pokemon = yield {
-            type: "pokemon",
+        const match = yield {
+            type: "api-pokemon",
             match: "text",
             prompt: {
                 start: "> Please provide the name of a Pokemon to lookup"
             }
         };
 
-        return { pokemon };
+        return { match };
     }
 
-    public async exec(message: Message, { pokemon }: CommandArgs) {
+    public async exec(message: Message, { match }: CommandArgs) {
         const alias = message.util?.parsed?.alias;
         const query = message.util && message.util.parsed ? message.util.parsed.content : undefined;
+
+        const pokemon = new Pokemon(match);
 
         this.client.logger.info({
             key: alias,
             query,
-            result: pokemon.uniqueName
+            result: pokemon.name
         });
 
         try {
             const dex: Partial<DexMessage> = alias === "dex" ?
-                await message.channel.send(await pokemon.dex(query)) as Message :
+                await message.channel.send(await pokemon.dex(this.client as KauriClient, query)) as Message :
                 await message.channel.send(await pokemon.learnset(query)) as Message;
             dex.pokemon = pokemon;
             dex.origAuthor = message.author!;
@@ -56,84 +59,61 @@ export default class DexCommand extends KauriCommand {
         } catch (e) {
             this.client.logger.parseError(e);
         }
-
     }
 
     private async dexPrompt(dex: DexMessage) {
-        // Set the default filter
-        let filter = (reaction: MessageReaction, user: User) =>
-            ["🇲"].includes(reaction.emoji.name) && user.id === dex.origAuthor.id;
+        const emojis = ["🇲"];
 
-        await dex.react("🇲");
-
-        // One mega override
         if (dex.pokemon.mega.length === 1) {
-            await dex.react("🇽");
-            filter = (reaction, user) =>
-                ["🇲", "🇽"].includes(reaction.emoji.name) && user.id === dex.origAuthor.id;
+            const mp = dex.pokemon.mega[0].name.split("-")[1];
+            emojis.push(mp === "Mega" ? "🇽" : "🇵");
         }
-        // Two mega override
-        if (dex.pokemon.mega.length === 2) {
-            await dex.react("🇽");
-            await dex.react("🇾");
-            filter = (reaction, user) =>
-                ["🇲", "🇽", "🇾"].includes(reaction.emoji.name) && user.id === dex.origAuthor.id;
-        }
-        // Primal override
-        if (dex.pokemon.primal.length === 1) {
-            await dex.react("🇵");
-            filter = (reaction, user) =>
-                ["🇲", "🇵"].includes(reaction.emoji.name) && user.id === dex.origAuthor.id;
-        }
+        if (dex.pokemon.mega.length === 2) emojis.push("🇽", "🇾");
 
+        const filter = (reaction: MessageReaction, user: User) =>
+            emojis.includes(reaction.emoji.name) && user.id === dex.origAuthor.id;
+
+        for (const e of emojis) dex.react(e);
         const response = await dex.awaitReactions(filter, { max: 1, time: 30000 });
 
-        if (response.first()) {
-            // Otherwise proceed through the workflow
-            switch (response.first()!.emoji.name) {
-                case "🇲":
-                    await dex.edit(await dex.pokemon.learnset());
-                    break;
-                case "🇽":
-                    await dex.edit(dex.pokemon.megaDex(0));
-                    break;
-                case "🇾":
-                    await dex.edit(dex.pokemon.megaDex(1));
-                    break;
-                case "🇵":
-                    await dex.edit(dex.pokemon.primalDex(0));
-                    break;
-            }
-            if (dex.guild) { await dex.reactions.removeAll(); }
-            this.backPrompt(dex);
-        } else {
-            const embed = new MessageEmbed(dex.embeds[0]);
-            embed.setFooter("");
-            await dex.edit(embed);
-            if (dex.guild) { await dex.reactions.removeAll(); }
+        if (dex.guild) { await dex.reactions.removeAll(); }
 
+        switch (response.first()?.emoji.name) {
+            case "🇲":
+                await dex.edit(await dex.pokemon.learnset());
+                break;
+            case "🇽":
+            case "🇵":
+                await dex.edit(await dex.pokemon.megaDex(this.client as KauriClient, 0));
+                break;
+            case "🇾":
+                await dex.edit(await dex.pokemon.megaDex(this.client as KauriClient, 1));
+                break;
+            default:
+                const embed = new MessageEmbed(dex.embeds[0]).setFooter("");
+                await dex.edit(embed);
         }
+
+        this.backPrompt(dex);
     }
 
     private async backPrompt(dex: DexMessage) {
         const filter = (reaction: MessageReaction, user: User) =>
             ["⬅️"].includes(reaction.emoji.name) && user.id === dex.origAuthor.id;
+
         await dex.react("⬅️");
 
         const response = await dex.awaitReactions(filter, { max: 1, time: 30000 });
 
+        if (dex.guild) { dex.reactions.removeAll(); }
+
         if (response.first()?.emoji.name === "⬅️") {
-            await dex.edit(await dex.pokemon.dex());
-            if (dex.guild) { await dex.reactions.removeAll(); }
+            await dex.edit(await dex.pokemon.dex(this.client as KauriClient));
             this.dexPrompt(dex);
         }
         else {
-            const embed = new MessageEmbed(dex.embeds[0]);
-            embed.setFooter("");
-            await dex.edit(embed);
-            if (dex.guild) { dex.reactions.removeAll(); }
+            const embed = new MessageEmbed(dex.embeds[0]).setFooter("");
+            dex.edit(embed);
         }
-
-        return;
     }
 }

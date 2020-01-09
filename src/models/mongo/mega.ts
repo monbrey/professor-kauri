@@ -2,8 +2,8 @@ import { stripIndents } from "common-tags";
 import { MessageEmbed } from "discord.js";
 import { Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
-import { db } from "../util/db";
-import { Color } from "./color";
+import { db } from "../../util/db";
+import { Color } from "../color";
 import { IPokemon } from "./pokemon";
 
 

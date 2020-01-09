@@ -2,14 +2,14 @@ import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from 
 import { ClientOptions, Message } from "discord.js";
 import queue from "p-queue";
 import { join } from "path";
+import { UrpgClient } from "urpg.js";
 import { Ability, IAbility } from "../models/ability";
+import { IPokemon, Pokemon } from "../models/mongo/pokemon";
 import { IMove, Move } from "../models/move";
-import { IPokemon, Pokemon } from "../models/pokemon";
+import { IRoleConfig, RoleConfig } from "../models/roleConfig";
 import { ISettings, Settings } from "../models/settings";
 import MongooseProvider from "../providers/MongooseProvider";
 import Logger from "../util/logger";
-import { UrpgClient } from "urpg.js";
-import { IRoleConfig, RoleConfig } from "../models/roleConfig";
 
 declare module "discord-akairo" {
     interface AkairoClient {
@@ -73,7 +73,7 @@ export default class KauriClient extends AkairoClient {
                 if (!phrase) return;
 
                 const response = await this.urpgApi.pokemon.getClosest(phrase);
-                if (response) return response.value;
+                if (response) return response;
             })
             .addType("pokemonTeam", (message: Message, phrase: string) => {
                 if (!phrase) return;
@@ -88,7 +88,7 @@ export default class KauriClient extends AkairoClient {
                 return MoveProvider.fetchClosest(phrase);
             })
             .addType("roleConfig", (message: Message, phrase: string) => {
-                if(!phrase) return;
+                if (!phrase) return;
                 return this.roleConfigs.fetchClosest(phrase);
             });
 
@@ -120,5 +120,9 @@ export default class KauriClient extends AkairoClient {
         this.commandHandler.loadAll();
         this.inhibitorHandler.loadAll();
         this.listenerHandler.loadAll();
+    }
+
+    public getTypeEmoji(type: string, reverse: boolean = false) {
+        return this.emojis.find(x => x.name === `type_${type.toLowerCase()}${reverse ? "_rev" : ""}`);
     }
 }

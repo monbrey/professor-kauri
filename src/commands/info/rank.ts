@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Color } from "../../models/color";
-import { IPokemon, Pokemon } from "../../models/pokemon";
+import { IPokemon, Pokemon } from "../../models/mongo/pokemon";
 
 const sRanks = [
     { name: "easiest", min: 3000, max: 5000 },
@@ -56,7 +56,6 @@ export default class RankCommand extends KauriCommand {
                     .find({ $or: [{ "rank.story": rankQ }, { "rank.art": rankQ }] })
                     .sort("dexNumber")
                     .select("displayName dexNumber rank.story -_id");
-                // .cache(0, `rank-story-${rankQ}`);
 
                 if (rankedPokemon.length !== 0) {
                     this.client.logger.rank(message, query, rankedPokemon.length);
@@ -75,7 +74,6 @@ export default class RankCommand extends KauriCommand {
                 const rankedPokemon = await Pokemon.find({ "rank.park": rankQ })
                     .sort("dexNumber")
                     .select("displayName dexNumber parkLocation rank.park -_id");
-                // .cache(0, `rank-park-${rankQ}`);
 
                 if (rankedPokemon.length !== 0) {
                     this.client.logger.rank(message, query, rankedPokemon.length);

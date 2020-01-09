@@ -15,6 +15,7 @@ require("./lib/commands/KauriCommandUtil");
 // Other Extensions
 require("./lib/misc/Model");
 require("./lib/misc/Number");
+require("./lib/misc/String");
 
 const client = new KauriClient({
     disableEveryone: true,
