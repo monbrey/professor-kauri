@@ -5,20 +5,6 @@ import { ICON_BASE, SPRITE_BASE } from "../util/constants";
 import { Color } from "./color";
 
 export class Pokemon {
-    // alteredForms: any;
-    // uniqueMoves: any;
-    // evolutionFamily: Evolution[][];
-    // megaEvolutions: PokemonMega[];
-    // evolvesFrom: EvolvesFrom;
-    // megaEvolvesFrom: MegaEvolvesFrom;
-    // classification: string;
-    // storyRank: CreativeRank;
-    // artRank: CreativeRank;
-    // parkRank: CreativeRank;
-    // parkLocation: Location;
-    // formName: string;
-    // typeMatchups: TypeMatchup[];
-
     name: string;
     displayName: string;
     dexno: number;
@@ -56,7 +42,7 @@ export class Pokemon {
         this.displayName = data.displayName;
         this.dexno = data.dexno;
         this.type1 = data.type1;
-        this.type2 = data.type2 !== "NONE" ? data.type2 : undefined;
+        this.type2 = data.type2;
         this.abilities = data.abilities;
         this.attacks = data.attacks;
         this.maleAllowed = data.maleAllowed;
@@ -75,10 +61,10 @@ export class Pokemon {
         this.pokemart = data.pokemart > 0 ? data.pokemart : undefined;
         this.berryStore = data.contestCredits > 0 ? data.contestCredits : undefined;
 
-        this.storyRank = data.storyRank.name !== "Unavailable" ? data.storyRank : undefined;
-        this.artRank = data.artRank.name !== "Unavailable" ? data.artRank : undefined;
-        this.parkRank = data.parkRank.name !== "Unavailable" ? data.parkRank : undefined;
-        this.parkLocation = data.parkLocation.name !== "Not Found" ? data.parkLocation : undefined;
+        this.storyRank = data.storyRank;
+        this.artRank = data.artRank;
+        this.parkRank = data.parkRank;
+        this.parkLocation = data.parkLocation;
 
         this.mega = data.megaEvolutions;
         this.mega.forEach(m => m.type2 = m.type2 !== "NONE" ? m.type2 : undefined);
@@ -98,6 +84,17 @@ export class Pokemon {
         if (this.pokemart) return [`Pokemart: ${this.pokemart.to$()}`];
         if (this.berryStore) return [`Berry Store: ${this.berryStore.to$()}`];
         return null;
+    }
+
+    private get ranks() {
+        const ranks = [];
+        if (this.storyRank) { ranks.push(`Story: ${this.storyRank.name}`); }
+        if (this.artRank) { ranks.push(`Art: ${this.artRank.name}`); }
+        if (this.parkRank && this.parkLocation) {
+            ranks.push(`Park: ${this.parkRank.name} (${this.parkLocation.name})`);
+        }
+
+        return ranks.length ? ranks : null;
     }
 
     private get stats() {
@@ -135,14 +132,7 @@ export class Pokemon {
             embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
         }
 
-        const rank = [];
-        if (this.storyRank) { rank.push(`Story: ${this.storyRank.name}`); }
-        if (this.artRank) { rank.push(`Art: ${this.artRank.name}`); }
-        if (this.parkRank && this.parkLocation) {
-            rank.push(`Park: ${this.parkRank.name} (${this.parkLocation.name})`);
-        }
-        if (rank.length) { embed.addField("**Creative Ranks**", rank.join(" | ")); }
-
+        if (this.ranks) { embed.addField("**Creative Ranks**", this.ranks.join(" | ")); }
         if (this.prices) { embed.addField("**Price**", `${this.prices.join(" | ")}`); }
 
         const stats = Object.values(this.stats);

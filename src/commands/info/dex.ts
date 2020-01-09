@@ -74,27 +74,29 @@ export default class DexCommand extends KauriCommand {
             emojis.includes(reaction.emoji.name) && user.id === dex.origAuthor.id;
 
         for (const e of emojis) dex.react(e);
-        const response = await dex.awaitReactions(filter, { max: 1, time: 30000 });
+        const responses = await dex.awaitReactions(filter, { max: 1, time: 30000 });
+        const response = responses.first();
 
         if (dex.guild) { await dex.reactions.removeAll(); }
 
-        switch (response.first()?.emoji.name) {
-            case "🇲":
-                await dex.edit(await dex.pokemon.learnset());
-                break;
-            case "🇽":
-            case "🇵":
-                await dex.edit(await dex.pokemon.megaDex(this.client as KauriClient, 0));
-                break;
-            case "🇾":
-                await dex.edit(await dex.pokemon.megaDex(this.client as KauriClient, 1));
-                break;
-            default:
-                const embed = new MessageEmbed(dex.embeds[0]).setFooter("");
-                await dex.edit(embed);
+        if (response) {
+            switch (response.emoji.name) {
+                case "🇲":
+                    await dex.edit(await dex.pokemon.learnset());
+                    break;
+                case "🇽":
+                case "🇵":
+                    await dex.edit(await dex.pokemon.megaDex(this.client as KauriClient, 0));
+                    break;
+                case "🇾":
+                    await dex.edit(await dex.pokemon.megaDex(this.client as KauriClient, 1));
+                    break;
+                default:
+                    const embed = new MessageEmbed(dex.embeds[0]).setFooter("");
+                    await dex.edit(embed);
+            }
+            this.backPrompt(dex);
         }
-
-        this.backPrompt(dex);
     }
 
     private async backPrompt(dex: DexMessage) {
@@ -103,11 +105,12 @@ export default class DexCommand extends KauriCommand {
 
         await dex.react("⬅️");
 
-        const response = await dex.awaitReactions(filter, { max: 1, time: 30000 });
+        const responses = await dex.awaitReactions(filter, { max: 1, time: 30000 });
+        const response = responses.first();
 
         if (dex.guild) { dex.reactions.removeAll(); }
 
-        if (response.first()?.emoji.name === "⬅️") {
+        if (response?.emoji.name === "⬅️") {
             await dex.edit(await dex.pokemon.dex(this.client as KauriClient));
             this.dexPrompt(dex);
         }

@@ -44,7 +44,7 @@ export default class KauriClient extends AkairoClient {
         this.logger = new Logger(this);
         this.settings = new MongooseProvider(Settings, "guild_id");
         this.roleConfigs = new MongooseProvider(RoleConfig, "name");
-        this.urpgApi = new UrpgClient();
+        this.urpgApi = new UrpgClient({ castToNull: true });
 
         this.reactionQueue = new queue({
             concurrency: 1,
