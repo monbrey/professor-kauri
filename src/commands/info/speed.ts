@@ -65,7 +65,6 @@ module.exports = class SpeedCommand extends KauriCommand {
             .addField("**Electro Ball**", `${this.calcElectro(qValue, tValue)} BP`, true)
             .addField("**Gyro Ball**", `${this.calcGyro(qValue, tValue)} BP`, true);
 
-
         return message.util!.send(embed);
     }
 

@@ -42,7 +42,7 @@ export default class HelpCommand extends KauriCommand {
                     await Promise.all(
                         cat.map(async c => {
                             const notOwner = !c.ownerOnly;
-                            const permitted = !(await this.handler.runPermissionChecks(message, c));
+                            const permitted = c.userRoles?.some(p => message.member?.roles.has(p)) ?? true;
                             const notInhibited = !(await this.handler.runPostTypeInhibitors(message, c));
 
                             return notOwner && permitted && notInhibited ? c : null;
