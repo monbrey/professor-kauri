@@ -2,6 +2,7 @@ import { PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Argument } from "discord-akairo";
+import CommandBlockedListener from "../../listeners/commandHandler/commandBlocked";
 
 interface CommandArgs {
     command: KauriCommand;
@@ -42,8 +43,13 @@ export default class HelpCommand extends KauriCommand {
                     await Promise.all(
                         cat.map(async c => {
                             const notOwner = !c.ownerOnly;
-                            const permitted = c.userRoles?.some(p => message.member?.roles.has(p)) ?? true;
+                            const permitted = !(await this.handler.runPermissionChecks(message, c));
+
+                            const blockListener = (this.client.listenerHandler.modules.get("commandBlocked") as CommandBlockedListener);
+                            blockListener.run = false;
+
                             const notInhibited = !(await this.handler.runPostTypeInhibitors(message, c));
+                            blockListener.run = true;
 
                             return notOwner && permitted && notInhibited ? c : null;
                         })
