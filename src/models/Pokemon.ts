@@ -35,9 +35,12 @@ export class Pokemon {
 
     mega: PokemonMega[];
 
-    matchRating: number;
+    matchRating?: number;
 
-    constructor({ value: data, rating }: Matched<ApiPokemon>) {
+    constructor(apiData: ApiPokemon | Matched<ApiPokemon>);
+    constructor(apiData: any) {
+        const data = apiData.value ? apiData.value : apiData;
+
         this.name = data.name;
         this.displayName = data.displayName;
         this.dexno = data.dexno;
@@ -69,24 +72,24 @@ export class Pokemon {
         this.mega = data.megaEvolutions;
         this.mega.forEach(m => m.type2 = m.type2 !== "NONE" ? m.type2 : undefined);
 
-        this.matchRating = rating;
+        this.matchRating = apiData.rating;
     }
 
-    private get genders() {
+    public get genders() {
         if (this.maleAllowed && this.femaleAllowed) return ["Male", "Female"];
         if (this.maleAllowed) return ["Male"];
         if (this.femaleAllowed) return ["Female"];
         return ["Genderless"];
     }
 
-    private get prices() {
+    public get prices() {
         if (this.pokemart && this.berryStore) return [`Pokemart: ${this.pokemart.to$()}`, `Berry Store: ${this.berryStore.to$()}`];
         if (this.pokemart) return [`Pokemart: ${this.pokemart.to$()}`];
         if (this.berryStore) return [`Berry Store: ${this.berryStore.to$()}`];
         return null;
     }
 
-    private get ranks() {
+    public get ranks() {
         const ranks = [];
         if (this.storyRank) { ranks.push(`Story: ${this.storyRank.name}`); }
         if (this.artRank) { ranks.push(`Art: ${this.artRank.name}`); }
@@ -97,12 +100,12 @@ export class Pokemon {
         return ranks.length ? ranks : null;
     }
 
-    private get stats() {
+    public get stats() {
         const { hp, attack, defense, specialAttack, specialDefense, speed } = this;
         return { hp, attack, defense, specialAttack, specialDefense, speed };
     }
 
-    private megaStats(index: number) {
+    public megaStats(index: number) {
         const { hp, attack, defense, specialAttack, specialDefense, speed } = this.mega[index];
         return { hp, attack, defense, specialAttack, specialDefense, speed };
     }
@@ -127,7 +130,7 @@ export class Pokemon {
             .addField("**Height and Weight**", `${this.height}m, ${this.weight}kg`)
             .setFooter("Reactions | [M] View Moves ");
 
-        if (this.matchRating !== 1 && query) {
+        if (this.matchRating && this.matchRating !== 1 && query) {
             const percent = Math.round(this.matchRating * 100);
             embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
         }
@@ -158,7 +161,7 @@ export class Pokemon {
             .setColor(color)
             .setFooter("Reactions | ⬅️ Back ");
 
-        if (this.matchRating !== 1 && query) {
+        if (this.matchRating && this.matchRating !== 1 && query) {
             const percent = Math.round(this.matchRating * 100);
             embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
         }

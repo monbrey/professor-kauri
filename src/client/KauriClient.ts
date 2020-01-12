@@ -13,12 +13,13 @@ import Logger from "../util/logger";
 
 declare module "discord-akairo" {
     interface AkairoClient {
-        logger: Logger;
-        settings: MongooseProvider<ISettings>;
         commandHandler: CommandHandler;
         inhibitorHandler: InhibitorHandler;
         listenerHandler: ListenerHandler;
         reactionQueue: queue;
+        logger: Logger;
+        settings: MongooseProvider<ISettings>;
+        urpgApi: UrpgClient;
     }
 }
 

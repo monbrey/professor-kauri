@@ -1,7 +1,8 @@
 import { Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Color } from "../../models/color";
-import { IPokemon, Pokemon } from "../../models/mongo/pokemon";
+import { IPokemon, Pokemon as DbPokemon } from "../../models/mongo/pokemon";
+import { Pokemon } from "../../models/Pokemon";
 
 const sRanks = [
     { name: "easiest", min: 3000, max: 5000 },
@@ -40,7 +41,7 @@ export default class RankCommand extends KauriCommand {
             type: "string",
             match: "text",
             prompt: {
-                start: "> Please provide the name of a Rank to lookup"
+                start: "> Please provide the name of a Rank or Pokemon to lookup"
             }
         };
 
@@ -52,7 +53,7 @@ export default class RankCommand extends KauriCommand {
         if (sRank) {
             const rankQ = new RegExp(`^${sRank.name}$`, "i");
             try {
-                const rankedPokemon = await Pokemon
+                const rankedPokemon = await DbPokemon
                     .find({ $or: [{ "rank.story": rankQ }, { "rank.art": rankQ }] })
                     .sort("dexNumber")
                     .select("displayName dexNumber rank.story -_id");
@@ -71,7 +72,7 @@ export default class RankCommand extends KauriCommand {
         if (pRank) {
             const rankQ = new RegExp(`^${pRank.name}$`, "i");
             try {
-                const rankedPokemon = await Pokemon.find({ "rank.park": rankQ })
+                const rankedPokemon = await DbPokemon.find({ "rank.park": rankQ })
                     .sort("dexNumber")
                     .select("displayName dexNumber parkLocation rank.park -_id");
 
@@ -88,7 +89,7 @@ export default class RankCommand extends KauriCommand {
         // Search by location
         try {
             // eslint-disable-next-line no-unused-vars
-            const rankedPokemon = await Pokemon.findAllClosest("parkLocation", query, 0.75);
+            const rankedPokemon = await DbPokemon.findAllClosest("parkLocation", query, 0.75);
 
             if (rankedPokemon && rankedPokemon.length !== 0) {
                 this.client.logger.rank(message, query, rankedPokemon.length);
@@ -101,11 +102,12 @@ export default class RankCommand extends KauriCommand {
 
         // Find the actual Pokemon
         try {
-            const pokemon = query.match(/^\d+$/) ? await Pokemon.findOne({ dexNumber: parseInt(query, 10) }) : await Pokemon.findClosest("uniqueName", query);
+            const pokemon = query.match(/^\d+$/) ? await DbPokemon.findOne({ dexNumber: parseInt(query, 10) }) : await DbPokemon.findClosest("uniqueName", query);
 
             if (pokemon) {
                 this.client.logger.rank(message, query, 1);
-                return message.channel.send(await this.outputSingle(pokemon));
+                const apiPokemon = new Pokemon(await this.client.urpgApi.pokemon.get(pokemon.uniqueName));
+                return message.channel.send(await this.outputSingle(pokemon, apiPokemon));
             }
         } catch (e) {
             this.client.logger.parseError(e);
@@ -173,18 +175,22 @@ export default class RankCommand extends KauriCommand {
         return embed;
     }
 
-    private async outputSingle(pokemon: IPokemon) {
+    private async outputSingle(pokemon: IPokemon, apiPokemon: Pokemon) {
         if (!pokemon.rank) { return; }
         const rank = pokemon.rank;
 
         const sRank = rank.story ? sRanks.find(r => r.name === rank.story!.toLowerCase()) : null;
         const aRank = rank.art ? sRanks.find(r => r.name === rank.art!.toLowerCase()) : null;
         const pRank = rank.park ? pRanks.find(r => r.name === rank.park!.toLowerCase()) : null;
+        const prices = apiPokemon.prices;
 
         const embed = new MessageEmbed()
             .setTitle(`${pokemon.displayName} Ranks and Location`)
-            .setColor(await Color.getColorForType(pokemon.type1.toLowerCase()))
-            .addField("**Story**", sRank ? `${rank.story} | ${sRank.min.toLocaleString()} - ${sRank.max.toLocaleString()} characters` : "Not available")
+            .setColor(await Color.getColorForType(pokemon.type1.toLowerCase()));
+
+        if (prices) embed.addField("**Purchase**", prices.join(" | "));
+
+        embed.addField("**Story**", sRank ? `${rank.story} | ${sRank.min.toLocaleString()} - ${sRank.max.toLocaleString()} characters` : "Not available")
             .addField("**Art**", aRank ? `${rank.art}` : "Not available")
             .addField("**Park**", pRank ? `${rank.park} | ${pokemon.parkLocation} | ${pRank.mcr} characters` : "Not available");
 
