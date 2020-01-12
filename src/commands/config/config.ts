@@ -62,18 +62,18 @@ export default class ConfigCommand extends KauriCommand {
         const info = this.generateCommandInfo(message, command, config);
         info.setFooter("Click the pencil to edit the configuration");
 
-        const sent = await message.util!.send(info);
+        let sent = await message.util!.send(info);
         info.setFooter("");
         await sent.react("✏");
 
         const filter = ({ emoji }: MessageReaction, u: User) => emoji.name === "✏" && u.id === message.author!.id;
         const edit = await sent.awaitReactions(filter, { time: 30000, max: 1 });
-        await sent.reactions.removeAll();
+        sent = await sent.reactions.removeAll();
 
         if (!edit.first()) { return; }
-        await sent.edit(this.addEditControls(message, info, command, config));
+        sent = await sent.edit(this.addEditControls(message, info, command, config));
 
-        return this.configure(message, sent, command, config);
+        this.configure(message, sent, command, config);
     }
 
     private async reset(message: Message, command: KauriCommand) {
@@ -214,6 +214,7 @@ export default class ConfigCommand extends KauriCommand {
         const reacts = ["✅", "❌", "🔲", "🔄"].filter(e =>
             sent.embeds[0].fields[sent.embeds[0].fields.length - 1].value.includes(e)
         );
+        console.log(reacts);
         try {
             for (const r of reacts) { await sent.react(r); }
         } catch (e) {
@@ -272,7 +273,6 @@ export default class ConfigCommand extends KauriCommand {
         const enableLine = gDisabled ? "\\✅ - Enable this command for the server" : "\\❌ - Disable this command for the server";
         info.addField("**Controls**", stripIndents`${enableLine}
             \\🔲 - Edit Channel overrides for this command
-            \\🚫 - Edit Role restrictions for this command
             \\🔄 - Reset all server configuration for this command`);
 
         return info;
