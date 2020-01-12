@@ -31,15 +31,16 @@ module.exports = class WeightCommand extends KauriCommand {
             type: "api-pokemon"
         };
 
-        return { query: query.value, target: target.value };
+        return { query: query.value, target: target ? target.value : undefined };
     }
 
     public async exec(message: Message, { query, target }: CommandArgs) {
+        const search = message.util?.parsed?.content;
+        console.log(search);
         if (query && target) {
-
             this.client.logger.info({
                 key: "weight",
-                search: query,
+                search,
                 result: `${query.name} and ${target.name}`
             });
 
@@ -57,7 +58,7 @@ module.exports = class WeightCommand extends KauriCommand {
 
             this.client.logger.info({
                 key: "weight",
-                search: query,
+                search,
                 result: query.name
             });
 
@@ -69,7 +70,7 @@ module.exports = class WeightCommand extends KauriCommand {
 
             return message.channel.send(embed);
         } else {
-            this.client.logger.info({ key: "weight", search: query, result: "none" });
+            this.client.logger.info({ key: "weight", search, result: "none" });
             message.channel.embed("warn", `No results found for ${query}`);
         }
     }
