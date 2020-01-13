@@ -1,7 +1,7 @@
 import { Listener } from "discord-akairo";
 import { Message } from "discord.js";
 
-export default class ReadyListener extends Listener {
+export default class MessageListener extends Listener {
     constructor() {
         super("message", {
             emitter: "client",
