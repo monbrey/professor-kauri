@@ -7,9 +7,10 @@ export default class MetronomeCommand extends KauriCommand {
         super("Metronome", {
             aliases: ["metronome"],
             category: "Game",
+            clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
             description: "Select a random move.",
-            usage: "metronome",
-            clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"]
+            requiresDatabase: true,
+            usage: "metronome"
         });
     }
 

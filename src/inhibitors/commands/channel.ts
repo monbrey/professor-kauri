@@ -5,7 +5,7 @@ import { KauriCommand } from "../../lib/commands/KauriCommand";
 export default class ChannelConfigInhibitor extends Inhibitor {
     constructor() {
         super("channelConfigInhbitor", {
-            reason: "Command disabled in channel",
+            reason: "channelDisabled",
             type: "post",
             priority: 1
         });

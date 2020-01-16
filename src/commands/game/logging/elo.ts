@@ -16,10 +16,11 @@ export default class EloCommand extends KauriCommand {
         super("ELO Update", {
             aliases: ["elo"],
             category: "Game",
-            description: "Update the ELO rating for two battlers",
-            usage: "elo <winner> <loser>",
             channel: "guild",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
+            description: "Update the ELO rating for two battlers",
+            requiresDatabase: true,
+            usage: "elo <winner> <loser>",
             userRoles: [Roles.Staff, Roles.SeniorReferee, Roles.Referee]
         });
     }

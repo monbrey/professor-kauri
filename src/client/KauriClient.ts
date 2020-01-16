@@ -1,26 +1,38 @@
+// Dependencies
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
 import { ClientOptions, Message } from "discord.js";
+import { Connection } from "mongoose";
 import queue from "p-queue";
 import { join } from "path";
 import { UrpgClient } from "urpg.js";
+// Models
 import { Ability, IAbility } from "../models/ability";
 import { IPokemon, Pokemon } from "../models/mongo/pokemon";
 import { IMove, Move } from "../models/move";
 import { IRoleConfig, RoleConfig } from "../models/roleConfig";
 import { ISettings, Settings } from "../models/settings";
 import MongooseProvider from "../providers/MongooseProvider";
+// Utilities
+import { db, instanceDB } from "../util/db";
 import Logger from "../util/logger";
 
+interface IKauriClient {
+    commandHandler: CommandHandler;
+    inhibitorHandler: InhibitorHandler;
+    listenerHandler: ListenerHandler;
+    reactionQueue: queue;
+    logger: Logger;
+    settings: MongooseProvider<ISettings>;
+    urpgApi: UrpgClient;
+
+    db: {
+        main: Connection;
+        instance: Connection;
+    };
+}
+
 declare module "discord-akairo" {
-    interface AkairoClient {
-        commandHandler: CommandHandler;
-        inhibitorHandler: InhibitorHandler;
-        listenerHandler: ListenerHandler;
-        reactionQueue: queue;
-        logger: Logger;
-        settings: MongooseProvider<ISettings>;
-        urpgApi: UrpgClient;
-    }
+    interface AkairoClient extends IKauriClient { }
 }
 
 const PokemonProvider = new MongooseProvider<IPokemon>(Pokemon, "uniqueName");
@@ -43,9 +55,14 @@ export default class KauriClient extends AkairoClient {
         super({ ownerID: "122157285790187530", fetchAllMembers: true }, options);
 
         this.logger = new Logger(this);
-        this.settings = new MongooseProvider(Settings, "guild_id");
         this.roleConfigs = new MongooseProvider(RoleConfig, "name");
+        this.settings = new MongooseProvider(Settings, "guild_id");
         this.urpgApi = new UrpgClient({ castToNull: true });
+
+        this.db = {
+            main: db,
+            instance: instanceDB
+        };
 
         this.reactionQueue = new queue({
             concurrency: 1,

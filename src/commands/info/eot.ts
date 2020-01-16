@@ -11,9 +11,10 @@ export default class EotCommand extends KauriCommand {
         super("EOT", {
             aliases: ["eot"],
             category: "Info",
-            description: "Provides End-of-Turn effect information from the Refpedia",
-            usage: "eot <effect>",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
+            description: "Provides End-of-Turn effect information from the Refpedia",
+            requiresDatabase: true,
+            usage: "eot <effect>"
         });
     }
 

@@ -9,9 +9,10 @@ export default class StarboardCommand extends KauriCommand {
         super("Starboard", {
             aliases: ["starboard"],
             category: "Config",
-            description: "View or change the Starboard configuration for this server",
-            usage: "starboard",
             channel: "guild",
+            description: "View or change the Starboard configuration for this server",
+            requiresDatabase: true,
+            usage: "starboard",
             userRoles: [Roles.Staff]
         });
     }

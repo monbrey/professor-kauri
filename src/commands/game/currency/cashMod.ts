@@ -14,10 +14,11 @@ export default class CashModCommand extends KauriCommand {
         super("Cash Modifier", {
             aliases: ["pay", "deduct"],
             category: "Game",
-            description: "Adds or subtracts money for a trainer's account.",
-            usage: ["pay <member> <amount>", "deduct <member> <amount>"],
             channel: "guild",
-            defaults: { disabled: true }
+            defaults: { disabled: true },
+            description: "Adds or subtracts money for a trainer's account.",
+            requiresDatabase: true,
+            usage: ["pay <member> <amount>", "deduct <member> <amount>"]
         });
     }
 

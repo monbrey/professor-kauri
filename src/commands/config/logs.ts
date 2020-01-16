@@ -8,9 +8,10 @@ export default class LogsCommand extends KauriCommand {
         super("Logs", {
             aliases: ["logs"],
             category: "Config",
-            description: "View or change the logging configuration for this server",
-            usage: "logs",
             channel: "guild",
+            description: "View or change the logging configuration for this server",
+            requiresDatabase: true,
+            usage: "logs",
             userRoles: [Roles.Staff]
         });
     }

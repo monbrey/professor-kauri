@@ -1,6 +1,6 @@
+import { Argument } from "discord-akairo";
 import { Collection, Message, Snowflake, SnowflakeUtil, TextChannel, User } from "discord.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
-import { Argument } from "discord-akairo";
 
 interface CommandArgs {
     operation: "set" | "clear" | "extend" | "pause" | "resume";

@@ -26,8 +26,4 @@ const client = new KauriClient({
         "CHANNEL_PINS_UPDATE"
     ],
     partials: ["MESSAGE","CHANNEL","REACTION"]
-});
-
-db.once("connected", () => {
-    client.start();
-});
+}).start();

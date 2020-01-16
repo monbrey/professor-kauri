@@ -30,9 +30,10 @@ export default class RankCommand extends KauriCommand {
         super("Rank Lookup", {
             aliases: ["rank"],
             category: "Info",
-            description: "View all Pokemon of a specified rank",
-            usage: ["rank <pokemon>", "rank <rank name>", "rank <park location>"],
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
+            description: "View all Pokemon of a specified rank",
+            requiresDatabase: true,
+            usage: ["rank <pokemon>", "rank <rank name>", "rank <park location>"]
         });
     }
 

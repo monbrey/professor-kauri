@@ -24,12 +24,13 @@ export default class BattleLogCommand extends KauriCommand {
         super("Battle Log", {
             aliases: ["battlelog", "bl", "reflog", "rl"],
             category: "Game",
-            description: "Logs and pays the Battlers and Referee for a battle",
-            usage: ["bl"],
             channel: "guild",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
-            userRoles: [Roles.SeniorReferee, Roles.Referee],
-            defaults: { disabled: true }
+            defaults: { disabled: true },
+            description: "Logs and pays the Battlers and Referee for a battle",
+            requiresDatabase: true,
+            usage: ["bl"],
+            userRoles: [Roles.SeniorReferee, Roles.Referee]
         });
     }
 

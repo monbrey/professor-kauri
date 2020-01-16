@@ -12,9 +12,10 @@ module.exports = class WeatherCommand extends KauriCommand {
         super("Weather", {
             aliases: ["weather"],
             category: "Info",
-            description: "Provides weather information",
-            usage: "weather [name]",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
+            description: "Provides weather information",
+            requiresDatabase: true,
+            usage: "weather [name]"
         });
     }
 

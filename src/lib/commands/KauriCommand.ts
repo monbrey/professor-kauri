@@ -5,15 +5,18 @@ import { MessageEmbed } from "discord.js";
 import { PrefixSupplier } from "discord-akairo";
 import { CommandStats } from "../../models/commandStats";
 
+interface IKauriCommand {
+    defaults: {
+        disabled: boolean;
+        configurable: boolean;
+    };
+    usage?: string | string[];
+    userRoles?: Roles[];
+    requiresDatabase: boolean;
+}
+
 declare module "discord-akairo" {
-    interface Command {
-        defaults: {
-            disabled: boolean;
-            configurable: boolean;
-        };
-        usage?: string | string[];
-        userRoles?: Roles[];
-    }
+    interface Command extends IKauriCommand { }
 }
 
 interface KauriCommandOptions extends CommandOptions {
@@ -23,6 +26,7 @@ interface KauriCommandOptions extends CommandOptions {
     };
     usage?: string | string[];
     userRoles?: Roles[];
+    requiresDatabase?: boolean;
 }
 
 const COMMAND_DEFAULTS = {
@@ -37,10 +41,11 @@ export class KauriCommand extends Command {
         this.defaults = Object.assign({}, COMMAND_DEFAULTS, options ? options.defaults : {});
         this.usage = options?.usage;
         this.userRoles = options?.userRoles;
+        this.requiresDatabase = options?.requiresDatabase || false;
     }
 
     public afterCancel?(): any;
-    public onBlocked?(message: Message): any;
+    public onBlocked?(message: Message): any {}
 
     public help(message: Message) {
         const prefix = (this.handler.prefix as PrefixSupplier)(message);

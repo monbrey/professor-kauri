@@ -1,7 +1,6 @@
-import { PrefixSupplier } from "discord-akairo";
+import { Argument, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { Argument } from "discord-akairo";
 import CommandBlockedListener from "../../listeners/commandHandler/commandBlocked";
 
 interface CommandArgs {

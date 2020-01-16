@@ -14,9 +14,10 @@ export default class ConfigCommand extends KauriCommand {
         super("Config", {
             aliases: ["config"],
             category: "Config",
-            description: "Change command configuration options in this server.",
-            usage: "config <command>",
             channel: "guild",
+            description: "Change command configuration options in this server.",
+            requiresDatabase: true,
+            usage: "config <command>",
             userRoles: [Roles.Staff]
         });
     }

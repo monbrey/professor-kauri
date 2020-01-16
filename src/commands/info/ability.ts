@@ -11,9 +11,10 @@ export default class AbilityCommand extends KauriCommand {
         super("Ability Lookup", {
             aliases: ["ability"],
             category: "Info",
-            description: "Provides information on Pokemon Abilities",
-            usage: "ability <name>",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
+            description: "Provides information on Pokemon Abilities",
+            requiresDatabase: true,
+            usage: "ability <name>"
         });
     }
 

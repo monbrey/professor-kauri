@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { MongooseOptions } from "./constants";
 
 mongoose.set("useCreateIndex", true);
+
 mongoose.connect(`${process.env.KAURIDB_URI!}/monbrey-urpg-v2`, MongooseOptions);
 
 export const db = mongoose.connection;

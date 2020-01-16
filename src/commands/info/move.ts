@@ -11,9 +11,10 @@ export default class MoveCommand extends KauriCommand {
         super("Move Lookup", {
             aliases: ["move"],
             category: "Info",
-            description: "Provides Move information",
-            usage: "move <name>",
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
+            description: "Provides Move information",
+            requiresDatabase: true,
+            usage: "move <name>"
         });
     }
 

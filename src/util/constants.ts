@@ -27,3 +27,10 @@ export const MongooseOptions = {
     useUnifiedTopology: true,
     w: "majority"
 };
+
+export const InhibitorReasons = {
+    CHANNEL_DISABLED: "CHANNEL_DISABLED",
+    GUILD_DISABLED: "GUILD_DISABLED",
+    ROLE_NOT_PERMITTED: "ROLE_NOT_PERMITTED",
+    NO_DATABASE: "NO_DATABASE"
+};

@@ -13,10 +13,12 @@ export default class AddRoleCommand extends KauriCommand {
         super("Manage Roles", {
             aliases: ["role", "addRole", "removeRole"],
             category: "Admin",
-            description: "Grants roles to URPG members.\nIf no member argument is provided, the command can be used to self-assign roles where allowed.",
             channel: "guild",
-            usage: ["role <role>", "addRole <role> [member]"],
             clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS", "MANAGE_ROLES"],
+            description: "Grants roles to URPG members.\nIf no member argument is provided, the command can be used to self-assign roles where allowed.",
+            requiresDatabase: true,
+            usage: ["role <role>", "addRole <role> [member]"],
+
         });
     }
 

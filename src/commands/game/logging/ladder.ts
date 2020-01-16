@@ -9,10 +9,11 @@ module.exports = class LadderCommand extends KauriCommand {
         super("ELO Ladder", {
             aliases: ["ladder"],
             category: "Game",
-            description: "View the ELO rankings",
-            usage: "ladder",
             channel: "guild",
-            clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"]
+            clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
+            description: "View the ELO rankings",
+            requiresDatabase: true,
+            usage: "ladder"
         });
     }
 
