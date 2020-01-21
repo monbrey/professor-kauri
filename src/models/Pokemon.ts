@@ -7,6 +7,7 @@ import { Color } from "./color";
 export class Pokemon {
     name: string;
     displayName: string;
+    formName: string;
     dexno: number;
     type1: string;
     type2?: string;
@@ -43,6 +44,7 @@ export class Pokemon {
 
         this.name = data.name;
         this.displayName = data.displayName;
+        this.formName = data.formName;
         this.dexno = data.dexno;
         this.type1 = data.type1;
         this.type2 = data.type2;
@@ -105,6 +107,11 @@ export class Pokemon {
         return { hp, attack, defense, specialAttack, specialDefense, speed };
     }
 
+    public get suffix() {
+        if(!this.name.includes("-")) return "";
+        return `-${this.name.split("-")[1].toLowerCase()}`;
+    }
+
     public megaStats(index: number) {
         const { hp, attack, defense, specialAttack, specialDefense, speed } = this.mega[index];
         return { hp, attack, defense, specialAttack, specialDefense, speed };
@@ -119,11 +126,11 @@ export class Pokemon {
         const [t1, t2] = [client.getTypeEmoji(this.type1), client.getTypeEmoji(this.type2, true)];
 
         const embed = new MessageEmbed()
-            .setTitle(`URPG Ultradex - ${this.displayName} (#${this.dexno.toString().padStart(3, "0")})`)
+            .setTitle(`URPG Ultradex - ${this.displayName}${this.formName ? ` - ${this.formName}` : ""} (#${this.dexno.toString().padStart(3, "0")})`)
             .setURL(`https://pokemonurpg.com/pokemon/${encodeURIComponent(this.name)}`)
             .setColor(color)
-            .setThumbnail(`${ICON_BASE}${this.dexno}.png`)
-            .setImage(`${SPRITE_BASE}${this.dexno}.gif`)
+            .setThumbnail(`${ICON_BASE}${this.dexno}${this.suffix}.png`)
+            .setImage(`${SPRITE_BASE}${this.dexno}${this.suffix}.gif`)
             .addField(`**${this.type2 ? "Types" : "Type"}**`, `${t1} ${this.type1.toTitleCase()}${this.type2 ? ` | ${this.type2.toTitleCase()} ${t2}` : ""}`)
             .addField("**Abilities**", this.abilities.map(a => (a.hidden ? `${a.name} (HA)` : a.name)).join(" | "))
             .addField("**Legal Genders**", this.genders.join(" | "))

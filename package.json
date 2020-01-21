@@ -4,7 +4,7 @@
   "description": "Typescript rewrite of Professor Kauri built on the Akairo framework",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node dist/index.js",
     "build": "rimraf dist/ && tsc -p src/tsconfig.json",
     "watch": "tsc -p src/tsconfig.json --watch",
     "lint": "npx eslint src/**/*.ts --fix",
