@@ -1,10 +1,10 @@
 import { stripIndents } from "common-tags";
 import { MessageEmbed } from "discord.js";
-import { connection, Document, model, Model, Schema } from "mongoose";
+import { Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
-
-import { Color } from "./color";
 import { db } from "../util/db";
+import { Color } from "./color";
+
 
 export interface IMoveDocument extends Document {
     moveName: string;

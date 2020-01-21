@@ -15,7 +15,8 @@ export enum Roles {
     Curator = "312119111750647809",
     ElderArbiter = "533356631455694849",
     Arbiter = "533356018005180416",
-    FFA = "575087931824275466"
+    FFA = "575087931824275466",
+    EventCoordinator = "584764766921293825"
 }
 
 export const SPRITE_BASE = "https://pokemonurpg.com/img/sprites/";
