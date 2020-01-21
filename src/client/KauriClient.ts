@@ -85,11 +85,13 @@ export default class KauriClient extends AkairoClient {
         this.commandHandler.resolver
             .addType("pokemon", (message: Message, phrase: string) => {
                 if (!phrase) return;
+                phrase = phrase.replace(/-G$/gi, "-Galar").replace(/-A/gi, "-Alola");
                 return PokemonProvider.resolveClosest(phrase);
             })
             .addType("api-pokemon", async (message: Message, phrase: string) => {
                 if (!phrase) return;
 
+                phrase = phrase.replace(/-G$/gi, "-Galar").replace(/-A/gi, "-Alola");
                 const response = await this.urpgApi.pokemon.getClosest(phrase);
                 if (response) return response;
             })
