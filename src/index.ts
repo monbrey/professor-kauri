@@ -3,19 +3,19 @@ import { db } from "./util/db";
 import KauriClient from "./client/KauriClient";
 
 // Discord Extensions
-require("./lib/structures/GuildTrainer");
-require("./lib/structures/KauriGuild");
-require("./lib/structures/KauriChannel");
-require("./lib/structures/KauriMessage");
+import "./lib/structures/GuildTrainer";
+import "./lib/structures/KauriGuild";
+import "./lib/structures/KauriChannel";
+import "./lib/structures/KauriMessage";
 
 // Akairo Extensions
-require("./lib/commands/KauriCommand");
-require("./lib/commands/KauriCommandUtil");
+import "./lib/commands/KauriCommand";
+import "./lib/commands/KauriCommandUtil";
 
 // Other Extensions
-require("./lib/misc/Model");
-require("./lib/misc/Number");
-require("./lib/misc/String");
+import "./lib/mongoose/Model";
+import "./lib/misc/Number";
+import "./lib/misc/String";
 
 const client = new KauriClient({
     disableEveryone: true,
