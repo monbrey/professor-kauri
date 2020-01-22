@@ -13,7 +13,7 @@ interface Auction {
     value: number;
 }
 
-const auctionUpdate = (pokemon: Pokemon, bid: Auction) => `Auction: **${pokemon.name}**
+const auctionUpdate = (pokemon: Pokemon, bid: Auction) => `**Auction**: ${pokemon.name}
 **Current Bid**: ${bid.member ? bid.member.displayName : "Starting"} at ${bid.value.to$()}`;
 
 export default class AuctionCommand extends KauriCommand {
@@ -43,7 +43,15 @@ export default class AuctionCommand extends KauriCommand {
         const sent = await message.channel.send(`Start an auction for **${pokemon.name}** at **$1,000**?`);
         const confirm = await sent.reactConfirm(message.author.id);
 
-        if (!confirm) return;
+        if (!confirm) {
+            sent.delete();
+            return;
+        }
+
+        message.channel.send(`<@${Roles.Auction}>: Auction for ${pokemon.name} starting in 5 minutes!`);
+        setTimeout(()=> message.channel.send(`<@${Roles.Auction}>: Auction for ${pokemon.name} starting in 1 minute!`), 240000);
+
+        await new Promise(resolve => setTimeout(() => resolve(true), 300000));
 
         const bid: Auction = {
             auctioneer: message.member!,
@@ -53,8 +61,8 @@ export default class AuctionCommand extends KauriCommand {
         message.channel.send(auctionUpdate(pokemon, bid));
 
         const filter = (m: Message) => {
-            // if (m.member!.id === bid.auctioneer.id) return false;
-            // if (bid.member && m.member!.id === bid.member.id) return false;
+            if (m.member!.id === bid.auctioneer.id) return false;
+            if (bid.member && m.member!.id === bid.member.id) return false;
 
             const strVal = m.content.replace(/[$,]/g, "");
             const value = strVal.endsWith("k") ? parseInt(strVal.slice(0, -1), 10) * 1000 : parseInt(strVal, 10);
