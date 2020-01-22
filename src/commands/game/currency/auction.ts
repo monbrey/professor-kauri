@@ -2,6 +2,8 @@ import { GuildMember, Message } from "discord.js";
 import { Pokemon } from "urpg.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
 import { Roles } from "../../../util/constants";
+import { MessageEmbed } from "discord.js";
+import { stripIndents } from "common-tags";
 
 interface CommandArgs {
     pokemon: Pokemon;
@@ -49,7 +51,7 @@ export default class AuctionCommand extends KauriCommand {
         }
 
         message.channel.send(`<@${Roles.Auction}>: Auction for ${pokemon.name} starting in 5 minutes!`);
-        setTimeout(()=> message.channel.send(`<@${Roles.Auction}>: Auction for ${pokemon.name} starting in 1 minute!`), 240000);
+        setTimeout(() => message.channel.send(`<@${Roles.Auction}>: Auction for ${pokemon.name} starting in 1 minute!`), 240000);
 
         await new Promise(resolve => setTimeout(() => resolve(true), 300000));
 
@@ -97,7 +99,15 @@ export default class AuctionCommand extends KauriCommand {
             if (!bid.member)
                 return message.channel.send("No bids received! Auction complete.");
 
-            return message.channel.send(`${pokemon.name} sold to ${bid.member.displayName} for ${bid.value.to$()}`);
+            const embed = new MessageEmbed()
+                .setTitle("Auction Complete!")
+                .setDescription(stripIndents`${pokemon.name} sold to ${bid.member.displayName} for ${bid.value.to$()}.
+                Head over to the [Auction Room](https://forum.pokemonurpg.com/showthread.php?tid=1719) to claim!. Include the link to this message:`);
+
+            return message.channel.send(embed).then(m => {
+                embed.description += `\n${m.url}`;
+                m.edit(embed);
+            });
         });
     }
 }
