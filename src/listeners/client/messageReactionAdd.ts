@@ -46,7 +46,7 @@ export default class MessageReactionAddListener extends Listener {
         if (!starboard || !starboard.channel) { return; }
 
         // Assign the starboard data
-        const starChannel = message.guild.channels.get(starboard.channel);
+        const starChannel = message.guild.channels.cache.get(starboard.channel);
         if (!(starChannel instanceof TextChannel)) { return; }
         const starEmoji = starboard.emoji || "⭐";
         const minReacts = starboard.minReacts || 1;
@@ -81,7 +81,7 @@ export default class MessageReactionAddListener extends Listener {
                 : message.channel.send(`You cannot ${starEmoji} your own messages`);
         }
 
-        const stars = users.has(message.author.id) && count ? count - 1 : count || 0;
+        const stars = users.cache.has(message.author.id) && count ? count - 1 : count || 0;
 
         // Check that the minimum number of reactions has been reached
         if (stars < minReacts) { return; }

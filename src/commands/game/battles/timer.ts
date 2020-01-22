@@ -79,7 +79,7 @@ export default class TimerCommand extends KauriCommand {
 
         timer.remaining--;
 
-        const channel = this.client.channels.get(timer.channel_id) as TextChannel;
+        const channel = this.client.channels.cache.get(timer.channel_id) as TextChannel;
         switch (timer.remaining) {
             case 0:
                 channel.send(`${timer.users.map(u => `<@${u}>`).join(" ")}: Time's up!`);

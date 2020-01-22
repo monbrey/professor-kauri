@@ -17,10 +17,10 @@ export default class RoleConfigInhibitor extends Inhibitor {
 
         if (message.author.id === this.client.ownerID) return false;
 
-        if (message.member?.roles.has(Roles.Head)) return false;
+        if (message.member?.roles.cache.has(Roles.Head)) return false;
 
         if (command.userRoles) {
-            return !command.userRoles.some(r => message.member?.roles.has(r));
+            return !command.userRoles.some(r => message.member?.roles.cache.has(r));
         }
 
         return false;

@@ -30,7 +30,7 @@ const WeatherSchema = new Schema({
 
 WeatherSchema.methods.info = function(client: Client) {
     const embed = new MessageEmbed()
-        .setTitle(`${client.emojis.get(this.emoji) ?? this.emoji} ${this.weatherName}`)
+        .setTitle(`${client.emojis.cache.get(this.emoji) ?? this.emoji} ${this.weatherName}`)
         .setDescription(this.desc)
         .setColor(this.color);
 

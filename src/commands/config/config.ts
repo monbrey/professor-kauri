@@ -165,7 +165,7 @@ export default class ConfigCommand extends KauriCommand {
             .addField(`**Channel ${gDisabled ? "Enabled" : "Disabled"}**`, "\u200B");
 
         const evalOverrides = () => {
-            const overrides = channels.filter(
+            const overrides = channels.cache.filter(
                 channel => {
                     const setting = config.channels.find(c => c.channel_id === channel.id);
                     if (!setting) { return false; }
@@ -294,7 +294,7 @@ export default class ConfigCommand extends KauriCommand {
         if (config.channels && config.channels.length) {
             const channels = config.channels
                 .filter(c => c.disabled !== gDisabled)
-                .map(c => message.guild!.channels.get(c.channel_id));
+                .map(c => message.guild!.channels.cache.get(c.channel_id));
             embed.addField(`**Channels ${gDisabled ? "Enabled" : "Disabled"}**`, channels.join(" "));
         }
 
