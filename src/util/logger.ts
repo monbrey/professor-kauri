@@ -131,6 +131,7 @@ class CustomLogger {
             channel: { id: input.channel.id, name: (input.channel as GuildChannel).name }
         };
     }
+    // #endregion
 
     // #region EVENTS
     public async guildMemberAdd(member: GuildMember) {
@@ -645,6 +646,7 @@ class CustomLogger {
 
         if (member.guild.logChannel) return member.guild.logChannel.send(embed)
     }*/
+    // #endregion
 }
 
 export default CustomLogger;
