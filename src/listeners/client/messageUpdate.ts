@@ -18,7 +18,7 @@ export default class MessageUpdateListener extends Listener {
             newMessage.member.ban({ days: 1, reason: "Mention spam from non-member" });
 
         // Message spam protection
-        const count = newMessage.channel.messages.filter(m => m.author.id === newMessage.author.id && m.createdTimestamp > Date.now() - 2000).size;
+        const count = newMessage.channel.messages.filter(m => m.author?.id === newMessage.author.id && m.createdTimestamp > Date.now() - 2000).size;
         if (count > 5)
             newMessage.member.ban({ days: 1, reason: "Message spam from non-member" });
     }
