@@ -31,7 +31,7 @@ module.exports = class WeatherCommand extends KauriCommand {
     public async exec(message: Message, { query }: CommandArgs) {
         if (!query) {
             const weathers = await Weather.find({});
-            const list = weathers.map(w => `${this.client.emojis.get(w.emoji) ?? w.emoji} ${w.weatherName} - \`[${w.shortCode}]\``);
+            const list = weathers.map(w => `${this.client.emojis.cache.get(w.emoji) ?? w.emoji} ${w.weatherName} - \`[${w.shortCode}]\``);
 
             const embed = new MessageEmbed()
                 .setTitle("Weather Conditions")

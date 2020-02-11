@@ -47,7 +47,7 @@ export default class MessageReactionRemoveListener extends Listener {
         if (!starboard || !starboard.channel) { return; }
 
         // Assign the starboard data
-        const starChannel = message.guild.channels.get(starboard.channel);
+        const starChannel = message.guild.channels.cache.get(starboard.channel);
         if (!(starChannel instanceof TextChannel)) { return; }
         const starEmoji = starboard.emoji || "⭐";
         const minReacts = starboard.minReacts || 1;
@@ -64,7 +64,7 @@ export default class MessageReactionRemoveListener extends Listener {
         // Check for the star emoji
         if (emoji.toString() !== starEmoji) { return; }
 
-        const stars = users.has(message.author.id) && count ? count - 1 : count || 0;
+        const stars = users.cache.has(message.author.id) && count ? count - 1 : count || 0;
 
         // If we've passed ALL the checks, we can add this to the queue
         this.client.reactionQueue.add(async () => {

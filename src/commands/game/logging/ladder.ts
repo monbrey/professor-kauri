@@ -31,7 +31,7 @@ module.exports = class LadderCommand extends KauriCommand {
                 .setTitle("Nobody has joined this ladder yet")
                 .setFooter("Partipate in ladder battles to raise your ranking!");
 
-        const validMembers: GuildMember[] = data.filter(d => message.guild?.members.has(d.id)).map(d => message.guild?.members.get(d.id)!);
+        const validMembers: GuildMember[] = data.filter(d => message.guild?.members.cache.has(d.id)).map(d => message.guild?.members.cache.get(d.id)!);
         const elos = validMembers.map(m => `${emoji.strip(m.displayName).padEnd(30, " ")} | ${m.trainer.battleRecord.elo}`);
 
         const ladder = stripIndents`**URPG ELO Ladder\`\`\`${"Battler".padEnd(30, " ")} | ELO\`\`\`**\`\`\`${elos.join("\n")}\`\`\``;

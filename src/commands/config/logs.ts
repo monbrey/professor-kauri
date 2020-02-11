@@ -21,7 +21,7 @@ export default class LogsCommand extends KauriCommand {
         const logConfig = message.guild.logChannel;
 
         const embed = new MessageEmbed().setTitle(`Log settings for ${message.guild.name}`).setColor("WHITE");
-        embed.addField("**Log Channel**", logConfig ? message.guild.channels.get(logConfig) || "<#invalid_channel>" : "No logging configured");
+        embed.addField("**Log Channel**", logConfig ? message.guild.channels.cache.get(logConfig) || "<#invalid_channel>" : "No logging configured");
 
         return message.util!.send(embed);
     }
@@ -31,7 +31,7 @@ export default class LogsCommand extends KauriCommand {
         const logConfig = message.guild.logChannel;
 
         const embed = new MessageEmbed().setTitle(`Log settings for ${message.guild.name}`).setColor("WHITE");
-        embed.addField("**Log Channel**", logConfig ? message.guild.channels.get(logConfig) || "<#invalid_channel>" : "No logging configured");
+        embed.addField("**Log Channel**", logConfig ? message.guild.channels.cache.get(logConfig) || "<#invalid_channel>" : "No logging configured");
         embed.setFooter("Click the pencil to edit the configuration");
 
         const sent = await message.util!.send(embed);

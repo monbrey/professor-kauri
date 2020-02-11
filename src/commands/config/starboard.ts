@@ -23,7 +23,7 @@ export default class StarboardCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setTitle(`Starboard settings for ${message.guild.name}`).setColor("WHITE");
         if (sbConfig) {
-            embed.addField("**Channel**", message.guild.channels.get(sbConfig.channel) || "<#invalid_channel>", true);
+            embed.addField("**Channel**", message.guild.channels.cache.get(sbConfig.channel) || "<#invalid_channel>", true);
             embed.addField("**Emoji**", sbConfig.emoji || "⭐", true);
             embed.addField("**Reaction Threshold**", sbConfig.minReacts || 1, true);
         } else {
@@ -39,7 +39,7 @@ export default class StarboardCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setTitle(`Starboard settings for ${message.guild.name}`).setColor("WHITE");
         if (sbConfig) {
-            embed.addField("**Channel**", message.guild.channels.get(sbConfig.channel) || "<#invalid_channel>", true);
+            embed.addField("**Channel**", message.guild.channels.cache.get(sbConfig.channel) || "<#invalid_channel>", true);
             embed.addField("**Emoji**", sbConfig.emoji || "⭐", true);
             embed.addField("**Reaction Threshold**", sbConfig.minReacts || 1, true);
         } else {

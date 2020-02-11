@@ -61,14 +61,14 @@ export default class AddRoleCommand extends KauriCommand {
         if (!config) return message.util!.embed("warn", stripIndents`No configuration for that role was found.
             If you think this is an error, please open an issue on [GitHub](https://github.com/Monbrey/professor-kauri-v2)`);
 
-        const role = message.guild?.roles.get(config.role_id);
+        const role = message.guild?.roles.cache.get(config.role_id);
         if (!role) return message.util!.embed("warn", stripIndents`That role is no longer present in the server`);
 
         const roleFunc = (() => {
             switch (alias) {
                 case "addRole": return this.addRole;
                 case "removeRole": return this.removeRole;
-                case "role": return (member ? member.roles.has(role.id) : message.member?.roles.has(role.id)) ? this.removeRole : this.addRole;
+                case "role": return (member ? member.roles.cache.has(role.id) : message.member?.roles.cache.has(role.id)) ? this.removeRole : this.addRole;
                 default: return;
             }
         })();
@@ -80,7 +80,7 @@ export default class AddRoleCommand extends KauriCommand {
             return roleFunc(message, role, message.member!);
         }
 
-        if (message.author.id === this.client.ownerID || config.parents?.some(p => message.member?.roles.has(p)))
+        if (message.author.id === this.client.ownerID || config.parents?.some(p => message.member?.roles.cache.has(p)))
             return roleFunc(message, role, member);
 
         return message.util!.embed("warn", stripIndents`Your roles do not grant permission to manage ${role}.
