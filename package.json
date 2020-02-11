@@ -1,6 +1,6 @@
 {
   "name": "professor-kauri-v2",
-  "version": "2.6.14",
+  "version": "2.7.0",
   "description": "Typescript rewrite of Professor Kauri built on the Akairo framework",
   "main": "dist/index.js",
   "scripts": {
