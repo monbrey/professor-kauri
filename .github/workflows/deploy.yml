@@ -33,5 +33,6 @@ jobs:
         USERNAME: ${{ secrets.OVH_USER }}
         PASSPHRASE: ${{ secrets.OVH_PASSPHRASE }}
       with:
-        source: "dist"
-        target: "test-deploy"
+        source: "dist/*,package-lock.json"
+        target: "bots/professor-kauri"
+        strip_components: 1
