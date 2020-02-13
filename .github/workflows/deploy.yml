@@ -31,6 +31,7 @@ jobs:
         KEY: ${{ secrets.OVH_PRIVATE_KEY }}
         HOST: ${{ secrets.OVH_HOST }}
         USERNAME: ${{ secrets.OVH_USER }}
+        PASSPHRASE: ${{ secrets.OVH_PASSPHRASE }}
       with:
         source: "dist"
         target: "test-deploy"
