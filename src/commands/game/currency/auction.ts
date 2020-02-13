@@ -7,6 +7,7 @@ import { stripIndents } from "common-tags";
 
 interface CommandArgs {
     pokemon: Pokemon;
+    now: boolean;
 }
 
 interface Auction {
@@ -26,6 +27,7 @@ export default class AuctionCommand extends KauriCommand {
             channel: "guild",
             defaults: { disabled: true },
             description: "Auctions off a Pokemon to the highest bidder",
+            flags: ["-now"],
             usage: "auction <Pokemon>",
             userRoles: [Roles.Staff, Roles.EventCoordinator]
         });
@@ -36,10 +38,15 @@ export default class AuctionCommand extends KauriCommand {
             type: "api-pokemon"
         };
 
-        return pokemon ? { pokemon: pokemon.value } : {};
+        const now = yield {
+            match: "flag",
+            flag: ["-now"]
+        };
+
+        return pokemon ? { pokemon: pokemon.value, now } : { now };
     }
 
-    public async exec(message: Message, { pokemon }: CommandArgs) {
+    public async exec(message: Message, { pokemon, now }: CommandArgs) {
         if (!pokemon) return;
 
         const sent = await message.channel.send(`Start an auction for **${pokemon.name}** at **$1,000**?`);
@@ -50,10 +57,12 @@ export default class AuctionCommand extends KauriCommand {
             return;
         }
 
-        message.channel.send(`<@${Roles.Auction}>: Auction for ${pokemon.name} starting in 5 minutes!`);
-        setTimeout(() => message.channel.send(`<@${Roles.Auction}>: Auction for ${pokemon.name} starting in 1 minute!`), 240000);
+        if (!now) {
+            message.channel.send(`<@${Roles.Auction}>: Auction for ${pokemon.name} starting in 5 minutes!`);
+            if (!now) setTimeout(() => message.channel.send(`<@${Roles.Auction}>: Auction for ${pokemon.name} starting in 1 minute!`), 240000);
 
-        await new Promise(resolve => setTimeout(() => resolve(true), 300000));
+            await new Promise(resolve => setTimeout(() => resolve(true), 10000));
+        }
 
         const bid: Auction = {
             auctioneer: message.member!,
@@ -63,8 +72,8 @@ export default class AuctionCommand extends KauriCommand {
         message.channel.send(auctionUpdate(pokemon, bid));
 
         const filter = (m: Message) => {
-            if (m.member!.id === bid.auctioneer.id) return false;
-            if (bid.member && m.member!.id === bid.member.id) return false;
+            if (m.member?.id === bid.auctioneer.id) return false;
+            if (m.member?.id === bid.member?.id) return false;
 
             const strVal = m.content.replace(/[$,]/g, "");
             const value = strVal.endsWith("k") ? parseInt(strVal.slice(0, -1), 10) * 1000 : parseInt(strVal, 10);
