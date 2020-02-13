@@ -35,4 +35,3 @@ jobs:
       with:
         source: "dist/*,package-lock.json"
         target: "bots/professor-kauri"
-        strip_components: 1
