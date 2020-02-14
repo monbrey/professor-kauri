@@ -58,10 +58,10 @@ export default class AuctionCommand extends KauriCommand {
         }
 
         if (!now) {
-            message.channel.send(`<@${Roles.Auction}>: Auction for ${pokemon.name} starting in 5 minutes!`);
+            message.channel.send(`<@&${Roles.Auction}>: Auction for ${pokemon.name} starting in 5 minutes!`);
             if (!now) setTimeout(() => message.channel.send(`<@${Roles.Auction}>: Auction for ${pokemon.name} starting in 1 minute!`), 240000);
 
-            await new Promise(resolve => setTimeout(() => resolve(true), 10000));
+            await new Promise(resolve => setTimeout(() => resolve(true), 300000));
         }
 
         const bid: Auction = {
