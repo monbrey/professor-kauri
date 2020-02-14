@@ -55,4 +55,4 @@ jobs:
         host: ${{ secrets.OVH_HOST }}
         username: ${{ secrets.OVH_USER }}
         passphrase: ${{ secrets.OVH_PASSPHRASE }}
-        script: pm2 restart ecosystem.config.js --only professor-kauri
+        script: pm2 restart ecosystem.config.js --only professor-kauri --env=production
