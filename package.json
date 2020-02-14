@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/Monbrey/professor-kauri-v2#readme",
   "devDependencies": {
-    "@types/cheerio": "^0.22.15",
     "@types/common-tags": "^1.8.0",
     "@types/dotenv": "^6.1.1",
     "@types/mongoose": "^5.5.41",
@@ -38,7 +37,6 @@
     "typescript-eslint": "^0.0.1-alpha.0"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.3",
     "common-tags": "^1.8.0",
     "discord-akairo": "github:discord-akairo/discord-akairo",
     "discord.js": "github:discordjs/discord.js",
