@@ -58,8 +58,16 @@ export default class AuctionCommand extends KauriCommand {
         }
 
         if (!now) {
-            message.channel.send(`<@&${Roles.Auction}>: Auction for ${pokemon.name} starting in 5 minutes!`);
-            if (!now) setTimeout(() => message.channel.send(`<@&${Roles.Auction}>: Auction for ${pokemon.name} starting in 1 minute!`), 240000);
+            const auctionRole = message.guild?.roles.cache.get(Roles.Auction);
+            if (auctionRole) await auctionRole.setMentionable(true);
+            await message.channel.send(`<@&${Roles.Auction}>: Auction for ${pokemon.name} starting in 5 minutes!`);
+            if (auctionRole) await auctionRole.setMentionable(false);
+
+            if (!now) setTimeout(async () => {
+                if (auctionRole) await auctionRole.setMentionable(true);
+                await message.channel.send(`<@&${Roles.Auction}>: Auction for ${pokemon.name} starting in 1 minute!`);
+                if (auctionRole) await auctionRole.setMentionable(false);
+            }, 240000);
 
             await new Promise(resolve => setTimeout(() => resolve(true), 300000));
         }
@@ -111,7 +119,7 @@ export default class AuctionCommand extends KauriCommand {
             const embed = new MessageEmbed()
                 .setTitle("Auction Complete!")
                 .setDescription(stripIndents`${pokemon.name} sold to ${bid.member.displayName} for ${bid.value.to$()}.
-                Head over to the [Auction Room](https://forum.pokemonurpg.com/showthread.php?tid=1719) to claim!. Include the link to this message:`);
+                Head over to the [Auction Room](https://forum.pokemonurpg.com/showthread.php?tid=1719) to claim! Include the link to this message:`);
 
             return message.channel.send(embed).then(m => {
                 embed.description += `\n${m.url}`;
