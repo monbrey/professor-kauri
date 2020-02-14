@@ -25,7 +25,7 @@ export default class AuctionCommand extends KauriCommand {
             aliases: ["auction"],
             category: "Game",
             channel: "guild",
-            defaults: { disabled: true },
+            defaults: { disabled: false },
             description: "Auctions off a Pokemon to the highest bidder",
             flags: ["-now"],
             usage: "auction <Pokemon>",

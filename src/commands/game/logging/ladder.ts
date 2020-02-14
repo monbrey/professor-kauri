@@ -29,7 +29,7 @@ module.exports = class LadderCommand extends KauriCommand {
         if (data.length === 0)
             return new MessageEmbed()
                 .setTitle("Nobody has joined this ladder yet")
-                .setFooter("Partipate in ladder battles to raise your ranking!");
+                .setDescription("Partipate in ladder battles to raise your ranking!");
 
         const validMembers: GuildMember[] = data.filter(d => message.guild?.members.cache.has(d.id)).map(d => message.guild?.members.cache.get(d.id)!);
         const elos = validMembers.map(m => `${emoji.strip(m.displayName).padEnd(30, " ")} | ${m.trainer.battleRecord.elo}`);

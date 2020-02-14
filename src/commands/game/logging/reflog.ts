@@ -133,8 +133,9 @@ export default class BattleLogCommand extends KauriCommand {
         this.logEmbed.addField("**Payments**", stripIndents`
         ${winner.displayName}: **${payments.winner.to$()}**
         ${loser.displayName}: **${payments.loser.to$()}**
-        ${ref.displayName}: **${payments.ref.to$()}**`)
-            .setFooter("If the log is correct, please react to confirm the payments shown");
+        ${ref.displayName}: **${payments.ref.to$()}**`);
+        const preDescription = this.logEmbed.description;
+        this.logEmbed.setDescription(`${preDescription}\n\nIf the log is correct, please react to confirm the payments shown`);
         this.logMessage.edit(this.logEmbed);
 
         const confirm = await this.logMessage.reactConfirm(message.author!.id, 120000);
@@ -152,7 +153,7 @@ export default class BattleLogCommand extends KauriCommand {
 
             this.logMessage.reactions.removeAll();
             this.client.logger.reflog(message, this.logMessage);
-            this.logEmbed.setFooter("Payments confirmed and logged");
+            this.logEmbed.setDescription(`${preDescription}\n\nPayments confirmed and logged`);
             this.logMessage.edit(this.logEmbed);
         } else {
             this.logMessage.delete();

@@ -2,6 +2,7 @@ import { Argument, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import CommandBlockedListener from "../../listeners/commandHandler/commandBlocked";
+import { stripIndents } from "common-tags";
 
 interface CommandArgs {
     command: KauriCommand;
@@ -33,9 +34,11 @@ export default class HelpCommand extends KauriCommand {
         if (!command) {
             const embed = new MessageEmbed()
                 .setTitle("Professor Kauri")
-                .setDescription(`Command prefix: \`${prefix}\`\nReport issues or contribute to development on [Github](https://github.com/Monbrey/professor-kauri-v2)`)
-                .addField("**Commands**", "A list of commands available, based on your permission levels")
-                .setFooter(`For additional information on a command, type ${prefix}help <command>`);
+                .setDescription(stripIndents`Command prefix: \`${prefix}\`
+                Report issues or contribute to development on [Github](https://github.com/Monbrey/professor-kauri-v2)
+
+                For additional information on a command, type ${prefix}help <command>`)
+                .addField("**Commands**", "A list of commands available, based on your permission levels");
 
             for (const [catId, cat] of this.handler.categories) {
                 const cmds = (

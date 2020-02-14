@@ -38,7 +38,7 @@ export default class EloCommand extends KauriCommand {
         if (data.length === 0)
             return new MessageEmbed()
                 .setTitle("Nobody has joined this ladder yet")
-                .setFooter("Partipate in ladder battles to raise your ranking!");
+                .setDescription("Partipate in ladder battles to raise your ranking!");
 
         const validMembers: GuildMember[] = data.filter(d => message.guild?.members.cache.has(d.id)).map(d => message.guild?.members.cache.get(d.id)!);
         const elos = validMembers.map(m => `${emoji.strip(m.displayName).padEnd(30, " ")} | ${m.trainer.battleRecord.elo}`);
@@ -72,7 +72,7 @@ export default class EloCommand extends KauriCommand {
                 .setColor(0xFFFFFF);
         }
 
-        embed.setFooter("Partipate in ladder battles to raise your ranking!");
+        embed.setDescription("Partipate in ladder battles to raise your ranking!");
         return message.util!.send(embed);
     }
 
@@ -100,7 +100,7 @@ export default class EloCommand extends KauriCommand {
             .addField("**Battler**", `${winner}\n${loser}`, true)
             .addField("**ELO**", `${rA} => ${nA}\n${rB} => ${nB}`, true)
             .setColor(0x1f8b4c)
-            .setFooter("React to confirm the ELO changes");
+            .setDescription("React to confirm the ELO changes");
 
         const prompt = await message.util!.send(embed);
 

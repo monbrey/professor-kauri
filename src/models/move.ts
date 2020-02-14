@@ -114,9 +114,9 @@ MoveSchema.methods.info = async function() {
     const embed = new MessageEmbed()
         .setTitle(this.moveName)
         .setDescription(propString)
-        .setFooter(this.note || "")
         .setColor(await Color.getColorForType(this.moveType.toLowerCase()));
 
+    if(this.note) { embed.addField("**Note**", this.note); }
     if (this.additional) { embed.addField("**Additional note**", this.additional); }
     if (this.list && this.list.length !== 0) { embed.addField("**Helpful data**", this.list.join("\n")); }
     if (this.tm.number && this.tm.martPrice) {
