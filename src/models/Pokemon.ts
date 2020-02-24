@@ -108,7 +108,7 @@ export class Pokemon {
     }
 
     public get suffix() {
-        if(!this.name.includes("-")) return "";
+        if (!this.name.includes("-")) return "";
         return `-${this.name.split("-")[1].toLowerCase()}`;
     }
 
@@ -125,16 +125,32 @@ export class Pokemon {
         const color = await Color.getColorForType(this.type1.toLowerCase());
         const [t1, t2] = [client.getTypeEmoji(this.type1), client.getTypeEmoji(this.type2, true)];
 
+        const stats = Object.values(this.stats);
+        const statsStringArray = stats.map(s => s.toString().padEnd(3, " "));
+        const statsStrings = `HP  | Att | Def | SpA | SpD | Spe\n${statsStringArray.join(" | ")}`;
+
         const embed = new MessageEmbed()
             .setTitle(`URPG Ultradex - ${this.displayName}${this.formName ? ` - ${this.formName}` : ""} (#${this.dexno.toString().padStart(3, "0")})`)
             .setURL(`https://pokemonurpg.com/pokemon/${encodeURIComponent(this.name)}`)
             .setColor(color)
             .setThumbnail(`${ICON_BASE}${this.dexno}${this.suffix}.png`)
             .setImage(`${SPRITE_BASE}${this.dexno}${this.suffix}.gif`)
-            .addField(`**${this.type2 ? "Types" : "Type"}**`, `${t1} ${this.type1.toTitleCase()}${this.type2 ? ` | ${this.type2.toTitleCase()} ${t2}` : ""}`)
-            .addField("**Abilities**", this.abilities.map(a => (a.hidden ? `${a.name} (HA)` : a.name)).join(" | "))
-            .addField("**Legal Genders**", this.genders.join(" | "))
-            .addField("**Height and Weight**", `${this.height}m, ${this.weight}kg`)
+            .addFields([{
+                name: `**${this.type2 ? "Types" : "Type"}**`,
+                value: `${t1} ${this.type1.toTitleCase()}${this.type2 ? ` | ${this.type2.toTitleCase()} ${t2}` : ""}`
+            }, {
+                name: "**Abilities**",
+                value: this.abilities.map(a => (a.hidden ? `${a.name} (HA)` : a.name)).join(" | ")
+            }, {
+                name: "**Legal Genders**",
+                value: this.genders.join(" | ")
+            }, {
+                name: "**Height and Weight**",
+                value: `${this.height}m, ${this.weight}kg`
+            }, {
+                name: "**Stats**",
+                value: `\`\`\`${statsStrings}\`\`\``
+            }])
             .setFooter("Reactions | [M] View Moves ");
 
         if (this.matchRating && this.matchRating !== 1 && query) {
@@ -142,13 +158,8 @@ export class Pokemon {
             embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
         }
 
-        if (this.ranks) { embed.addField("**Creative Ranks**", this.ranks.join(" | ")); }
-        if (this.prices) { embed.addField("**Price**", `${this.prices.join(" | ")}`); }
-
-        const stats = Object.values(this.stats);
-        const statsStringArray = stats.map(s => s.toString().padEnd(3, " "));
-        const statsStrings = `HP  | Att | Def | SpA | SpD | Spe\n${statsStringArray.join(" | ")}`;
-        embed.addField("**Stats**", `\`\`\`${statsStrings}\`\`\``);
+        if (this.ranks) embed.addFields({ name: "**Creative Ranks**", value: this.ranks.join(" | ") });
+        if (this.prices) embed.addFields({ name: "**Price**", value: `${this.prices.join(" | ")}` });
 
         if (this.mega.length === 1) {
             const mp = this.mega[0].name.split("-")[1];
@@ -205,7 +216,7 @@ export class Pokemon {
         }
 
         for (const [name, value] of Object.entries(learnset)) {
-            embed.addField(`**${name}**`, value.join(", "));
+            embed.addFields({ name: `**${name}**`, value: value.join(", ") });
         }
 
         return embed;
@@ -218,22 +229,34 @@ export class Pokemon {
         const color = await Color.getColorForType(this.type1.toLowerCase());
         const [t1, t2] = [client.getTypeEmoji(this.type1), client.getTypeEmoji(this.type2, true)];
 
+        const stats = Object.values(this.megaStats(whichMega));
+        const statsStringArray = stats.map(s => s.toString().padEnd(3, " "));
+        const statsStrings = `HP  | Att | Def | SpA | SpD | Spe\n${statsStringArray.join(" | ")} `;
+
         const embed = new MessageEmbed()
             .setTitle(`URPG Ultradex - ${mega.displayName} (#${mega.dexno.toString().padStart(3, "0")})`)
             .setURL(`https://pokemonurpg.com/pokemon/${encodeURIComponent(this.name)}`)
             .setColor(color)
             .setThumbnail(`${ICON_BASE}${mega.dexno}${mega.name.replace(this.name, "").toLowerCase()}.png`)
             .setImage(`${SPRITE_BASE}${mega.dexno}${mega.name.replace(this.name, "").toLowerCase()}.gif`)
-            .addField(`** ${mega.type2 ? "Types" : "Type"} ** `, `${t1} ${mega.type1.toTitleCase()}${mega.type2 ? ` | ${mega.type2.toTitleCase()} ${t2}` : ""}`)
-            .addField("**Ability**", mega.ability.name)
-            .addField("**Legal Genders**", this.genders.join(" | "))
-            .addField("**Height and Weight**", `${mega.height}m, ${mega.weight}kg`)
+            .addFields([{
+                name: `** ${mega.type2 ? "Types" : "Type"} ** `,
+                value: `${t1} ${mega.type1.toTitleCase()}${mega.type2 ? ` | ${mega.type2.toTitleCase()} ${t2}` : ""}`
+            }, {
+                name: "**Ability**",
+                value: mega.ability.name
+            }, {
+                name: "**Legal Genders**",
+                value: this.genders.join(" | ")
+            }, {
+                name: "**Height and Weight**",
+                value: `${mega.height}m, ${mega.weight}kg`
+            }, {
+                name: "**Stats**",
+                value: `\`\`\`${statsStrings}\`\`\``
+            }])
             .setFooter("Reactions | ⬅️ Back ");
 
-        const stats = Object.values(this.megaStats(whichMega));
-        const statsStringArray = stats.map(s => s.toString().padEnd(3, " "));
-        const statsStrings = `HP  | Att | Def | SpA | SpD | Spe\n${statsStringArray.join(" | ")} `;
-        embed.addField("**Stats**", `\`\`\`${statsStrings}\`\`\``);
 
         return embed;
     }

@@ -69,7 +69,7 @@ ItemSchema.statics.findPartial = function(itemName: string) {
 ItemSchema.methods.info = function() {
     const embed = new MessageEmbed().setTitle(this.itemName).setDescription(this.desc);
 
-    if (this.priceString) { embed.addField("**Mart Price**", `${this.priceString}`); }
+    if (this.priceString) embed.addFields({ name: "**Mart Price**", value: this.priceString });
 
     return embed;
 };

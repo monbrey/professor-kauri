@@ -161,8 +161,10 @@ export default class ConfigCommand extends KauriCommand {
                 Click \\✅ when finished to save changes, or \\❌ to cancel
                 Changes will be automatically cancelled after 5 minutes`
             )
-            .addField("**Server setting**", `${gDisabled ? "Disabled" : "Enabled"} `)
-            .addField(`**Channel ${gDisabled ? "Enabled" : "Disabled"}**`, "\u200B");
+            .addFields([
+                { name: "**Server setting**", value: `${gDisabled ? "Disabled" : "Enabled"} `},
+                { name: `**Channel ${gDisabled ? "Enabled" : "Disabled"}**`, value: "\u200B" }
+            ]);
 
         const evalOverrides = () => {
             const overrides = channels.cache.filter(
@@ -272,9 +274,9 @@ export default class ConfigCommand extends KauriCommand {
     private addEditControls(message: Message, info: MessageEmbed, command: KauriCommand, config: ICommandConfigDocument) {
         const gDisabled = config.disabled || command.defaults.disabled || false;
         const enableLine = gDisabled ? "\\✅ - Enable this command for the server" : "\\❌ - Disable this command for the server";
-        info.addField("**Controls**", stripIndents`${enableLine}
+        info.addFields({ name: "**Controls**", value: stripIndents`${enableLine}
             \\🔲 - Edit Channel overrides for this command
-            \\🔄 - Reset all server configuration for this command`);
+            \\🔄 - Reset all server configuration for this command` });
 
         return info;
     }
@@ -290,12 +292,12 @@ export default class ConfigCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setColor("WHITE")
             .setTitle(`Configuration settings for ${command.id} in ${message.guild!.name}`)
-            .addField("**Server level**", gDisabled ? "Disabled" : "Enabled");
+            .addFields({ name: "**Server level**", value: gDisabled ? "Disabled" : "Enabled" });
         if (config.channels && config.channels.length) {
             const channels = config.channels
                 .filter(c => c.disabled !== gDisabled)
                 .map(c => message.guild!.channels.cache.get(c.channel_id));
-            embed.addField(`**Channels ${gDisabled ? "Enabled" : "Disabled"}**`, channels.join(" "));
+            embed.addFields({ name: `**Channels ${gDisabled ? "Enabled" : "Disabled"}**`, value: channels.join(" ") });
         }
 
         // if (config.roles && config.roles.length) {

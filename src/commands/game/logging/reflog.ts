@@ -45,7 +45,7 @@ export default class BattleLogCommand extends KauriCommand {
                 Reply **\`back\`** to return to the previous field and edit a response.
                 Reply **\`cancel\`** to stop the command.`)
             .setThumbnail("https://i.imgur.com/jBRd5cN.png")
-            .addField("**Winning Trainer**", "\u200b", true);
+            .addFields({ name: "**Winning Trainer**", value: "\u200b", inline: true });
 
         this.logMessage = await message.channel.send({ embed: this.logEmbed });
     }
@@ -130,10 +130,12 @@ export default class BattleLogCommand extends KauriCommand {
 
         const payments = this.calcPayments(size, venue);
 
-        this.logEmbed.addField("**Payments**", stripIndents`
+        this.logEmbed.addFields({
+            name: "**Payments**", value: stripIndents`
         ${winner.displayName}: **${payments.winner.to$()}**
         ${loser.displayName}: **${payments.loser.to$()}**
-        ${ref.displayName}: **${payments.ref.to$()}**`);
+        ${ref.displayName}: **${payments.ref.to$()}**`
+        });
         const preDescription = this.logEmbed.description;
         this.logEmbed.setDescription(`${preDescription}\n\nIf the log is correct, please react to confirm the payments shown`);
         this.logMessage.edit(this.logEmbed);
@@ -202,7 +204,7 @@ export default class BattleLogCommand extends KauriCommand {
                 break;
             case "winningTeam":
                 this.logEmbed.fields[0].value = value.map((p: IPokemon) => p.uniqueName).join("\n");
-                this.logEmbed.addField("**Losing Trainer**", "\u200b", true);
+                this.logEmbed.addFields({ name: "**Losing Trainer**", value: "\u200b", inline: true });
                 break;
             case "loser":
                 this.logEmbed.fields[1].name = value.displayName;
@@ -212,15 +214,17 @@ export default class BattleLogCommand extends KauriCommand {
                 this.logEmbed.fields[1].value = value.map((p: IPokemon) => p.uniqueName).join("\n");
                 const size = Math.max(...this.logEmbed.fields.map(f => f.value.split("\n").length));
                 this.logEmbed.setTitle(`${size}v${size} Battle Log`);
-                if (size > 2) this.logEmbed.addField("**Special Venue**", "`Gym | E4 | LD | None`");
-                else this.logEmbed.addField("**Description**", "`Please provide a battle description, including ruleset and clauses (5 minutes)`");
+                if (size > 2) this.logEmbed.addFields({ name: "**Special Venue**", value: "`Gym | E4 | LD | None`" });
+                else this.logEmbed.addFields({ name: "**Description**", value: "`Please provide a battle description, including ruleset and clauses (5 minutes)`" });
                 break;
             case "venue":
                 if (value !== "None") this.logEmbed.title += ` [${value}]`;
-                this.logEmbed.spliceField(2, 1, "Description", "`Please provide a battle description, including ruleset and clauses (5 minutes)`");
+                this.logEmbed.spliceFields(2, 1, [
+                    { name: "Description", value: "`Please provide a battle description, including ruleset and clauses (5 minutes)`" }
+                ]);
                 break;
             case "description":
-                this.logEmbed.spliceField(2, 1);
+                this.logEmbed.spliceFields(2, 1);
                 this.logEmbed.description = value;
                 break;
         }
@@ -231,21 +235,27 @@ export default class BattleLogCommand extends KauriCommand {
 
         switch (arg) {
             case "winner":
-                this.logEmbed.spliceField(0, 1, "`Winning Trainer`", "\u200b", true);
+                this.logEmbed.spliceFields(0, 1, [
+                    { name: "`Winning Trainer`", value: "\u200b", inline: true }
+                ]);
                 break;
             case "winningTeam":
-                this.logEmbed.spliceField(1, 1);
+                this.logEmbed.spliceFields(1, 1);
                 this.logEmbed.fields[0].value = "`Winning team (comma-separated)`";
                 break;
             case "loser":
-                this.logEmbed.spliceField(1, 1, "`Losing Trainer`", "\u200b", true);
+                this.logEmbed.spliceFields(1, 1, [
+                    { name: "`Losing Trainer`", value: "\u200b", inline: true }
+                ]);
                 break;
             case "losingTeam":
-                this.logEmbed.spliceField(2, 1);
+                this.logEmbed.spliceFields(2, 1);
                 this.logEmbed.fields[1].value = "`Losing team (comma-separated)`";
                 break;
             case "venue":
-                this.logEmbed.spliceField(2, 1, "Special Venue", "`Gym | E4 | LD | None`");
+                this.logEmbed.spliceFields(2, 1, [
+                    { name: "Special Venue", value: "`Gym | E4 | LD | None`" }
+                ]);
                 break;
         }
     }

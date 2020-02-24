@@ -62,8 +62,10 @@ module.exports = class SpeedCommand extends KauriCommand {
         const embed = new MessageEmbed()
             .setTitle(`${qName} vs ${tName}`)
             .setDescription(`**Attacking Speed**: ${qValue}\n**Defending Speed**: ${tValue}`)
-            .addField("**Electro Ball**", `${this.calcElectro(qValue, tValue)} BP`, true)
-            .addField("**Gyro Ball**", `${this.calcGyro(qValue, tValue)} BP`, true);
+            .addFields([
+                { name: "**Electro Ball**", value: `${this.calcElectro(qValue, tValue)} BP`, inline: true },
+                { name: "**Gyro Ball**", value: `${this.calcGyro(qValue, tValue)} BP`, inline: true }
+            ]);
 
         return message.util!.send(embed);
     }
@@ -81,7 +83,7 @@ module.exports = class SpeedCommand extends KauriCommand {
     }
 
     private calcGyro(attacker: number, defender: number) {
-        if(attacker === 0) return 1;
+        if (attacker === 0) return 1;
 
         return Math.min(150, Math.floor((25 * defender / attacker) + 1));
     }

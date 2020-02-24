@@ -89,8 +89,10 @@ export default class MessageReactionRemoveListener extends Listener {
                     .setDescription(previous.embeds[0].description)
                     .setAuthor(message.author!.tag, message.author!.displayAvatarURL())
                     .setTimestamp()
-                    .addField(`**Votes ${starEmoji}**`, stars, true)
-                    .addField("**Link**", `[Jump to message](${message.url})`, true)
+                    .addFields([
+                        { name: `**Votes ${starEmoji}**`, value: `${stars}`, inline: true },
+                        { name: "**Link**", value: `[Jump to message](${message.url})`, inline: true }
+                    ])
                     .setFooter(`⭐ | ${message.id}`)
                     .setImage(image || "");
 

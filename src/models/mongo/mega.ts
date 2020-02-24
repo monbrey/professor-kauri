@@ -61,29 +61,33 @@ MegaSchema.plugin(autoIncrement, {
     startAt: 1
 });
 
-MegaSchema.methods.dex = async function(base: IPokemon) {
+MegaSchema.methods.dex = async function (base: IPokemon) {
     const color = await Color.getColorForType(this.type1.toLowerCase());
     const dexString = base.dexNumber.toString().padStart(3, "0");
     const title = `URPG Ultradex - ${this.displayName} (#${dexString})`;
+
+    const stats: number[] = Object.values({ hp: base.stats.hp, ...this.stats.toObject() });
+
     const embed = new MessageEmbed()
         .setTitle(title)
         .setColor(color)
         .setImage(
             `https://pokemonurpg.com/img/models/${base.dexNumber}-${this.spriteCode || "mega"}.gif`
         )
-        .addField(
-            `${this.type2 ? "Types" : "Type"}`,
-            `${this.type1}${this.type2 ? ` | ${this.type2}` : ""}`
-        )
-        .addField("**Ability**", `${this.ability.abilityName}`)
-        .addField("**Height and Weight**", `${this.height}m, ${this.weight}kg`);
-
-    const stats: number[] = Object.values({ hp: base.stats.hp, ...this.stats.toObject() });
-    embed.addField(
-        "Stats",
-        `\`\`\`${stripIndents`HP   | ATT  | DEF  | SP.A | SP.D | SPE
-        ${stats.map(s => s.toString().padEnd(4, " ")).join(" | ")}`}\`\`\``
-    );
+        .addFields([{
+            name: `${this.type2 ? "Types" : "Type"}`,
+            value: `${this.type1}${this.type2 ? ` | ${this.type2}` : ""}`
+        }, {
+            name: "**Ability**",
+            value: `${this.ability.abilityName}`
+        }, {
+            name: "**Height and Weight**",
+            value: `${this.height}m, ${this.weight}kg`
+        }, {
+            name: "**Stats**",
+            value: `\`\`\`${stripIndents`HP   | ATT  | DEF  | SP.A | SP.D | SPE
+            ${stats.map(s => s.toString().padEnd(4, " ")).join(" | ")}`}\`\`\``
+        }]);
 
     return embed;
 };

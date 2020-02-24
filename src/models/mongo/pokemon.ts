@@ -191,10 +191,12 @@ PokemonSchema.methods.dex = async function (query?: string) {
         .setColor(color)
         .setThumbnail(this.assets.icon)
         .setImage(this.assets.image)
-        .addField(`**${this.type2 ? "Types" : "Type"}**`, types)
-        .addField("**Abilities**", abilities.join(" | "))
-        .addField("**Legal Genders**", genders.length ? genders.join(" | ") : "Genderless")
-        .addField("**Height and Weight**", `${this.height}m, ${this.weight}kg`)
+        .addFields([
+            { name: `**${this.type2 ? "Types" : "Type"}**`, value: types },
+            { name: "**Abilities**", value: abilities.join(" | ") },
+            { name: "**Legal Genders**", value: genders.length ? genders.join(" | ") : "Genderless" },
+            { name: "**Height and Weight**", value: `${this.height}m, ${this.weight}kg` }
+        ])
         .setFooter("Reactions | [M] View Moves ");
 
     if (this.matchRating !== 1 && query) {
@@ -208,17 +210,17 @@ PokemonSchema.methods.dex = async function (query?: string) {
     if (this.rank.park && this.parkLocation) {
         rank.push(`Park - ${this.rank.park} (${this.parkLocation})`);
     }
-    if (rank.length) { embed.addField("**Creative Ranks**", rank.join(" | ")); }
+    if (rank.length) embed.addFields({ name: "**Creative Ranks**", value: rank.join(" | ") });
 
     const prices = [];
     if (this.martPrice.pokemart) { prices.push(`${this.martPrice.pokemart.to$()}`); }
     if (this.martPrice.berryStore) { prices.push(`${this.martPrice.berryStore.to$()}`); }
-    if (prices.length) { embed.addField("**Price**", `${prices.join(" | ")}`); }
+    if (prices.length) embed.addFields({ name: "**Price**", value: `${prices.join(" | ")}` });
 
     const stats: number[] = Object.values(this.stats.toObject());
     const statsStringArray = stats.map(s => s.toString().padEnd(3, " "));
     const statsStrings = `HP  | Att | Def | SpA | SpD | Spe\n${statsStringArray.join(" | ")}`;
-    embed.addField("**Stats**", `\`\`\`${statsStrings}\`\`\``);
+    embed.addFields({ name: "**Stats**", value: `\`\`\`${statsStrings}\`\`\`` });
 
     if (this.mega.length === 1) { embed.footer!.text += "| [X] View Mega form"; }
     if (this.mega.length === 2) { embed.footer!.text += "| [X] View X Mega form | [Y] View Y Mega Form"; }
@@ -274,15 +276,15 @@ PokemonSchema.methods.learnset = async function (query?: string) {
     }
 
     // Construct the embed fields
-    if (learnset["level"]) { embed.addField("**By Level**", learnset["level"].join(", ")); }
-    if (learnset["tm"]) { embed.addField("**By TM**", learnset["tm"].join(", ")); }
-    if (learnset["tm1"]) { embed.addField("**By TM**", learnset["tm1"].join(", ")); }
-    if (learnset["tm2"]) { embed.addField("**By TM (cont)**", learnset["tm2"].join(", ")); }
-    if (learnset["tm3"]) { embed.addField("**By TM (cont)**", learnset["tm3"].join(", ")); }
-    if (learnset["hm"]) { embed.addField("**By HM**", learnset["hm"].join(", ")); }
-    if (learnset["bm"]) { embed.addField("**By BM**", learnset["bm"].join(", ")); }
-    if (learnset["mt"]) { embed.addField("**By MT**", learnset["mt"].join(", ")); }
-    if (learnset["sm"]) { embed.addField("**By SM**", learnset["sm"].join(", ")); }
+    if (learnset["level"]) embed.addFields({ name: "**By Level**", value: learnset["level"].join(", ") });
+    if (learnset["tm"]) embed.addFields({ name: "**By TM**", value: learnset["tm"].join(", ") });
+    if (learnset["tm1"]) embed.addFields({ name: "**By TM**", value: learnset["tm1"].join(", ") });
+    if (learnset["tm2"]) embed.addFields({ name: "**By TM (cont)**", value: learnset["tm2"].join(", ") });
+    if (learnset["tm3"]) embed.addFields({ name: "**By TM (cont)**", value: learnset["tm3"].join(", ") });
+    if (learnset["hm"]) embed.addFields({ name: "**By HM**", value: learnset["hm"].join(", ") });
+    if (learnset["bm"]) embed.addFields({ name: "**By BM**", value: learnset["bm"].join(", ") });
+    if (learnset["mt"]) embed.addFields({ name: "**By MT**", value: learnset["mt"].join(", ") });
+    if (learnset["sm"]) embed.addFields({ name: "**By SM**", value: learnset["sm"].join(", ") });
 
     return embed;
 };

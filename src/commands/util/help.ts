@@ -38,7 +38,7 @@ export default class HelpCommand extends KauriCommand {
                 Report issues or contribute to development on [Github](https://github.com/Monbrey/professor-kauri-v2)
 
                 For additional information on a command, type ${prefix}help <command>`)
-                .addField("**Commands**", "A list of commands available, based on your permission levels");
+                .addFields({ name: "**Commands**", value: "A list of commands available, based on your permission levels" });
 
             for (const [catId, cat] of this.handler.categories) {
                 const cmds = (
@@ -60,7 +60,7 @@ export default class HelpCommand extends KauriCommand {
 
                 const suffix = message.member!.permissions.has("MANAGE_GUILD", true) ? " (View and Edit)" : " (View)";
                 const title = `\\▪ ${catId}${catId === "Config" ? suffix : ""}`;
-                if (cmds.length !== 0) embed.addField(`**${title}**`, cmds.map(c => `\`${c.aliases[0]}\``).join(", "));
+                if (cmds.length !== 0) embed.addFields({ name: `**${title}**`, value: cmds.map(c => `\`${c.aliases[0]}\``).join(", ") });
             }
 
             return message.util!.send(embed);

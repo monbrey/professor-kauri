@@ -136,7 +136,11 @@ export default class RankCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setTitle(`${rank} Story / Art Rank Pokemon | ${range} characters`);
 
-        Object.keys(gens).forEach(key => { if (gens[key].length > 0) { embed.addField(`**Gen ${key}**`, gens[key].join(", ")); } });
+        Object.keys(gens).forEach(key => {
+            if (gens[key].length > 0) {
+                embed.addFields({ name: `**Gen ${key}**`, value: gens[key].join(", ") });
+            }
+        });
 
         return embed;
     }
@@ -154,7 +158,11 @@ export default class RankCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setTitle(`${rank} Park Rank Pokemon | ${mcr} characters`);
 
-        Object.keys(locations).forEach(key => { if (locations[key].length > 0) { embed.addField(`**${key}**`, locations[key].join(", ")); } });
+        Object.keys(locations).forEach(key => {
+            if (locations[key].length > 0) {
+                embed.addFields({ name: `**${key}**`, value: locations[key].join(", ") });
+            }
+        });
 
         return embed;
     }
@@ -171,7 +179,11 @@ export default class RankCommand extends KauriCommand {
 
         const embed = new MessageEmbed().setTitle(`Park Pokemon found in ${location}`);
 
-        Object.keys(ranks).forEach(key => { if (ranks[key].length > 0) { embed.addField(`**${key}**`, ranks[key].join(", ")); } });
+        Object.keys(ranks).forEach(key => {
+            if (ranks[key].length > 0) {
+                embed.addFields({ name: `**${key}**`, value: ranks[key].join(", ") });
+            }
+        });
 
         return embed;
     }
@@ -189,11 +201,13 @@ export default class RankCommand extends KauriCommand {
             .setTitle(`${pokemon.displayName} Ranks and Location`)
             .setColor(await Color.getColorForType(pokemon.type1.toLowerCase()));
 
-        if (prices) embed.addField("**Purchase**", prices.join(" | "));
+        if (prices) embed.addFields({ name: "**Purchase**", value: prices.join(" | ") });
 
-        embed.addField("**Story**", sRank ? `${rank.story} | ${sRank.min.toLocaleString()} - ${sRank.max.toLocaleString()} characters` : "Not available")
-            .addField("**Art**", aRank ? `${rank.art}` : "Not available")
-            .addField("**Park**", pRank ? `${rank.park} | ${pokemon.parkLocation} | ${pRank.mcr} characters` : "Not available");
+        embed.addFields([
+            { name: "**Story**", value: sRank ? `${rank.story} | ${sRank.min.toLocaleString()} - ${sRank.max.toLocaleString()} characters` : "Not available" },
+            { name: "**Art**", value: aRank ? `${rank.art}` : "Not available" },
+            { name: "**Park**", value: pRank ? `${rank.park} | ${pokemon.parkLocation} | ${pRank.mcr} characters` : "Not available" }
+        ]);
 
         return embed;
     }

@@ -225,8 +225,10 @@ class CustomLogger {
                 message.author!.displayAvatarURL()
             )
             .setFooter("Wallet Migrated")
-            .addField("**Cash**", `$${cash.toLocaleString()}`, true)
-            .addField("**Contest Credit**", `${cc.toLocaleString()} CC`, true)
+            .addFields([
+                { name: "**Cash**", value: `$${cash.toLocaleString()}`, inline: true },
+                { name: "**Contest Credit**", value: `${cc.toLocaleString()} CC`, inline: true }
+            ])
             .setTimestamp();
 
         return logChannel.send(embed);

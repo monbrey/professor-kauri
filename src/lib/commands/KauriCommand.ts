@@ -45,7 +45,7 @@ export class KauriCommand extends Command {
     }
 
     public afterCancel?(): any;
-    public onBlocked?(message: Message): any {}
+    public onBlocked?(message: Message): any { }
 
     public help(message: Message) {
         const prefix = (this.handler.prefix as PrefixSupplier)(message);
@@ -53,11 +53,11 @@ export class KauriCommand extends Command {
         const embed = new MessageEmbed()
             .setTitle(this.id)
             .setDescription(`Command prefix: \`${prefix}\`\nArguments: \`<required>\` | \`[optional]\``)
-            .addField("**Aliases**", this.aliases.map(a => `\`${a}\``).join(", "));
+            .addFields({ name: "**Aliases**", value: this.aliases.map(a => `\`${a}\``).join(", ") });
 
         if (this.usage) {
-            if (typeof this.usage === "string") embed.addField("**Usage**", `\`${prefix}${this.usage}\``);
-            else embed.addField("**Usage**", this.usage.map(u => `\`${prefix}${u}\``).join("\n"));
+            if (typeof this.usage === "string") embed.addFields({ name: "**Usage**", value: `\`${prefix}${this.usage}\`` });
+            else embed.addFields({ name: "**Usage**", value: this.usage.map(u => `\`${prefix}${u}\``).join("\n") });
         }
 
         return embed;

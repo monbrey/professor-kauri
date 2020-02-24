@@ -87,13 +87,13 @@ MoveSchema.plugin(autoIncrement, {
     startAt: 1
 });
 
-MoveSchema.statics.metronome = async function() {
+MoveSchema.statics.metronome = async function () {
     const move = await this.aggregate([{ $match: { metronome: true } }, { $sample: { size: 1 } }]);
 
     return new this(move[0]);
 };
 
-MoveSchema.methods.info = async function() {
+MoveSchema.methods.info = async function () {
     const type = `Type: ${this.moveType}`;
     const power = `Power: ${this.power ? this.power : "-"}`;
     const acc = `Accuracy: ${this.accuracy ? this.accuracy : "-"}`;
@@ -116,17 +116,19 @@ MoveSchema.methods.info = async function() {
         .setDescription(propString)
         .setColor(await Color.getColorForType(this.moveType.toLowerCase()));
 
-    if(this.note) { embed.addField("**Note**", this.note); }
-    if (this.additional) { embed.addField("**Additional note**", this.additional); }
-    if (this.list && this.list.length !== 0) { embed.addField("**Helpful data**", this.list.join("\n")); }
-    if (this.tm.number && this.tm.martPrice) {
-        const tmNum = this.tm.number.toString().padStart(2, 0);
-        const tmPrice = this.tm.martPrice.pokemart.toLocaleString();
-        embed.addField("**TM**", `Taught by TM${tmNum} ($${tmPrice})`);
-    }
-    if (this.zmove) { embed.addField("**Z-Move**", this.zmove); }
+    if (this.note) embed.addFields({ name: "**Note**", value: this.note });
+    if (this.additional) embed.addFields({ name: "**Additional note**", value: this.additional });
+    if (this.list && this.list.length !== 0) {
+        embed.addFields({ name: "**Helpful data**", value: this.list.join("\n") });
+        if (this.tm.number && this.tm.martPrice) {
+            const tmNum = this.tm.number.toString().padStart(2, 0);
+            const tmPrice = this.tm.martPrice.pokemart.toLocaleString();
+            embed.addFields({ name: "**TM**", value: `Taught by TM${tmNum} ($${tmPrice})` });
+        }
+        if (this.zmove) embed.addFields({ name: "**Z-Move**", value: this.zmove });
 
-    return embed;
+        return embed;
+    };
 };
 
 export const Move: IMoveModel = db.model<IMove, IMoveModel>("Move", MoveSchema);

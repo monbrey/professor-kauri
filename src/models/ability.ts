@@ -32,7 +32,7 @@ AbilitySchema.plugin(autoIncrement, {
     startAt: 1
 });
 
-AbilitySchema.methods.info = function() {
+AbilitySchema.methods.info = function () {
     const embed = new MessageEmbed()
         .setDescription(this.desc);
 
@@ -50,12 +50,8 @@ AbilitySchema.methods.info = function() {
         }
     }
 
-    if (this.affects) {
-        embed.addField("**Interacts with**", this.affects);
-    }
-    if (this.additional) {
-        embed.addField("**Additional information**", this.additional);
-    }
+    if (this.affects) embed.addFields({ name: "**Interacts with**", value: this.affects });
+    if (this.additional) embed.addFields({ name: "**Additional information**", value: this.additional });
 
     return embed;
 };
