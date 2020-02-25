@@ -3,7 +3,7 @@
 The issue tracker can be used to report bugs, make feature suggestions, or browse to see the open issues that are yet to be addressed.
 
 If you wish to contribute to Professor Kauri's development, first open an [issue](https://github.com/Monbrey/professor-kauri-v2/issues) to discuss your idea or perceived bug. If the consensus is that the feature/fix is needed, you can fork the repository and submit a pull request.
-Contributing to Kauri will require knowledge of [TypeScript 3.7.4](https://www.typescriptlang.org/), [discord.js v12](https://discord.js.org/#/docs/main/master/general/welcome), [discord-akairo v8](https://discord-akairo.github.io/#/docs/main/master/class/AkairoClient) and possibly [Mongoose](https://mongoosejs.com/).
+Contributing to Kauri will require knowledge of [TypeScript 3.8](https://www.typescriptlang.org/), [discord.js v12](https://discord.js.org/#/docs/main/master/general/welcome), [discord-akairo v8](https://discord-akairo.github.io/) and possibly [Mongoose](https://mongoosejs.com/).
 
 ## Setting up your local copy
 
