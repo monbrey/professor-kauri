@@ -12,7 +12,7 @@ import { Roles } from "../util/constants";
  *     https://discord-akairo.github.io/#/docs/main/master/class/Command
  * VSC should be able to auto-insert these dependencies for you
  */
-export default class ReloadCommand extends KauriCommand {
+export default class NewCommand extends KauriCommand {
     constructor() {
         // The first argument to the constructor is the command ID, and must be unique
         super("command", {
