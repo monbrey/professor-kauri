@@ -9,7 +9,7 @@ const getImage = (message: Message) => {
         }
     }
     if (message.embeds.length > 0) {
-        if (message.embeds[0].type === "image" && imgRe.test(message.embeds[0].url)) {
+        if (message.embeds[0].type === "image" && imgRe.test(message.embeds[0].url || "")) {
             return message.embeds[0].url;
         }
     }
@@ -85,7 +85,7 @@ export default class MessageReactionRemoveListener extends Listener {
 
                 const image = message.attachments.size > 0 ? getImage(message) : "";
                 const embed = new MessageEmbed()
-                    .setColor(previous.embeds[0].color)
+                    .setColor(previous.embeds[0].color || 0)
                     .setDescription(previous.embeds[0].description)
                     .setAuthor(message.author!.tag, message.author!.displayAvatarURL())
                     .setTimestamp()

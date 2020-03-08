@@ -9,7 +9,7 @@ const getImage = (message: Message) => {
         }
     }
     if (message.embeds.length > 0) {
-        if (message.embeds[0].type === "image" && imgRe.test(message.embeds[0].url)) {
+        if (message.embeds[0].type === "image" && imgRe.test(message.embeds[0].url || "")) {
             return message.embeds[0].url;
         }
     }
@@ -108,7 +108,7 @@ export default class MessageReactionAddListener extends Listener {
             }
 
             const embed = new MessageEmbed()
-                .setColor(previous ? previous.embeds[0].color : 15844367)
+                .setColor(previous ? previous.embeds[0].color || 15844367 : 15844367)
                 .setAuthor(message.author!.tag, message.author!.displayAvatarURL())
                 .setTimestamp()
                 .addFields([
