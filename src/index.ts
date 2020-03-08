@@ -18,12 +18,6 @@ import "./lib/misc/Number";
 import "./lib/misc/String";
 
 const client = new KauriClient({
-    disableEveryone: true,
-    disabledEvents: [
-        "TYPING_START",
-        "VOICE_STATE_UPDATE",
-        "VOICE_SERVER_UPDATE",
-        "CHANNEL_PINS_UPDATE"
-    ],
+    disableMentions: "everyone",
     partials: ["MESSAGE","CHANNEL","REACTION"]
 }).start();
