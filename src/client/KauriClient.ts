@@ -22,6 +22,7 @@ interface IKauriClient {
     listenerHandler: ListenerHandler;
     reactionQueue: queue;
     logger: Logger;
+    prefix: (m: Message) => string;
     settings: MongooseProvider<ISettings>;
     urpgApi: UrpgClient;
 

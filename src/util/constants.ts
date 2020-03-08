@@ -20,6 +20,11 @@ export enum Roles {
     Auction = "669282056722710552"
 }
 
+export enum Categories {
+    Battles = "358430499146039299",
+    Contests = "358433546492444675"
+}
+
 export const SPRITE_BASE = "https://pokemonurpg.com/img/sprites/";
 export const ICON_BASE = "https://pokemonurpg.com/img/icons/";
 
