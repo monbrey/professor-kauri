@@ -118,17 +118,16 @@ MoveSchema.methods.info = async function () {
 
     if (this.note) embed.addFields({ name: "**Note**", value: this.note });
     if (this.additional) embed.addFields({ name: "**Additional note**", value: this.additional });
-    if (this.list && this.list.length !== 0) {
-        embed.addFields({ name: "**Helpful data**", value: this.list.join("\n") });
-        if (this.tm.number && this.tm.martPrice) {
-            const tmNum = this.tm.number.toString().padStart(2, 0);
-            const tmPrice = this.tm.martPrice.pokemart.toLocaleString();
-            embed.addFields({ name: "**TM**", value: `Taught by TM${tmNum} ($${tmPrice})` });
-        }
-        if (this.zmove) embed.addFields({ name: "**Z-Move**", value: this.zmove });
+    if (this.list && this.list.length !== 0) embed.addFields({ name: "**Helpful data**", value: this.list.join("\n") });
+    if (this.tm.number && this.tm.martPrice) {
+        const tmNum = this.tm.number.toString().padStart(2, 0);
+        const tmPrice = this.tm.martPrice.pokemart.toLocaleString();
+        embed.addFields({ name: "**TM**", value: `Taught by TM${tmNum} ($${tmPrice})` });
+    }
 
-        return embed;
-    };
+    if (this.zmove) embed.addFields({ name: "**Z-Move**", value: this.zmove });
+
+    return embed;
 };
 
 export const Move: IMoveModel = db.model<IMove, IMoveModel>("Move", MoveSchema);
