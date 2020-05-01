@@ -41,12 +41,13 @@ export default class LogsCommand extends KauriCommand {
         embed.setFooter("Click the pencil to edit the configuration");
 
         const sent = await message.util!.send(embed);
+        embed.setFooter("");
 
         await sent.react("✏");
         const filter = ({ emoji }: MessageReaction, u: User) => emoji.name === "✏" && u.id === message.author!.id;
         const edit = await sent.awaitReactions(filter, { time: 30000, max: 1 });
 
-        sent.reactions.removeAll();
+        sent.reactions.removeAll().catch(e => console.error(e.message));;
         if (edit.first()) { return this.configureLogging(message, embed); }
     }
 
@@ -69,11 +70,12 @@ export default class LogsCommand extends KauriCommand {
                 }
             }
         });
+
         const channel = await arg1.collect(message);
         if (!channel) { return; }
 
         this.client.settings?.get(message.guild.id)?.updateProperty("logs", channel.id);
-        message.util!.lastResponse!.delete();
+        message.util!.lastResponse!.delete().catch(e => console.error(e.message));
         this.exec(message);
     }
 }

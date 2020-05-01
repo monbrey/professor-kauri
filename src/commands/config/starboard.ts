@@ -45,23 +45,20 @@ export default class StarboardCommand extends KauriCommand {
                 { name: "**Channel**", value: message.guild.channels.cache.get(sbConfig.channel)?.toString() || "<#invalid_channel>", inline: true },
                 { name: "**Emoji**", value: sbConfig.emoji || "⭐", inline: true },
                 { name: "**Reaction Threshold**", value: `${sbConfig.minReacts || 1}`, inline: true }
-            ]);
+            ]).setFooter("Click the pencil to edit the configuration");
         } else {
             embed.setDescription("No Starboard configuration");
-            embed.setFooter("Click the pencil to edit the configuration");
         }
 
-        const sent = await message.util!.send(embed) as Message;
-        embed.setFooter(null);
+        const sent = await message.util!.send(embed);
+        embed.setFooter("");
 
         await sent.react("✏");
         const filter = ({ emoji }: MessageReaction, u: User) => emoji.name === "✏" && u.id === message.author!.id;
         const edit = await sent.awaitReactions(filter, { time: 30000, max: 1 });
 
         sent.reactions.removeAll();
-        if (edit.first()) {
-            return sbConfig ? this.configureStarboard(message, embed) : this.newStarboard(message, embed);
-        }
+        if (edit.first()) { return sbConfig ? this.configureStarboard(message, embed) : this.newStarboard(message, embed); }
     }
 
     private async configureStarboard(message: Message, embed: MessageEmbed): Promise<void> {
@@ -120,7 +117,7 @@ export default class StarboardCommand extends KauriCommand {
                 if (!channel) { break; }
 
                 sbConfig["channel"] = channel.id;
-                await this.client.settings?.get(message.guild.id)?.updateProperty("starboard", sbConfig);
+                this.client.settings?.get(message.guild.id)?.updateProperty("starboard", sbConfig);
                 message.util!.lastResponse!.delete();
                 this.exec(message);
             }
@@ -151,7 +148,7 @@ export default class StarboardCommand extends KauriCommand {
                 if (!emoji) { return; }
 
                 sbConfig["emoji"] = emoji;
-                await this.client.settings?.get(message.guild.id)?.updateProperty("starboard", sbConfig);
+                this.client.settings?.get(message.guild.id)?.updateProperty("starboard", sbConfig);
                 message.util!.lastResponse!.delete();
                 return this.exec(message);
             }
@@ -183,9 +180,7 @@ export default class StarboardCommand extends KauriCommand {
                 if (!min) { return; }
 
                 sbConfig["minReacts"] = min;
-
-                await this.client.settings?.get(message.guild.id)?.updateProperty("starboard", sbConfig);
-
+                this.client.settings?.get(message.guild.id)?.updateProperty("starboard", sbConfig);
                 message.util!.lastResponse!.delete();
                 return this.exec(message);
             }
