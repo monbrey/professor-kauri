@@ -1,9 +1,4 @@
-import { GuildChannel, Message, MessageEmbed, Util } from "discord.js";
-import { GuildMember } from "discord.js";
-import { GuildAuditLogsEntry } from "discord.js";
-import { User } from "discord.js";
-import { MessageReaction } from "discord.js";
-import { TextChannel } from "discord.js";
+import { Guild, GuildAuditLogsEntry, GuildChannel, GuildMember, Message, MessageEmbed, MessageReaction, TextChannel, User, Util } from "discord.js";
 import { createLogger, format, Logger, transports } from "winston";
 import KauriClient from "../client/KauriClient";
 import { KauriCommand } from "../lib/commands/KauriCommand";
@@ -88,6 +83,18 @@ class CustomLogger {
         this.client = client;
     }
 
+    private getLogChannel(guild: Guild | null): TextChannel | undefined {
+        if (guild === null) return;
+
+        const logChannelID = this.client.settings?.get(guild.id)?.logs;
+        if (!logChannelID) return;
+
+        const logChannel = guild.channels.cache.get(logChannelID);
+        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
+
+        return logChannel;
+    }
+
     /**
      * Builds a real stack for API Errors and parses it into a standard format for the logger
      * @param {Error} error
@@ -142,15 +149,13 @@ class CustomLogger {
             key: "guildMemberAdd"
         });
 
-        const logChannel = member.guild.channels.cache.get(this.client.settings!.get(member.guild.id, "logs"));
-        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
 
         const embed = new MessageEmbed()
             .setAuthor(`${member.user.tag} (${member.id})`, member.user.displayAvatarURL())
             .setFooter("New member joined")
             .setTimestamp();
 
-        return logChannel.send(embed);
+        return this.getLogChannel(member.guild)?.send(embed);
     }
 
     public async guildMemberRemove(member: GuildMember, auditLog?: GuildAuditLogsEntry) {
@@ -183,8 +188,7 @@ class CustomLogger {
                 .setFooter(`Member removed (${action})`);
         }
 
-        const logChannel = member.guild.channels.cache.get(this.client.settings!.get(member.guild.id, "logs"));
-        if (logChannel && logChannel instanceof TextChannel) { return logChannel.send(embed); }
+        return this.getLogChannel(member.guild)?.send(embed);
     }
 
     public async guildMemberUpdate(oldMember: GuildMember, newMember: GuildMember) {
@@ -215,10 +219,6 @@ class CustomLogger {
             key: "migrate"
         });
 
-        if (!message.guild) { return; }
-        const logChannel = message.guild.channels.cache.get(this.client.settings!.get(message.guild.id, "logs"));
-        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
-
         const embed = new MessageEmbed()
             .setAuthor(
                 `${message.author!.tag} (${message.author!.id})`,
@@ -231,7 +231,7 @@ class CustomLogger {
             ])
             .setTimestamp();
 
-        return logChannel.send(embed);
+        return this.getLogChannel(message.guild)?.send(embed);
     }
 
     public async messageDelete(message: Message) { }
@@ -300,20 +300,12 @@ class CustomLogger {
             key: "deduct"
         });
 
-        if (!message.guild) { return; }
-        const logChannel = message.guild.channels.cache.get(this.client.settings!.get(message.guild.id, "logs"));
-        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
-
         const embed = new MessageEmbed()
             .setFooter("deduct")
             .setDescription(`${message.member!.displayName} made a deduction in [${(log.channel as GuildChannel).name}](${log.url})`)
             .setTimestamp();
 
-        try {
-            return logChannel.send(embed);
-        } catch (e) {
-            this.parseError(e);
-        }
+        return this.getLogChannel(message.guild)?.send(embed);
     }
 
     public async dice(message: Message, response: string, result: string) {
@@ -335,21 +327,13 @@ class CustomLogger {
             key: "elo"
         });
 
-        if (!message.guild) { return; }
-        const logChannel = message.guild.channels.cache.get(this.client.settings!.get(winner.guild.id, "logs"));
-        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
-
         const embed = new MessageEmbed()
             .setFooter("elo")
             .setColor(0x1f8b4c)
             .setDescription(`${message.member} updated the ELOs of ${winner} and ${loser}`)
             .setTimestamp();
 
-        try {
-            return logChannel.send(embed);
-        } catch (e) {
-            this.parseError(e);
-        }
+        return this.getLogChannel(message.guild)?.send(embed);
     }
 
     public async item(message: Message, query: string, result: string) {
@@ -371,21 +355,13 @@ class CustomLogger {
             key: "judgelog"
         });
 
-        if (!message.guild) { return; }
-        const logChannel = message.guild.channels.cache.get(this.client.settings!.get(message.guild.id, "logs"));
-        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
-
         const embed = new MessageEmbed()
             .setFooter("judgelog")
             .setColor(0x9b59b6)
             .setDescription(`${message.member!.displayName} logged a contest in [${(log.channel as GuildChannel).name}](${log.url})`)
             .setTimestamp();
 
-        try {
-            return logChannel.send(embed);
-        } catch (e) {
-            this.parseError(e);
-        }
+        return this.getLogChannel(message.guild)?.send(embed);
     }
 
     public async logs(message: Message, target: GuildChannel) {
@@ -397,20 +373,12 @@ class CustomLogger {
             key: "logs"
         });
 
-        if (!message.guild) { return; }
-        const logChannel = message.guild.channels.cache.get(this.client.settings!.get(message.guild.id, "logs"));
-        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
-
         const embed = new MessageEmbed()
             .setFooter("logs")
             .setDescription(`${message.member!.displayName} set the logging channel to ${target}`)
             .setTimestamp();
 
-        try {
-            return logChannel.send(embed);
-        } catch (e) {
-            this.parseError(e);
-        }
+        return this.getLogChannel(message.guild)?.send(embed);
     }
 
     public async move(message: Message, query: string, result: string) {
@@ -432,20 +400,12 @@ class CustomLogger {
             key: "pay"
         });
 
-        if (!message.guild) { return; }
-        const logChannel = message.guild.channels.cache.get(this.client.settings!.get(message.guild.id, "logs"));
-        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
-
         const embed = new MessageEmbed()
             .setFooter("pay")
             .setDescription(`${message.member!.displayName} made a payment in [${(log.channel as GuildChannel).name}](${log.url})`)
             .setTimestamp();
 
-        try {
-            return logChannel.send(embed);
-        } catch (e) {
-            this.parseError(e);
-        }
+        return this.getLogChannel(message.guild)?.send(embed);
     }
 
     public async prune(message: Message, numDeleted: number | string) {
@@ -456,20 +416,12 @@ class CustomLogger {
             key: "prune"
         });
 
-        if (!message.guild) { return; }
-        const logChannel = message.guild.channels.cache.get(this.client.settings!.get(message.guild.id, "logs"));
-        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
-
         const embed = new MessageEmbed()
             .setFooter("prune")
             .setDescription(`${message.member!.displayName} deleted ${numDeleted} messages from ${(message.channel as GuildChannel).name}`)
             .setTimestamp();
 
-        try {
-            return logChannel.send(embed);
-        } catch (e) {
-            this.parseError(e);
-        }
+        return this.getLogChannel(message.guild)?.send(embed);
     }
 
     public async reload(message: Message, command: KauriCommand) {
@@ -489,21 +441,13 @@ class CustomLogger {
             key: "reflog"
         });
 
-        if (!message.guild) { return; }
-        const logChannel = message.guild.channels.cache.get(this.client.settings!.get(message.guild.id, "logs"));
-        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
-
         const embed = new MessageEmbed()
             .setFooter("Battle")
             .setColor(0x1f8b4c)
             .setDescription(`${message.member!.displayName} logged a battle in [**#${(log.channel as GuildChannel).name}**](${log.url})`)
             .setTimestamp();
 
-        try {
-            return logChannel.send(embed);
-        } catch (e) {
-            this.parseError(e);
-        }
+        return this.getLogChannel(message.guild)?.send(embed);
     }
 
     public async rank(message: Message, query: string, result: string | number) {
@@ -525,20 +469,12 @@ class CustomLogger {
             key: "starboard"
         });
 
-        if (!message.guild) { return; }
-        const logChannel = message.guild.channels.cache.get(this.client.settings!.get(message.guild.id, "logs"));
-        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
-
         const embed = new MessageEmbed()
             .setFooter("starboard")
             .setDescription(`${message.member!.displayName} set the starboard-${param ? param : "channel"} to ${target}`)
             .setTimestamp();
 
-        try {
-            return logChannel.send(embed);
-        } catch (e) {
-            this.parseError(e);
-        }
+        return this.getLogChannel(message.guild)?.send(embed);
     }
 
     public async start(message: Message, trainer: User, starter: any) {
@@ -550,20 +486,12 @@ class CustomLogger {
             key: "start"
         });
 
-        if (!message.guild) { return; }
-        const logChannel = message.guild.channels.cache.get(this.client.settings!.get(message.guild.id, "logs"));
-        if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
-
         const embed = new MessageEmbed()
             .setFooter("start")
             .setTimestamp()
             .setDescription(`New trainer ${trainer.username} (${message.member} : ${message.member!.id}) started with ${starter.uniqueName}`);
 
-        try {
-            return logChannel.send(embed);
-        } catch (e) {
-            this.parseError(e);
-        }
+        return this.getLogChannel(message.guild)?.send(embed);
     }
 
     public async statusEffect(message: Message, query: string, result: string) {

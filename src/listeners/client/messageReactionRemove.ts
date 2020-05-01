@@ -41,7 +41,7 @@ export default class MessageReactionRemoveListener extends Listener {
         if (!message.guild) { return; }
 
         // Fetch the starboard settings
-        const starboard = this.client.settings!.get(message.guild.id, "starboard");
+        const starboard = this.client.settings?.get(message.guild.id)?.starboard;
 
         // Check that the starChannel is set
         if (!starboard || !starboard.channel) { return; }

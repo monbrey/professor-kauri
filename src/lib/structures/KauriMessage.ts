@@ -47,12 +47,12 @@ Structures.extend("Message", Message => {
         public async paginate(listenTo: Snowflake, back: boolean, next: boolean, timeout = 30000) {
             // If we only have the 'forward' reaction, we want to remove it and put the 'back' in first
             if (back && !this.reactions.cache.has("⬅")) {
-                if (this.reactions.cache.has("➡")) { await this.reactions.remove("➡")!; }
+                if (this.reactions.cache.has("➡")) { await this.reactions.resolve("➡")?.remove(); }
                 await this.react("⬅");
             }
-            if (!back && this.reactions.cache.has("⬅")) { await this.reactions.remove("⬅"); }
+            if (!back && this.reactions.cache.has("⬅")) { await this.reactions.resolve("⬅")?.remove(); }
             if (next && !this.reactions.cache.has("➡")) { await this.react("➡"); }
-            if (!next && this.reactions.cache.has("➡")) { await this.reactions.remove("➡"); }
+            if (!next && this.reactions.cache.has("➡")) { await this.reactions.resolve("➡")?.remove(); }
 
             const filter = ({ emoji }: MessageReaction, u: User) =>
                 ["⬅", "➡"].includes(emoji.name) && u.id === listenTo;

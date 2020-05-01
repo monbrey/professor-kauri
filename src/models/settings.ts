@@ -11,7 +11,11 @@ export interface ISettingsDocument extends Document {
     commands: ICommandConfigDocument[];
 }
 
-export interface ISettings extends ISettingsDocument { }
+type ISettingsDocumentKey = keyof Omit<ISettingsDocument, keyof Document>;
+
+export interface ISettings extends ISettingsDocument {
+    updateProperty(property: ISettingsDocumentKey, data: any): ISettingsDocument;
+}
 
 export interface ISettingsModel extends Model<ISettings> { }
 
@@ -22,5 +26,10 @@ const SettingsSchema: Schema = new Schema({
     logs: String,
     commands: [CommandConfig]
 }, { collection: "settings" });
+
+SettingsSchema.methods.updateProperty = async function (property: ISettingsDocumentKey, data: any): Promise<ISettingsDocument> {
+    this[property] = data;
+    return this.save();
+};
 
 export const Settings: ISettingsModel = instanceDB.model<ISettings, ISettingsModel>("Settings", SettingsSchema);

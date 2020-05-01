@@ -107,7 +107,7 @@ export default class RankCommand extends KauriCommand {
 
             if (pokemon) {
                 this.client.logger.rank(message, query, 1);
-                const apiPokemon = new Pokemon(await this.client.urpgApi.pokemon.get(pokemon.uniqueName));
+                const apiPokemon = new Pokemon(await this.client.urpg.species.fetch(pokemon.uniqueName));
                 return message.channel.send(await this.outputSingle(pokemon, apiPokemon));
             }
         } catch (e) {

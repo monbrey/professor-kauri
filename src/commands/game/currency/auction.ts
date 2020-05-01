@@ -1,12 +1,12 @@
 import { GuildMember, Message } from "discord.js";
-import { Pokemon } from "urpg.js";
+import { Species } from "urpg.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
 import { Roles } from "../../../util/constants";
 import { MessageEmbed } from "discord.js";
 import { stripIndents } from "common-tags";
 
 interface CommandArgs {
-    pokemon: Pokemon;
+    pokemon: Species;
     now: boolean;
 }
 
@@ -16,7 +16,7 @@ interface Auction {
     value: number;
 }
 
-const auctionUpdate = (pokemon: Pokemon, bid: Auction) => `**Auction**: ${pokemon.name}
+const auctionUpdate = (pokemon: Species, bid: Auction) => `**Auction**: ${pokemon.name}
 **Current Bid**: ${bid.member ? bid.member.displayName : "Starting"} at ${bid.value.to$()}`;
 
 export default class AuctionCommand extends KauriCommand {

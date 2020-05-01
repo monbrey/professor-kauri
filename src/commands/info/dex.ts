@@ -1,11 +1,11 @@
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
-import { Matched, Pokemon as ApiPokemon } from "urpg.js";
+import { Matched, Species } from "urpg.js";
 import KauriClient from "../../client/KauriClient";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Pokemon } from "../../models/Pokemon";
 
 interface CommandArgs {
-    match: Matched<ApiPokemon>;
+    match: Matched<Species>;
 }
 
 interface DexMessage extends Message {
@@ -26,7 +26,7 @@ export default class DexCommand extends KauriCommand {
 
     public *args() {
         const match = yield {
-            type: "api-pokemon",
+            type: "pokemon",
             match: "text",
             prompt: {
                 start: "> Please provide the name of a Pokemon to lookup"

@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { CreativeRank, Location, Matched, Pokemon as ApiPokemon, PokemonAbility, PokemonAttack, PokemonMega, PokemonType } from "urpg.js";
+import { CreativeRank, Location, Matched, PokemonAbility, PokemonAttack, PokemonMega, Species } from "urpg.js";
 import KauriClient from "../client/KauriClient";
 import { ICON_BASE, SPRITE_BASE } from "../util/constants";
 import { Color } from "./color";
@@ -38,10 +38,10 @@ export class Pokemon {
 
     matchRating?: number;
 
-    constructor(apiData: ApiPokemon | Matched<ApiPokemon>);
+    constructor(apiData: Species | Matched<Species>);
     constructor(apiData: any) {
         const data = apiData.value ? apiData.value : apiData;
-
+        
         this.name = data.name;
         this.displayName = data.displayName;
         this.formName = data.formName;
@@ -71,7 +71,7 @@ export class Pokemon {
         this.parkRank = data.parkRank;
         this.parkLocation = data.parkLocation;
 
-        this.mega = data.megaEvolutions;
+        this.mega = data.megaEvolutions || [];
         this.mega.forEach(m => m.type2 = m.type2 !== "NONE" ? m.type2 : undefined);
 
         this.matchRating = apiData.rating;

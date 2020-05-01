@@ -43,7 +43,7 @@ export default class ConfigCommand extends KauriCommand {
 
         if (command.ownerOnly) { return; }
 
-        const commandConfigs = this.client.settings!.get(message.guild.id, "commands") as ICommandConfigDocument[];
+        const commandConfigs = this.client.settings?.get(message.guild.id)?.commands as ICommandConfigDocument[];
         const config = (commandConfigs.find(c => c.command === command.id) || { command: command.id } as ICommandConfigDocument);
 
         const info = this.generateCommandInfo(message, command, config);
@@ -57,7 +57,7 @@ export default class ConfigCommand extends KauriCommand {
         // Dont provide any config for owner-only commands
         if (command.ownerOnly) { return; }
 
-        const commandConfigs = this.client.settings!.get(message.guild.id, "commands") as ICommandConfigDocument[];
+        const commandConfigs = this.client.settings?.get(message.guild.id)?.commands as ICommandConfigDocument[];
         const config = (commandConfigs.find(c => c.command === command.id) || { command: command.id } as ICommandConfigDocument);
 
         const info = this.generateCommandInfo(message, command, config);
@@ -78,12 +78,12 @@ export default class ConfigCommand extends KauriCommand {
     }
 
     private async reset(message: Message, command: KauriCommand) {
-        const configs = this.client.settings!.get(message.guild!.id, "commands") as ICommandConfigDocument[];
+        const configs = this.client.settings?.get(message.guild!.id)?.commands as ICommandConfigDocument[];
         const index = configs.findIndex(c => c.command === command.id);
 
         if (index !== -1) {
             configs.splice(index, 1);
-            this.client.settings!.set(message.guild!.id, "commands", configs);
+            await this.client.settings?.get(message.guild!.id)?.updateProperty("commands", configs);
         }
     }
 
@@ -253,11 +253,11 @@ export default class ConfigCommand extends KauriCommand {
     }
 
     private async saveConfig(id: Snowflake, command: KauriCommand, config: ICommandConfigDocument) {
-        const configs = this.client.settings!.get(id, "commands") as ICommandConfigDocument[];
+        const configs = this.client.settings?.get(id)?.commands as ICommandConfigDocument[];
         const index = configs.findIndex(c => c.command === command.id);
         if (index === -1) configs.push(config);
         else configs[index] = config;
-        return this.client.settings!.set(id, "commands", configs);
+        return this.client.settings?.get(id)?.updateProperty("commands", configs);
     }
 
     private async toggleCommand(message: Message, command: KauriCommand, config: ICommandConfigDocument) {

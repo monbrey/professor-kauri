@@ -120,7 +120,7 @@ export default class StarboardCommand extends KauriCommand {
                 if (!channel) { break; }
 
                 sbConfig["channel"] = channel.id;
-                await this.client.settings!.set(message.guild.id, "starboard", sbConfig);
+                await this.client.settings?.get(message.guild.id)?.updateProperty("starboard", sbConfig);
                 message.util!.lastResponse!.delete();
                 this.exec(message);
             }
@@ -151,7 +151,7 @@ export default class StarboardCommand extends KauriCommand {
                 if (!emoji) { return; }
 
                 sbConfig["emoji"] = emoji;
-                await this.client.settings!.set(message.guild.id, "starboard", sbConfig);
+                await this.client.settings?.get(message.guild.id)?.updateProperty("starboard", sbConfig);
                 message.util!.lastResponse!.delete();
                 return this.exec(message);
             }
@@ -183,7 +183,9 @@ export default class StarboardCommand extends KauriCommand {
                 if (!min) { return; }
 
                 sbConfig["minReacts"] = min;
-                await this.client.settings!.set(message.guild.id, "starboard", sbConfig);
+
+                await this.client.settings?.get(message.guild.id)?.updateProperty("starboard", sbConfig);
+
                 message.util!.lastResponse!.delete();
                 return this.exec(message);
             }
@@ -277,7 +279,7 @@ export default class StarboardCommand extends KauriCommand {
 
         embed.spliceFields(embed.fields.length - 1, 1, []);
 
-        await this.client.settings!.set(message.guild.id, "starboard", {
+        await this.client.settings?.get(message.guild.id)?.updateProperty("starboard", {
             channel: channel.id, emoji, minReacts: min
         });
 

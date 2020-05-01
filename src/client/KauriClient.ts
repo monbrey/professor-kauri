@@ -1,17 +1,12 @@
 // Dependencies
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
-import { ClientOptions, Message } from "discord.js";
+import { ClientOptions, Collection, Message } from "discord.js";
 import { Connection } from "mongoose";
 import queue from "p-queue";
 import { join } from "path";
-import { UrpgClient } from "urpg.js";
-// Models
-import { Ability, IAbility } from "../models/ability";
-import { IPokemon, Pokemon } from "../models/mongo/pokemon";
-import { IMove, Move } from "../models/move";
+import { Client as UrpgClient } from "urpg.js";
 import { IRoleConfig, RoleConfig } from "../models/roleConfig";
 import { ISettings, Settings } from "../models/settings";
-import MongooseProvider from "../providers/MongooseProvider";
 // Utilities
 import { db, instanceDB } from "../util/db";
 import Logger from "../util/logger";
@@ -20,11 +15,12 @@ interface IKauriClient {
     commandHandler: CommandHandler;
     inhibitorHandler: InhibitorHandler;
     listenerHandler: ListenerHandler;
-    reactionQueue: queue;
     logger: Logger;
     prefix: (m: Message) => string;
-    settings: MongooseProvider<ISettings>;
-    urpgApi: UrpgClient;
+    reactionQueue: queue;
+    roleConfigs?: Collection<string, IRoleConfig>;
+    settings?: Collection<string, ISettings>;
+    urpg: UrpgClient;
 
     db: {
         main: Connection;
@@ -36,29 +32,23 @@ declare module "discord-akairo" {
     interface AkairoClient extends IKauriClient { }
 }
 
-const PokemonProvider = new MongooseProvider<IPokemon>(Pokemon, "uniqueName");
-const AbilityProvider = new MongooseProvider<IAbility>(Ability, "abilityName");
-const MoveProvider = new MongooseProvider<IMove>(Move, "moveName");
-
 export default class KauriClient extends AkairoClient {
-    public settings: MongooseProvider<ISettings>;
-    public roleConfigs: MongooseProvider<IRoleConfig>;
     public logger: Logger;
     public reactionQueue: queue;
+    public roleConfigs?: Collection<string, IRoleConfig>;
+    public settings?: Collection<string, ISettings>;
 
     public commandHandler: CommandHandler;
     public inhibitorHandler: InhibitorHandler;
     public listenerHandler: ListenerHandler;
 
-    public urpgApi: UrpgClient;
+    public urpg: UrpgClient;
 
     constructor(options: ClientOptions = {}) {
         super({ ownerID: "122157285790187530", fetchAllMembers: true }, options);
 
         this.logger = new Logger(this);
-        this.roleConfigs = new MongooseProvider(RoleConfig, "name");
-        this.settings = new MongooseProvider(Settings, "guild_id");
-        this.urpgApi = new UrpgClient({ castToNull: true });
+        this.urpg = new UrpgClient({ nullHandling: true });
 
         this.db = {
             main: db,
@@ -79,38 +69,32 @@ export default class KauriClient extends AkairoClient {
             commandUtilLifetime: 60000,
             fetchMembers: true,
             handleEdits: true,
-            prefix: message => message.guild ? this.settings.get(message.guild.id, "prefix") || "!" : "!",
+            prefix: message => message.guild ? this.settings?.get(message.guild?.id)?.prefix || "!" : "!",
             storeMessages: true,
-        });
+        })
 
         this.commandHandler.resolver
-            .addType("pokemon", (message: Message, phrase: string) => {
+            .addType("ability", async (message: Message, phrase: string) => {
                 if (!phrase) return;
-                phrase = phrase.replace(/-G$/gi, "-Galar").replace(/-A/gi, "-Alola");
-                return PokemonProvider.resolveClosest(phrase);
+                const response = await this.urpg.ability.fetchClosest(phrase);
+                if (response) return response;
             })
-            .addType("api-pokemon", async (message: Message, phrase: string) => {
+            .addType("attack", async (message: Message, phrase: string) => {
+                if (!phrase) return;
+                const response = await this.urpg.attack.fetchClosest(phrase);
+                if (response) return response;
+            })
+            .addType("pokemon", async (message: Message, phrase: string) => {
                 if (!phrase) return;
 
                 phrase = phrase.replace(/-G$/gi, "-Galar").replace(/-A/gi, "-Alola");
-                const response = await this.urpgApi.pokemon.getClosest(phrase);
+                console.log(phrase);
+                const response = await this.urpg.species.fetchClosest(phrase);
                 if (response) return response;
             })
             .addType("pokemonTeam", (message: Message, phrase: string) => {
                 if (!phrase) return;
-                return Promise.all(phrase.split(/,\s+?/).map(p => PokemonProvider.resolveClosest(p)));
-            })
-            .addType("ability", (message: Message, phrase: string) => {
-                if (!phrase) return;
-                return AbilityProvider.fetchClosest(phrase);
-            })
-            .addType("move", (message: Message, phrase: string) => {
-                if (!phrase) return;
-                return MoveProvider.fetchClosest(phrase);
-            })
-            .addType("roleConfig", (message: Message, phrase: string) => {
-                if (!phrase) return;
-                return this.roleConfigs.fetchClosest(phrase);
+                return phrase.split(/,\s+?/).map(p => this.commandHandler.resolver.type("pokemon")(message, phrase));
             });
 
         this.inhibitorHandler = new InhibitorHandler(this, {
@@ -128,8 +112,8 @@ export default class KauriClient extends AkairoClient {
     }
 
     private async init() {
-        await this.settings.init();
-        await this.roleConfigs.init();
+        this.settings = new Collection((await Settings.find()).map(s => [s.guild_id, s]));
+        this.roleConfigs = new Collection((await RoleConfig.find()).map(r => [r.role_id, r]));
 
         this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
         this.commandHandler.useListenerHandler(this.listenerHandler);
@@ -144,6 +128,7 @@ export default class KauriClient extends AkairoClient {
     }
 
     public getTypeEmoji(type?: string, reverse: boolean = false) {
+        console.log(type);
         if (!type) return;
         return this.emojis.cache.find(x => x.name === `type_${type.toLowerCase()}${reverse ? "_rev" : ""}`);
     }

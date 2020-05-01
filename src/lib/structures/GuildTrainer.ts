@@ -1,9 +1,6 @@
 import { Guild, Structures } from "discord.js";
 import KauriClient from "../../client/KauriClient";
 import { ITrainer, Trainer } from "../../models/trainer";
-import MongooseProvider from "../../providers/MongooseProvider";
-
-const Trainers = new MongooseProvider(Trainer, "_id");
 
 declare module "discord.js" {
     interface GuildMember {
@@ -22,7 +19,7 @@ Structures.extend("GuildMember", GuildMember => {
         }
 
         private async resolveTrainer() {
-            this.trainer = await Trainers.fetch(this.id) || await Trainers.add(new Trainer({ _id: this.id }));
+            this.trainer = await Trainer.findOne({ _id: this.id }) || await Trainer.create({ _id: this.id });
         }
     }
 

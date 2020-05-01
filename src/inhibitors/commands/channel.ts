@@ -16,7 +16,7 @@ export default class ChannelConfigInhibitor extends Inhibitor {
 
         if (!message.guild) { return false; }
 
-        const guildConf = this.client.settings!.get(message.guild.id);
+        const guildConf = this.client.settings?.get(message.guild.id);
         if (!guildConf) { return false; }
 
         const commandConf = guildConf.commands.find(c => c.command === command.id);

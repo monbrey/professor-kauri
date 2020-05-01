@@ -18,12 +18,11 @@ Structures.extend("Guild", Guild => {
         }
 
         public get starboard() {
-            return this.client.settings!.get(this.id, "starboard");
+            return this.client.settings?.get(this.id)?.starboard;
         }
 
         public get logChannel() {
-            const logs = this.client.settings!.get(this.id, "logs");
-            return logs;
+            return this.client.settings?.get(this.id)?.logs;
         }
     }
 

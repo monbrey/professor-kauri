@@ -16,7 +16,7 @@ export interface ITrainerDocument extends Document {
 
 export interface ITrainer extends ITrainerDocument {
     canAfford(amount: number): boolean;
-    pay(amount: number): Promise<ITrainer>
+    pay(amount: number): Promise<ITrainer>;
 }
 
 export interface ITrainerModel extends Model<ITrainer> {
@@ -26,7 +26,7 @@ export interface ITrainerModel extends Model<ITrainer> {
 const TrainerSchema = new Schema({
     _id: { type: String, required: true },
     cash: { type: Number, required: true, default: 0 },
-    battleRecord: { type: BattleRecord, default: BattleRecord },
+    battleRecord: { type: BattleRecord, default: {} },
     stats: { type: String },
     migrated: { type: Boolean, default: false }
 });

@@ -1,11 +1,11 @@
-import { Message, MessageEmbed } from "discord.js";
-import { Matched, Pokemon } from "urpg.js";
-import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Argument } from "discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
+import { Species } from "urpg.js";
+import { KauriCommand } from "../../lib/commands/KauriCommand";
 
 interface CommandArgs {
-    query: Pokemon | number;
-    target: Pokemon | number;
+    query: Species | number;
+    target: Species | number;
 }
 
 module.exports = class SpeedCommand extends KauriCommand {

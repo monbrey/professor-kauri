@@ -1,10 +1,10 @@
 import { Message, MessageEmbed } from "discord.js";
-import { Pokemon } from "urpg.js";
+import { Species } from "urpg.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 
 interface CommandArgs {
-    query: Pokemon;
-    target: Pokemon;
+    query: Species;
+    target: Species;
 }
 
 module.exports = class WeightCommand extends KauriCommand {
