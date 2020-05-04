@@ -38,7 +38,8 @@ export class Pokemon {
 
     matchRating?: number;
 
-    constructor(apiData: Species | Matched<Species>);
+    constructor(apiData: Species);
+    constructor(apiData: Matched<Species>);
     constructor(apiData: any) {
         const data = apiData.value ? apiData.value : apiData;
         
