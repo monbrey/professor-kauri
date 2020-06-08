@@ -95,6 +95,10 @@ export default class KauriClient extends AkairoClient {
             .addType("pokemonTeam", (message: Message, phrase: string) => {
                 if (!phrase) return;
                 return phrase.split(/,\s+?/).map(p => this.commandHandler.resolver.type("pokemon")(message, phrase));
+            })
+            .addType("roleConfig", async (message: Message, phrase: string) => {
+                if (!phrase) return;
+                return await RoleConfig.findClosest('name', phrase);
             });
 
         this.inhibitorHandler = new InhibitorHandler(this, {

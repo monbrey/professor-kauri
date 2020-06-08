@@ -42,7 +42,7 @@ export default class AddRoleCommand extends KauriCommand {
 
         const self = await RoleConfig.find({ self: true });
 
-        embed.addField("Self-assignable Roles", self.map(r => `<@&${r.role_id}>`).join(" "))
+        embed.addField("**Self-assignable Roles**", self.map(r => `<@&${r.role_id}>`).join(" "))
 
         return embed;
     }
