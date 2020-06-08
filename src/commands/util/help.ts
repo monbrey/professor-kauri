@@ -66,6 +66,6 @@ export default class HelpCommand extends KauriCommand {
             return message.util!.send(embed);
         }
 
-        return message.util!.send(command.help(message));
+        return message.util!.send(await command.help(message));
     }
 }

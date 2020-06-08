@@ -1,7 +1,8 @@
 import { stripIndents } from "common-tags";
 import { GuildMember, Message, Role } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { IRoleConfig } from "../../models/roleConfig";
+import { IRoleConfig, RoleConfig } from "../../models/roleConfig";
+import { Util } from "discord.js";
 
 interface ICommandArgs {
     config: IRoleConfig;
@@ -34,6 +35,16 @@ export default class AddRoleCommand extends KauriCommand {
         };
 
         return { config, member };
+    }
+
+    public async help(message: Message) {
+        const embed = await super.help(message);
+
+        const self = await RoleConfig.find({ self: true });
+
+        embed.addField("Self-assignable Roles", self.map(r => `<@&${r.role_id}>`).join(" "))
+
+        return embed;
     }
 
     private async addRole(message: Message, role: Role, member: GuildMember) {

@@ -47,7 +47,7 @@ export class KauriCommand extends Command {
     public afterCancel?(): any;
     public onBlocked?(message: Message): any { }
 
-    public help(message: Message) {
+    public async help(message: Message) {
         const prefix = (this.handler.prefix as PrefixSupplier)(message);
 
         const embed = new MessageEmbed()
