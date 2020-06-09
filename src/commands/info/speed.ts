@@ -22,14 +22,14 @@ module.exports = class SpeedCommand extends KauriCommand {
 
     public *args() {
         const query = yield {
-            type: Argument.union("number", "api-pokemon"),
+            type: Argument.union("number", "pokemon"),
             prompt: {
                 start: "> Please provide the name of a Pokemon to lookup as the attacker, or an integer Speed stat"
             }
         };
 
         const target = yield {
-            type: Argument.union("number", "api-pokemon"),
+            type: Argument.union("number", "pokemon"),
             prompt: {
                 start: "> Please provide the name of a Pokemon to lookup as the target, or an integer Speed stat"
             }

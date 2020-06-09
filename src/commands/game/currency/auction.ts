@@ -35,7 +35,7 @@ export default class AuctionCommand extends KauriCommand {
 
     public *args(message: Message) {
         const pokemon = yield {
-            type: "api-pokemon"
+            type: "pokemon"
         };
 
         const now = yield {

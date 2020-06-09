@@ -21,14 +21,14 @@ module.exports = class WeightCommand extends KauriCommand {
 
     public *args() {
         const query = yield {
-            type: "api-pokemon",
+            type: "pokemon",
             prompt: {
                 start: "> Please provide the name of a Pokemon to lookup"
             }
         };
 
         const target = yield {
-            type: "api-pokemon"
+            type: "pokemon"
         };
 
         return { query: query.value, target: target ? target.value : undefined };
