@@ -101,11 +101,17 @@ export default class AuctionCommand extends KauriCommand {
         message.channel.send(auctionUpdate(name, bid));
 
         const filter = (m: Message) => {
-            if (m.member?.id === bid.auctioneer.id) return false;
-            if (m.member?.id === bid.member?.id) return false;
+            //if (m.member?.id === bid.auctioneer.id) return false;
+            //if (m.member?.id === bid.member?.id) return false;
 
-            const strVal = m.content.replace(/[$,]/g, "");
-            const value = strVal.endsWith("k") ? parseInt(strVal.slice(0, -1), 10) * 1000 : parseInt(strVal, 10);
+            let strVal = m.content.toLowerCase().replace(/[$,]/g, "");
+
+            console.log(strVal, !/[0-9.]+k?/.test(strVal));
+            if(!/[0-9.]+k?/.test(strVal)) return false;
+
+            const value = strVal.endsWith("k") ? Math.floor(parseFloat(strVal.slice(0, -1)) * 1000) : parseInt(strVal);
+
+            console.log(value, isNaN(value));
 
             if (isNaN(value)) return false;
             if (value < bid.value) return false;
@@ -118,8 +124,8 @@ export default class AuctionCommand extends KauriCommand {
         const w2 = setTimeout(() => message.channel.send(`${bid.member ? bid.member.displayName : "Starting"} at ${bid.value.to$()} - going twice!`), 40000, bid);
 
         collector.on("collect", (m: Message) => {
-            const strVal = m.content.replace(/[$,]/g, "");
-            const value = strVal.endsWith("k") ? parseInt(strVal.slice(0, -1), 10) * 1000 : parseInt(strVal, 10);
+            let strVal = m.content.toLowerCase().replace(/[$,]/g, "");
+            const value = strVal.endsWith("k") ? Math.floor(parseFloat(strVal.slice(0, -1)) * 1000) : parseInt(strVal);
 
 
             if (value && value > bid.value) {
