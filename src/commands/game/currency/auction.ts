@@ -4,10 +4,18 @@ import { KauriCommand } from "../../../lib/commands/KauriCommand";
 import { Roles } from "../../../util/constants";
 import { MessageEmbed } from "discord.js";
 import { stripIndents } from "common-tags";
+import { TypeResolver } from "discord-akairo";
 
-interface CommandArgs {
+interface TextCommandArgs {
+    text: string;
+    now: boolean;
+    noResolve: true;
+}
+
+interface PokemonCommandArgs {
     pokemon: Species;
     now: boolean;
+    noResolve: false;
 }
 
 interface Auction {
@@ -16,7 +24,7 @@ interface Auction {
     value: number;
 }
 
-const auctionUpdate = (pokemon: Species, bid: Auction) => `**Auction**: ${pokemon.name}
+const auctionUpdate = (name: string, bid: Auction) => `**Auction**: ${name}
 **Current Bid**: ${bid.member ? bid.member.displayName : "Starting"} at ${bid.value.to$()}`;
 
 export default class AuctionCommand extends KauriCommand {
@@ -27,29 +35,42 @@ export default class AuctionCommand extends KauriCommand {
             channel: "guild",
             defaults: { disabled: false },
             description: "Auctions off a Pokemon to the highest bidder",
-            flags: ["-now"],
-            usage: "auction <Pokemon>",
+            flags: ["-now", "-noresolve"],
+            usage: "auction <Pokemon | String>",
             userRoles: [Roles.Staff, Roles.EventCoordinator]
         });
     }
 
     public *args(message: Message) {
-        const pokemon = yield {
-            type: "pokemon"
-        };
-
         const now = yield {
             match: "flag",
             flag: ["-now"]
         };
 
-        return pokemon ? { pokemon: pokemon.value, now } : { now };
+        const noResolve = yield {
+            match: "flag",
+            flag: ["-noresolve"]
+        };
+
+        if(noResolve) {
+            const text = yield {
+                type: "string"
+            }
+
+            return { now, noResolve, text };
+        }
+
+        const pokemon = yield {
+            type: "pokemon"
+        };
+
+        return { pokemon: pokemon.value, now, noResolve };
     }
 
-    public async exec(message: Message, { pokemon, now }: CommandArgs) {
-        if (!pokemon) return;
+    public async exec(message: Message, args: PokemonCommandArgs | TextCommandArgs) {
+        const name = args.noResolve ? args.text : args.pokemon.name;
 
-        const sent = await message.channel.send(`Start an auction for **${pokemon.name}** at **$1,000**?`);
+        const sent = await message.channel.send(`Start an auction for **${name}** at **$1,000**?`);
         const confirm = await sent.reactConfirm(message.author.id);
 
         if (!confirm) {
@@ -57,15 +78,15 @@ export default class AuctionCommand extends KauriCommand {
             return;
         }
 
-        if (!now) {
+        if (!args.now) {
             const auctionRole = message.guild?.roles.cache.get(Roles.Auction);
             if (auctionRole) await auctionRole.setMentionable(true);
-            await message.channel.send(`<@&${Roles.Auction}>: Auction for ${pokemon.name} starting in 5 minutes!`);
+            await message.channel.send(`<@&${Roles.Auction}>: Auction for ${name} starting in 5 minutes!`);
             if (auctionRole) await auctionRole.setMentionable(false);
 
-            if (!now) setTimeout(async () => {
+            if (!args.now) setTimeout(async () => {
                 if (auctionRole) await auctionRole.setMentionable(true);
-                await message.channel.send(`<@&${Roles.Auction}>: Auction for ${pokemon.name} starting in 1 minute!`);
+                await message.channel.send(`<@&${Roles.Auction}>: Auction for ${name} starting in 1 minute!`);
                 if (auctionRole) await auctionRole.setMentionable(false);
             }, 240000);
 
@@ -77,7 +98,7 @@ export default class AuctionCommand extends KauriCommand {
             value: 1000
         };
 
-        message.channel.send(auctionUpdate(pokemon, bid));
+        message.channel.send(auctionUpdate(name, bid));
 
         const filter = (m: Message) => {
             if (m.member?.id === bid.auctioneer.id) return false;
@@ -105,7 +126,7 @@ export default class AuctionCommand extends KauriCommand {
                 bid.member = m.member!;
                 bid.value = value;
 
-                message.channel.send(auctionUpdate(pokemon, bid));
+                message.channel.send(auctionUpdate(name, bid));
 
                 w1.refresh();
                 w2.refresh();
@@ -118,7 +139,7 @@ export default class AuctionCommand extends KauriCommand {
 
             const embed = new MessageEmbed()
                 .setTitle("Auction Complete!")
-                .setDescription(stripIndents`${pokemon.name} sold to ${bid.member.displayName} for ${bid.value.to$()}.
+                .setDescription(stripIndents`${name} sold to ${bid.member.displayName} for ${bid.value.to$()}.
                 Head over to the [Auction Room](https://forum.pokemonurpg.com/showthread.php?tid=1719) to claim! Include the link to this message:`);
 
             return message.channel.send(embed).then(m => {
