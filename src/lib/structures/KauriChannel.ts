@@ -1,6 +1,4 @@
-import { Structures } from "discord.js";
-import { Guild } from "discord.js";
-import { MessageEmbed } from "discord.js";
+import { Guild, MessageEmbed, Structures } from "discord.js";
 
 const EMBED_COLORS: { [index: string]: number } = {
     error: 0xe50000,

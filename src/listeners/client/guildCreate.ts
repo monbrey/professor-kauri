@@ -12,7 +12,7 @@ export default class GuildCreateListener extends Listener {
 
     public async exec(guild: Guild) {
         if (!this.client.settings?.has(guild.id)) {
-            const config = await Settings.create({ guild_id: guild.id });
+            const config = await Settings.create({ guild_id: guild.id, commands: [] });
             this.client.settings?.set(guild.id, config);
         }
     }

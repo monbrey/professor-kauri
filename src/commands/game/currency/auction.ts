@@ -1,10 +1,8 @@
-import { GuildMember, Message } from "discord.js";
+import { stripIndents } from "common-tags";
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { Species } from "urpg.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
 import { Roles } from "../../../util/constants";
-import { MessageEmbed } from "discord.js";
-import { stripIndents } from "common-tags";
-import { TypeResolver } from "discord-akairo";
 
 interface TextCommandArgs {
     text: string;
@@ -55,7 +53,7 @@ export default class AuctionCommand extends KauriCommand {
         if(noResolve) {
             const text = yield {
                 type: "string"
-            }
+            };
 
             return { now, noResolve, text };
         }
@@ -101,15 +99,15 @@ export default class AuctionCommand extends KauriCommand {
         message.channel.send(auctionUpdate(name, bid));
 
         const filter = (m: Message) => {
-            //if (m.member?.id === bid.auctioneer.id) return false;
-            //if (m.member?.id === bid.member?.id) return false;
+            // if (m.member?.id === bid.auctioneer.id) return false;
+            // if (m.member?.id === bid.member?.id) return false;
 
-            let strVal = m.content.toLowerCase().replace(/[$,]/g, "");
+            const strVal = m.content.toLowerCase().replace(/[$,]/g, "");
 
             console.log(strVal, !/[0-9.]+k?/.test(strVal));
             if(!/[0-9.]+k?/.test(strVal)) return false;
 
-            const value = strVal.endsWith("k") ? Math.floor(parseFloat(strVal.slice(0, -1)) * 1000) : parseInt(strVal);
+            const value = strVal.endsWith("k") ? Math.floor(parseFloat(strVal.slice(0, -1)) * 1000) : parseInt(strVal, 10);
 
             console.log(value, isNaN(value));
 
@@ -124,8 +122,8 @@ export default class AuctionCommand extends KauriCommand {
         const w2 = setTimeout(() => message.channel.send(`${bid.member ? bid.member.displayName : "Starting"} at ${bid.value.to$()} - going twice!`), 40000, bid);
 
         collector.on("collect", (m: Message) => {
-            let strVal = m.content.toLowerCase().replace(/[$,]/g, "");
-            const value = strVal.endsWith("k") ? Math.floor(parseFloat(strVal.slice(0, -1)) * 1000) : parseInt(strVal);
+            const strVal = m.content.toLowerCase().replace(/[$,]/g, "");
+            const value = strVal.endsWith("k") ? Math.floor(parseFloat(strVal.slice(0, -1)) * 1000) : parseInt(strVal, 10);
 
 
             if (value && value > bid.value) {

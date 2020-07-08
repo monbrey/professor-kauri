@@ -45,6 +45,7 @@ module.exports = {
         "no-cond-assign": "error",
         "no-console": "off",
         "no-debugger": "error",
+        "no-duplicate-imports": "error",
         "no-empty": "off",
         "no-fallthrough": "off",
         "no-invalid-this": "off",
@@ -62,7 +63,7 @@ module.exports = {
         "one-var": ["error", "never"],
         "prefer-const": "error",
         "quotes": ["error", "double"],
-        "radix": "error",
+        "radix": "off",
         "spaced-comment": "error",
         "use-isnan": "error",
         "valid-typeof": "off"

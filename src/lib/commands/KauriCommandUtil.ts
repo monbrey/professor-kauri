@@ -1,6 +1,5 @@
 import { CommandUtil } from "discord-akairo";
-import { Message } from "discord.js";
-import { MessageEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 
 declare module "discord-akairo" {
     interface CommandUtil {

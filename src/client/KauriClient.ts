@@ -71,7 +71,7 @@ export default class KauriClient extends AkairoClient {
             handleEdits: true,
             prefix: message => message.guild ? this.settings?.get(message.guild?.id)?.prefix || "!" : "!",
             storeMessages: true,
-        })
+        });
 
         this.commandHandler.resolver
             .addType("ability", async (message: Message, phrase: string) => {
@@ -98,7 +98,7 @@ export default class KauriClient extends AkairoClient {
             })
             .addType("roleConfig", async (message: Message, phrase: string) => {
                 if (!phrase) return;
-                return await RoleConfig.findClosest('name', phrase);
+                return await RoleConfig.findClosest("name", phrase);
             });
 
         this.inhibitorHandler = new InhibitorHandler(this, {
