@@ -36,20 +36,18 @@ AbilitySchema.methods.info = function () {
     const embed = new MessageEmbed()
         .setDescription(this.desc);
 
-    if (this.announcement) {
-        switch (this.announcement) {
-            case "Active":
-                embed.setTitle(`${this.abilityName} | Announced on activation`);
-                break;
-            case "Enter":
-                embed.setTitle(`${this.abilityName} | Announced on entry`);
-                break;
-            case "Hidden":
-                embed.setTitle(`${this.abilityName} | Hidden`);
-                break;
-            default:
-                embed.setTitle(`${this.abilityName}`)
-        }
+    switch (this.announcement) {
+        case "Active":
+            embed.setTitle(`${this.abilityName} | Announced on activation`);
+            break;
+        case "Enter":
+            embed.setTitle(`${this.abilityName} | Announced on entry`);
+            break;
+        case "Hidden":
+            embed.setTitle(`${this.abilityName} | Hidden`);
+            break;
+        default:
+            embed.setTitle(`${this.abilityName}`)
     }
 
     if (this.affects) embed.addFields({ name: "**Interacts with**", value: this.affects });
