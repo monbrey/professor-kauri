@@ -47,6 +47,8 @@ AbilitySchema.methods.info = function () {
             case "Hidden":
                 embed.setTitle(`${this.abilityName} | Hidden`);
                 break;
+            default:
+                embed.setTitle(`${this.abilityName}`)
         }
     }
 
