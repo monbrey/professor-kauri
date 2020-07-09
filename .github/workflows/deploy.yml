@@ -25,7 +25,7 @@ jobs:
     - name: List output files
       run: ls
 
-    - name: Deploy bot
+    - name: Deploy bot code
       uses: appleboy/scp-action@master
       env:
         KEY: ${{ secrets.OVH_PRIVATE_KEY }}
@@ -33,9 +33,20 @@ jobs:
         USERNAME: ${{ secrets.OVH_USER }}
         PASSPHRASE: ${{ secrets.OVH_PASSPHRASE }}
       with:
-        source: "dist/*,package.json,package-lock.json"
+        source: "dist/*"
         target: "bots/professor-kauri"
         strip_components: 1
+
+    - name: Deploy package.json
+      uses: appleboy/scp-action@master
+      env:
+        KEY: ${{ secrets.OVH_PRIVATE_KEY }}
+        HOST: ${{ secrets.OVH_HOST }}
+        USERNAME: ${{ secrets.OVH_USER }}
+        PASSPHRASE: ${{ secrets.OVH_PASSPHRASE }}
+      with:
+        source: "package.json,package-lock.json"
+        target: "bots/professor-kauri"
 
     - name: Update dependencies
       uses: appleboy/ssh-action@master
