@@ -23,8 +23,8 @@
   "devDependencies": {
     "@types/common-tags": "^1.8.0",
     "@types/dotenv": "^6.1.1",
-    "@types/mongoose": "^5.7.1",
-    "@types/node": "^12.12.45",
+    "@types/mongoose": "^5.7.30",
+    "@types/node": "^12.12.48",
     "@types/node-emoji": "^1.8.1",
     "@types/node-fetch": "^2.5.4",
     "@types/string-similarity": "^3.0.0",
@@ -33,7 +33,7 @@
     "@typescript-eslint/parser": "^2.34.0",
     "eslint": "^6.8.0",
     "rimraf": "^3.0.2",
-    "typescript": "^3.9.5",
+    "typescript": "^3.9.6",
     "typescript-eslint": "0.0.1-alpha.0"
   },
   "dependencies": {
@@ -42,14 +42,14 @@
     "discord.js": "^12.2.0",
     "dotenv": "^8.1.0",
     "dotenv-expand": "^5.1.0",
-    "mongoose": "^5.9.18",
+    "mongoose": "^5.9.22",
     "mongoose-plugin-autoinc": "^1.1.9",
     "mongoose-timestamp": "^0.6.0",
     "node-emoji": "^1.10.0",
     "node-fetch": "^2.6.0",
-    "p-queue": "^6.4.0",
+    "p-queue": "^6.5.0",
     "string-similarity": "^3.0.0",
     "urpg.js": "github:Monbrey/urpg.js",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   }
 }

@@ -1,5 +1,4 @@
-import { Inhibitor } from "discord-akairo";
-import { Command } from "discord-akairo";
+import { Command, Inhibitor } from "discord-akairo";
 import { Message } from "discord.js";
 import { ICommandConfigDocument } from "../../models/schemas/commandConfig";
 

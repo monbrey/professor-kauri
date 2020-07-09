@@ -1,6 +1,4 @@
 import { Listener } from "discord-akairo";
-import { TextChannel } from "discord.js";
-import { MessageReaction } from "discord.js";
 
 export default class RawListener extends Listener {
     [index: string]: any;

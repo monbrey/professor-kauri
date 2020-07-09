@@ -1,6 +1,4 @@
-import { Message } from "discord.js";
-import { GuildMember } from "discord.js";
-import { MessageEmbed } from "discord.js";
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
 
 interface CommandArgs {

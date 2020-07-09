@@ -1,7 +1,6 @@
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Weather } from "../../models/weather";
-import { MessageEmbed } from "discord.js";
 
 interface CommandArgs {
     query: string;
