@@ -40,7 +40,7 @@ export default class DexCommand extends KauriCommand {
         const alias = message.util?.parsed?.alias;
         const query = message.util && message.util.parsed ? message.util.parsed.content : undefined;
 
-        const pokemon = new Pokemon(match);
+        const pokemon = new Pokemon(match.value);
 
         this.client.logger.info({
             key: alias,

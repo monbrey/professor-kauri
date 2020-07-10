@@ -1,6 +1,5 @@
 import { Listener } from "discord-akairo";
-import { GuildMember } from "discord.js";
-import { User } from "discord.js";
+import { GuildMember, User } from "discord.js";
 
 export default class GuildMemberRemoveListener extends Listener {
     constructor() {

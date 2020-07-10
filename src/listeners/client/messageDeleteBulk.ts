@@ -1,6 +1,5 @@
 import { Listener } from "discord-akairo";
-import { Message, Snowflake } from "discord.js";
-import { Collection } from "discord.js";
+import { Collection, Message, Snowflake } from "discord.js";
 
 export default class MessageDeleteBulkListener extends Listener {
     constructor() {
@@ -11,7 +10,7 @@ export default class MessageDeleteBulkListener extends Listener {
     }
 
     public async exec(messages: Collection<Snowflake, Message>) {
-        //const partials = messages.filter(m => m.partial).size;
-        //console.log("Fired with", messages.size, "messages,", partials, "partial messages");
+        // const partials = messages.filter(m => m.partial).size;
+        // console.log("Fired with", messages.size, "messages,", partials, "partial messages");
     }
 }

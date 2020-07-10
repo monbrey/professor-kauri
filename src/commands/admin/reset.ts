@@ -1,5 +1,4 @@
-import { Message } from "discord.js";
-import { GuildChannel } from "discord.js";
+import { GuildChannel, Message } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { Roles } from "../../util/constants";
 

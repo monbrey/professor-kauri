@@ -1,9 +1,6 @@
-import { Command, CommandOptions } from "discord-akairo";
-import { Message } from "discord.js";
+import { Command, CommandOptions, PrefixSupplier } from "discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
 import { Roles } from "../../util/constants";
-import { MessageEmbed } from "discord.js";
-import { PrefixSupplier } from "discord-akairo";
-import { CommandStats } from "../../models/commandStats";
 
 interface IKauriCommand {
     defaults: {

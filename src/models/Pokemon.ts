@@ -36,13 +36,10 @@ export class Pokemon {
 
     mega: PokemonMega[];
 
-    matchRating?: number;
+    // matchRating?: number;
 
-    constructor(apiData: Species);
-    constructor(apiData: Matched<Species>);
-    constructor(apiData: any) {
-        const data = apiData.value ? apiData.value : apiData;
-        
+    constructor(data: Species) {
+
         this.name = data.name;
         this.displayName = data.displayName;
         this.formName = data.formName;
@@ -75,7 +72,7 @@ export class Pokemon {
         this.mega = data.megaEvolutions || [];
         this.mega.forEach(m => m.type2 = m.type2 !== "NONE" ? m.type2 : undefined);
 
-        this.matchRating = apiData.rating;
+        // this.matchRating = apiData.rating;
     }
 
     public get genders() {
@@ -154,10 +151,10 @@ export class Pokemon {
             }])
             .setFooter("Reactions | [M] View Moves ");
 
-        if (this.matchRating && this.matchRating !== 1 && query) {
-            const percent = Math.round(this.matchRating * 100);
-            embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
-        }
+        // if (this.matchRating && this.matchRating !== 1 && query) {
+        //     const percent = Math.round(this.matchRating * 100);
+        //     embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
+        // }
 
         if (this.ranks) embed.addFields({ name: "**Creative Ranks**", value: this.ranks.join(" | ") });
         if (this.prices) embed.addFields({ name: "**Price**", value: `${this.prices.join(" | ")}` });
@@ -180,10 +177,10 @@ export class Pokemon {
             .setColor(color)
             .setFooter("Reactions | ⬅️ Back ");
 
-        if (this.matchRating && this.matchRating !== 1 && query) {
-            const percent = Math.round(this.matchRating * 100);
-            embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
-        }
+        // if (this.matchRating && this.matchRating !== 1 && query) {
+        //     const percent = Math.round(this.matchRating * 100);
+        //     embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
+        // }
 
         const learnset: { [index: string]: string[] } = {};
 

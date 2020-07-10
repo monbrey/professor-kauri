@@ -14,7 +14,7 @@ jobs:
       uses: actions/checkout@master
 
     - name: Use Node v12
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2.1.0
       with:
         node-version: 12
 
@@ -25,7 +25,7 @@ jobs:
     - name: List output files
       run: ls
 
-    - name: Deploy bot
+    - name: Deploy bot code
       uses: appleboy/scp-action@master
       env:
         KEY: ${{ secrets.OVH_PRIVATE_KEY }}
@@ -33,11 +33,11 @@ jobs:
         USERNAME: ${{ secrets.OVH_USER }}
         PASSPHRASE: ${{ secrets.OVH_PASSPHRASE }}
       with:
-        source: "dist/*,package-lock.json"
+        source: "dist/*"
         target: "bots/professor-kauri"
         strip_components: 1
 
-    - name: Deploy package files
+    - name: Deploy package.json
       uses: appleboy/scp-action@master
       env:
         KEY: ${{ secrets.OVH_PRIVATE_KEY }}
@@ -47,6 +47,15 @@ jobs:
       with:
         source: "package.json,package-lock.json"
         target: "bots/professor-kauri"
+
+    - name: Update dependencies
+      uses: appleboy/ssh-action@master
+      with:
+        key: ${{ secrets.OVH_PRIVATE_KEY }}
+        host: ${{ secrets.OVH_HOST }}
+        username: ${{ secrets.OVH_USER }}
+        passphrase: ${{ secrets.OVH_PASSPHRASE }}
+        script: cd bots/professor-kauri && npm install
 
     - name: Restart the bot
       uses: appleboy/ssh-action@master
