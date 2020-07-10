@@ -1,3 +1,7 @@
+// Load environment variables from file
+import dotenv from "dotenv";
+dotenv.config();
+
 // Custom Client
 import KauriClient from "./client/KauriClient";
 // Akairo Extensions
