@@ -39,7 +39,7 @@ export default class ItemCommand extends KauriCommand {
                 return message.util!.send(item.info());
             } else {
                 this.client.logger.item(message, item, "none");
-                return message.channel.embed(`No results found for ${item}`);
+                return message.channel.embed("warn", `No results found for ${item}`);
             }
         } catch (e) {
             this.client.logger.parseError(e);

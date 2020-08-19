@@ -18,7 +18,6 @@ interface IKauriClient {
     logger: Logger;
     prefix: (m: Message) => string;
     reactionQueue: queue;
-    roleConfigs?: Collection<string, IRoleConfig>;
     settings?: Collection<string, ISettings>;
     urpg: UrpgClient;
 
@@ -28,14 +27,13 @@ interface IKauriClient {
     };
 }
 
-declare module "discord-akairo" {
-    interface AkairoClient extends IKauriClient { }
+declare module "discord.js" {
+    interface Client extends IKauriClient { }
 }
 
 export default class KauriClient extends AkairoClient {
     public logger: Logger;
     public reactionQueue: queue;
-    public roleConfigs?: Collection<string, IRoleConfig>;
     public settings?: Collection<string, ISettings>;
 
     public commandHandler: CommandHandler;
@@ -117,7 +115,6 @@ export default class KauriClient extends AkairoClient {
 
     private async init() {
         this.settings = new Collection((await Settings.find()).map(s => [s.guild_id, s]));
-        this.roleConfigs = new Collection((await RoleConfig.find()).map(r => [r.role_id, r]));
 
         this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
         this.commandHandler.useListenerHandler(this.listenerHandler);

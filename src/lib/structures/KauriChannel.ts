@@ -11,8 +11,14 @@ const EMBED_COLORS: { [index: string]: number } = {
 type EmbedTypes = "error" | "warn" | "cancel" | "success" | "info";
 
 declare module "discord.js" {
-    interface TextBasedChannelFields {
-        embed(type: string, description?: string | number, timeout?: number): Promise<Message>;
+    interface TextChannel {
+        embed(type: EmbedTypes, description?: string): Promise<Message>;
+    }
+    interface DMChannel {
+        embed(type: EmbedTypes, description?: string): Promise<Message>;
+    }
+    interface NewsChannel {
+        embed(type: EmbedTypes, description?: string): Promise<Message>;
     }
 }
 

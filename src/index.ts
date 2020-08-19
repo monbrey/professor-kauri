@@ -22,4 +22,5 @@ import "./util/db";
 new KauriClient({
     allowedMentions: { parse: ["users", "roles"] },
     partials: ["MESSAGE", "CHANNEL", "REACTION"],
+    restTimeOffset: 100
 }).start();
