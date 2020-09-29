@@ -189,8 +189,7 @@ export default class RankCommand extends KauriCommand {
     }
 
     private async outputSingle(pokemon: IPokemon, apiPokemon: Pokemon) {
-        if (!pokemon.rank) { return; }
-        const rank = pokemon.rank;
+        const rank = pokemon.rank ?? { story: "Unranked", art: "Unranked", park: "Unranked" };
 
         const sRank = rank.story ? sRanks.find(r => r.name === rank.story!.toLowerCase()) : null;
         const aRank = rank.art ? sRanks.find(r => r.name === rank.art!.toLowerCase()) : null;
