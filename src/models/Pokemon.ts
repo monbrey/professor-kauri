@@ -222,7 +222,6 @@ export class Pokemon {
 
     async megaDex(client: KauriClient, whichMega: number) {
         const mega = this.mega[whichMega];
-        if (!mega) { return; }
 
         const color = await Color.getColorForType(this.type1.toLowerCase());
         const [t1, t2] = [client.getTypeEmoji(this.type1), client.getTypeEmoji(this.type2, true)];
