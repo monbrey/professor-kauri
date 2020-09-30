@@ -140,6 +140,22 @@ class CustomLogger {
     }
     // #endregion
 
+    // #region GENERIC DISCORD LOGGERS
+    public async dlog(guild: Guild, title: string, description: string) {
+        const embed = new MessageEmbed({ title, description, color: 0xfefefe }).setTimestamp();
+        return this.getLogChannel(guild)?.send(embed);
+    }
+
+    public async minor(guild: Guild, title: string, description: string) {
+        const embed = new MessageEmbed({ title, description, color: 0xffc107 }).setTimestamp();
+        return this.getLogChannel(guild)?.send(embed);
+    }
+
+    public async major(guild: Guild, title: string, description: string) {
+        const embed = new MessageEmbed({ title, description, color: 0xe50000 }).setTimestamp();
+        return this.getLogChannel(guild)?.send(embed);
+    }
+
     // #region EVENTS
     public async guildMemberAdd(member: GuildMember) {
         this.winston.info({

@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Monbrey/professor-kauri-v2.git"
+    "url": "git+https://github.com/monbrey/professor-kauri-v2.git"
   },
-  "author": "Monbrey",
+  "author": "monbrey",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Monbrey/professor-kauri-v2/issues"
+    "url": "https://github.com/monbrey/professor-kauri-v2/issues"
   },
-  "homepage": "https://github.com/Monbrey/professor-kauri-v2#readme",
+  "homepage": "https://github.com/monbrey/professor-kauri-v2#readme",
   "devDependencies": {
     "@types/common-tags": "^1.8.0",
     "@types/dotenv": "^6.1.1",
