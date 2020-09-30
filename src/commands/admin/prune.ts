@@ -40,7 +40,7 @@ export default class PruneCommand extends KauriCommand {
         if(message.channel instanceof DMChannel) return;
 
         const toDelete = user ? message.channel.messages.cache.filter(m => !!m.author && m.author.id === user.id) : count;
-        
+
         try {
             const deleted = await message.channel.bulkDelete(toDelete, true);
             this.client.logger.prune(message, deleted.size);

@@ -47,7 +47,7 @@ AbilitySchema.methods.info = function () {
             embed.setTitle(`${this.abilityName} | Hidden`);
             break;
         default:
-            embed.setTitle(`${this.abilityName}`)
+            embed.setTitle(`${this.abilityName}`);
     }
 
     if (this.affects) embed.addFields({ name: "**Interacts with**", value: this.affects });
