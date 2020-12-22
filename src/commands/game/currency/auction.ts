@@ -52,7 +52,8 @@ export default class AuctionCommand extends KauriCommand {
 
         if(noResolve) {
             const text = yield {
-                type: "string"
+                type: "string",
+                match: "rest"
             };
 
             return { now, noResolve, text };
