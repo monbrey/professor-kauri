@@ -19,8 +19,10 @@ import "./lib/structures/KauriMessage";
 // Utility
 import "./util/db";
 
-new KauriClient({
+const client = new KauriClient({
     allowedMentions: { parse: ["users", "roles"] },
-    partials: ["MESSAGE", "CHANNEL", "REACTION"],
+    partials: ["MESSAGE", "CHANNEL", "REACTION", "USER", "GUILD_MEMBER"],
     restTimeOffset: 100
-}).start();
+});
+
+client.start();
