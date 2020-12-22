@@ -86,7 +86,6 @@ export default class KauriClient extends AkairoClient {
                 if (!phrase) return;
 
                 phrase = phrase.replace(/-G$/gi, "-Galar").replace(/-A/gi, "-Alola");
-                console.log(phrase);
                 const response = await this.urpg.species.fetchClosest(phrase);
                 if (response) return response;
             })
@@ -120,7 +119,8 @@ export default class KauriClient extends AkairoClient {
         this.commandHandler.useListenerHandler(this.listenerHandler);
 
         this.listenerHandler.setEmitters({
-            commandHandler: this.commandHandler
+            commandHandler: this.commandHandler,
+            websocket: this.ws
         });
 
         this.commandHandler.loadAll();
@@ -129,7 +129,6 @@ export default class KauriClient extends AkairoClient {
     }
 
     public getTypeEmoji(type?: string, reverse: boolean = false) {
-        console.log(type);
         if (!type) return;
         return this.emojis.cache.find(x => x.name === `type_${type.toLowerCase()}${reverse ? "_rev" : ""}`);
     }
