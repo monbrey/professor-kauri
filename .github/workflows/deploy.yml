@@ -14,7 +14,7 @@ jobs:
       uses: actions/checkout@master
 
     - name: Use Node v12
-      uses: actions/setup-node
+      uses: actions/setup-node@latest
       with:
         node-version: 12
 
