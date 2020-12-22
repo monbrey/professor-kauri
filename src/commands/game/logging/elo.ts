@@ -116,7 +116,7 @@ export default class EloCommand extends KauriCommand {
                 message.client.logger.elo(message, winner, loser);
 
                 embed.setTitle("ELO Rating Update");
-                delete embed.footer;
+                embed.footer = null;
                 await prompt.edit(embed);
             } catch (e) {
                 message.client.logger.parseError(e);
