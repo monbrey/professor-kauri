@@ -47,7 +47,7 @@
     "mongoose-plugin-autoinc": "^1.1.9",
     "mongoose-timestamp": "^0.6.0",
     "node-emoji": "^1.10.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "p-queue": "^6.5.0",
     "string-similarity": "^3.0.0",
     "urpg.js": "github:Monbrey/urpg.js",
