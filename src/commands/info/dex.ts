@@ -48,17 +48,37 @@ export default class DexCommand extends KauriCommand {
             result: pokemon.name
         });
 
-        try {
-            const dex: Partial<DexMessage> = alias === "dex" ?
-                await message.channel.send(await pokemon.dex(this.client as KauriClient, query)) as Message :
-                await message.channel.send(await pokemon.learnset(query)) as Message;
-            dex.pokemon = pokemon;
-            dex.origAuthor = message.author!;
 
-            return alias === "dex" ? this.dexPrompt(dex as DexMessage) : this.backPrompt(dex as DexMessage);
+
+        try {
+            if (message.token) {
+                console.log(message);
+                // @ts-ignore
+
+                await this.client.api.interactions(message.id)(message.token).callback.post({
+                    data: {
+                        type: 4,
+                        data: {
+                            embeds: [(await pokemon.dex(this.client as KauriClient, query)).toJSON()]
+                        }
+                    }
+                });
+            } else {
+                const dex: Partial<DexMessage> = alias === "dex" ?
+                    await message.channel.send(await pokemon.dex(this.client as KauriClient, query)) as Message :
+                    await message.channel.send(await pokemon.learnset(query)) as Message;
+                dex.pokemon = pokemon;
+                dex.origAuthor = message.author!;
+
+                return alias === "dex" ? this.dexPrompt(dex as DexMessage) : this.backPrompt(dex as DexMessage);
+            }
         } catch (e) {
             this.client.logger.parseError(e);
         }
+    }
+
+    public async interact(interaction: any, args: CommandArgs) {
+
     }
 
     private async dexPrompt(dex: DexMessage) {
