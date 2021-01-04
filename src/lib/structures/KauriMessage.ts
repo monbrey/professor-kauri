@@ -10,12 +10,20 @@ declare module "discord.js" {
     }
 }
 
+export interface Interaction {
+    id: Snowflake;
+    name: string;
+    token: string;
+}
+
 export class KauriMessage extends Message {
-    public token: any;
+    public interaction: Interaction;
+
     constructor(client: KauriClient, data: any, channel: TextChannel | DMChannel | NewsChannel) {
         super(client, data, channel);
 
-        this.token = data.token;
+        const { id, name, token } = data;
+        this.interaction = { id, name, token };
     }
 
     /**

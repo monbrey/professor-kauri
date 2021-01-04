@@ -119,7 +119,7 @@ export class Pokemon {
         return this.attacks.reduce((acc, val) => val.method === method ? [...acc, val.name] : acc, [] as string[]);
     }
 
-    async dex(client: KauriClient, query?: string) {
+    async dex(client: KauriClient, query?: string, reactions: boolean = true) {
         const color = await Color.getColorForType(this.type1.toLowerCase());
         const [t1, t2] = [client.getTypeEmoji(this.type1), client.getTypeEmoji(this.type2, true)];
 
@@ -148,8 +148,8 @@ export class Pokemon {
             }, {
                 name: "**Stats**",
                 value: `\`\`\`${statsStrings}\`\`\``
-            }])
-            .setFooter("Reactions | [M] View Moves ");
+            }]);
+        if (reactions) embed.setFooter("Reactions | [M] View Moves ");
 
         // if (this.matchRating && this.matchRating !== 1 && query) {
         //     const percent = Math.round(this.matchRating * 100);
@@ -159,11 +159,13 @@ export class Pokemon {
         if (this.ranks) embed.addFields({ name: "**Creative Ranks**", value: this.ranks.join(" | ") });
         if (this.prices) embed.addFields({ name: "**Price**", value: `${this.prices.join(" | ")}` });
 
-        if (this.mega.length === 1) {
-            const mp = this.mega[0].name.split("-")[1];
-            embed.footer!.text += `| [${mp === "Mega" ? "X" : "P"}] View ${mp}`;
+        if (reactions) {
+            if (this.mega.length === 1) {
+                const mp = this.mega[0].name.split("-")[1];
+                embed.footer!.text += `| [${mp === "Mega" ? "X" : "P"}] View ${mp}`;
+            }
+            if (this.mega.length === 2) { embed.footer!.text += "| [X] View Mega-X | [Y] View Mega-Y"; }
         }
-        if (this.mega.length === 2) { embed.footer!.text += "| [X] View Mega-X | [Y] View Mega-Y"; }
 
         return embed;
     }

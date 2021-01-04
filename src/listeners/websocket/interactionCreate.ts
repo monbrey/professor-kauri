@@ -21,10 +21,9 @@ export default class extends Listener {
 
             const message = new KauriMessage(this.client as KauriClient, interaction, channel);
 
-            const argsObject = interaction.data.options.reduce((a: any, v: any) => ({ ...a, [v.name]: v.value }), {});
-            const args = await command.parse(message, argsObject.query);
+            const args = new Map(interaction.data.options.map((o: { name: string; value: any }) => [o.name, o.value]));
 
-            command.exec(message, args);
+            command.interact(message, args);
 
             // command.interact(interaction, args);
         }

@@ -1,7 +1,9 @@
+import { Argument } from "discord-akairo";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { Matched, Species } from "urpg.js";
 import KauriClient from "../../client/KauriClient";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
+import { KauriMessage } from "../../lib/structures/KauriMessage";
 import { Pokemon } from "../../models/Pokemon";
 
 interface CommandArgs {
@@ -48,21 +50,9 @@ export default class DexCommand extends KauriCommand {
             result: pokemon.name
         });
 
-
-
         try {
             if (message.token) {
-                console.log(message);
-                // @ts-ignore
 
-                await this.client.api.interactions(message.id)(message.token).callback.post({
-                    data: {
-                        type: 4,
-                        data: {
-                            embeds: [(await pokemon.dex(this.client as KauriClient, query)).toJSON()]
-                        }
-                    }
-                });
             } else {
                 const dex: Partial<DexMessage> = alias === "dex" ?
                     await message.channel.send(await pokemon.dex(this.client as KauriClient, query)) as Message :
@@ -77,8 +67,25 @@ export default class DexCommand extends KauriCommand {
         }
     }
 
-    public async interact(interaction: any, args: CommandArgs) {
+    public async interact(message: KauriMessage, args: Map<string, any>) {
+        const arg = new Argument(this, { type: "pokemon", match: "text" }).process(message, args.get("query"));
+        const pokemon = new Pokemon((await arg).value);
 
+        this.client.logger.info({
+            key: message.interaction.name,
+            query: args.get("query"),
+            result: pokemon.name
+        });
+
+        // @ts-ignore
+        await this.client.api.interactions(message.id)(message.interaction.token).callback.post({
+            data: {
+                type: 4,
+                data: {
+                    embeds: [(await pokemon.dex(this.client as KauriClient, args.get("query"), false)).toJSON()]
+                }
+            }
+        });
     }
 
     private async dexPrompt(dex: DexMessage) {
