@@ -17,7 +17,8 @@ export enum Roles {
     Arbiter = "533356018005180416",
     FFA = "575087931824275466",
     EventCoordinator = "584764766921293825",
-    Auction = "669282056722710552"
+    Auction = "669282056722710552",
+    ContentUpkeep = "584764993044611075"
 }
 
 export enum Categories {
