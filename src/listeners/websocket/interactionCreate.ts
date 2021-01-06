@@ -19,11 +19,15 @@ export default class extends Listener {
             const channel = this.client.channels.cache.get(interaction.channel_id);
             if (!channel?.isText()) return;
 
-            const message = new KauriMessage(this.client as KauriClient, interaction, channel);
+            const message = new KauriMessage(this.client as KauriClient, { ...interaction, author: interaction.member.user }, channel);
 
             const args = new Map(interaction.data.options.map((o: { name: string; value: any }) => [o.name, o.value]));
 
-            command.interact(message, args);
+            const inhibited = await command.handler.runPostTypeInhibitors(message, command);
+
+            if (!inhibited) {
+                command.interact(message, args);
+            }
 
             // command.interact(interaction, args);
         }
