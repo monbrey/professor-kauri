@@ -1,5 +1,5 @@
-import { MessageEmbed } from "discord.js";
-import { CreativeRank, Location, Matched, PokemonAbility, PokemonAttack, PokemonMega, Species } from "urpg.js";
+import { MessageEmbed, Util } from "discord.js";
+import { CreativeRank, Location, PokemonAbility, PokemonAttack, PokemonMega, Species } from "urpg.js";
 import KauriClient from "../client/KauriClient";
 import { ICON_BASE, SPRITE_BASE } from "../util/constants";
 import { Color } from "./color";
@@ -195,28 +195,12 @@ export class Pokemon {
 
         // 1024 character splitter
         for (const method of Object.keys(learnset)) {
-            learnset[method] = learnset[method].sort();
-            let remainingLearnset = learnset[method].join(", ");
-            let counter = 1;
-            let pieces = Math.ceil(remainingLearnset.length / 1024);
-
-            while (remainingLearnset.length > 1024) {
-                delete learnset[method];
-                const splitPoint = remainingLearnset.lastIndexOf(
-                    ", ",
-                    Math.floor(remainingLearnset.length / pieces--)
-                );
-                learnset[`${method} (${counter})`] = remainingLearnset.substring(0, splitPoint).split(", ");
-                remainingLearnset = remainingLearnset.substring(splitPoint + 2);
-                delete learnset[method];
-                if (remainingLearnset.length < 1024) {
-                    learnset[`${method}${counter++}`] = remainingLearnset.split(", ");
-                }
-            }
+            learnset[method] = Util.splitMessage(learnset[method].sort((a, b) => a.localeCompare(b)).join(", "), { char: ", ", maxLength: 1024 });
         }
 
         for (const [name, value] of Object.entries(learnset)) {
-            embed.addFields({ name: `**${name}**`, value: value.join(", ") });
+            if (value.length === 1) embed.addFields({ name: `**${name}**`, value: value[0] });
+            else embed.addFields(value.map((v, i) => ({ name: `**${name} (${i + 1})**`, value: v })));
         }
 
         return embed;
