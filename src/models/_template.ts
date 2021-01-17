@@ -2,15 +2,15 @@ import { Document, model, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
 
 export interface IThingDocument extends Document {
-    // properties
+  // properties
 }
 
 export interface IThing extends IThingDocument {
-    // instance methods
+  // instance methods
 }
 
 export interface IThingModel extends Model<IThing> {
-    // static methods
+  // static methods
 }
 
 const ModelSchema = new Schema({

@@ -4,27 +4,27 @@ import KauriClient from "../../client/KauriClient";
 import { IStarboardConfigDocument } from "../../models/schemas/starboardConfig";
 
 declare module "discord.js" {
-    interface Guild {
-        client: KauriClient;
-        starboard?: IStarboardConfigDocument;
-        logChannel?: Snowflake;
-    }
+  interface Guild {
+    client: KauriClient;
+    starboard?: IStarboardConfigDocument;
+    logChannel?: Snowflake;
+  }
 }
 
 Structures.extend("Guild", Guild => {
-    class KauriGuild extends Guild {
-        constructor(client: KauriClient, data: any) {
-            super(client, data);
-        }
-
-        public get starboard() {
-            return this.client.settings?.get(this.id)?.starboard;
-        }
-
-        public get logChannel() {
-            return this.client.settings?.get(this.id)?.logs;
-        }
+  class KauriGuild extends Guild {
+    constructor(client: KauriClient, data: any) {
+      super(client, data);
     }
 
-    return KauriGuild;
+    public get starboard() {
+      return this.client.settings?.get(this.id)?.starboard;
+    }
+
+    public get logChannel() {
+      return this.client.settings?.get(this.id)?.logs;
+    }
+  }
+
+  return KauriGuild;
 });

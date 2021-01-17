@@ -9,7 +9,7 @@ module.exports = {
         "@typescript-eslint/ban-types": "error",
         "@typescript-eslint/class-name-casing": "error",
         "@typescript-eslint/consistent-type-assertions": "error",
-        "@typescript-eslint/indent": "error",
+        "@typescript-eslint/indent": ["error", 2],
         "@typescript-eslint/interface-name-prefix": "off",
         "@typescript-eslint/member-delimiter-style": ["error", {
             "multiline": { "delimiter": "semi", "requireLast": true },

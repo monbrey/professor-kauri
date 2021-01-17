@@ -7,16 +7,16 @@ import { BattleRecord, IBattleRecordDocument } from "./schemas/battleRecord";
 import { instanceDB } from "../util/db";
 
 export interface ITrainerDocument extends Document {
-    _id: Snowflake;
-    cash: number;
-    battleRecord: IBattleRecordDocument;
-    stats?: string;
-    migrated: boolean;
+  _id: Snowflake;
+  cash: number;
+  battleRecord: IBattleRecordDocument;
+  stats?: string;
+  migrated: boolean;
 }
 
 export interface ITrainer extends ITrainerDocument {
-    canAfford(amount: number): boolean;
-    pay(amount: number): Promise<ITrainer>;
+  canAfford(amount: number): boolean;
+  pay(amount: number): Promise<ITrainer>;
 }
 
 export interface ITrainerModel extends Model<ITrainer> {
@@ -24,22 +24,22 @@ export interface ITrainerModel extends Model<ITrainer> {
 }
 
 const TrainerSchema = new Schema({
-    _id: { type: String, required: true },
-    cash: { type: Number, required: true, default: 0 },
-    battleRecord: { type: BattleRecord, default: {} },
-    stats: { type: String },
-    migrated: { type: Boolean, default: false }
+  _id: { type: String, required: true },
+  cash: { type: Number, required: true, default: 0 },
+  battleRecord: { type: BattleRecord, default: {} },
+  stats: { type: String },
+  migrated: { type: Boolean, default: false }
 });
 
 TrainerSchema.plugin(timestamp);
 
 TrainerSchema.methods.canAfford = function(amount: number) {
-    return amount < this.cash;
+  return amount < this.cash;
 };
 
 TrainerSchema.methods.pay = async function(amount: number) {
-    this.cash += amount;
-    return this.save();
+  this.cash += amount;
+  return this.save();
 };
 
 // TrainerSchema.methods.populatePokemon = async function() {

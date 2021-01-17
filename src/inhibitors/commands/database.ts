@@ -4,15 +4,15 @@ import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { InhibitorReasons } from "../../util/constants";
 
 export default class DatabaseConfigInhibitor extends Inhibitor {
-    constructor() {
-        super("requiresDatabaseInhibitor", {
-            reason: InhibitorReasons.NO_DATABASE,
-            type: "post",
-            priority: 1
-        });
-    }
+  constructor() {
+    super("requiresDatabaseInhibitor", {
+      reason: InhibitorReasons.NO_DATABASE,
+      type: "post",
+      priority: 1
+    });
+  }
 
-    public exec(message: Message, command: KauriCommand): boolean {
-        return command.requiresDatabase && this.client.db.main.readyState !== this.client.db.main.states.connected;
-    }
+  public exec(message: Message, command: KauriCommand): boolean {
+    return command.requiresDatabase && this.client.db.main.readyState !== this.client.db.main.states.connected;
+  }
 }
