@@ -1,6 +1,7 @@
 import { Listener } from "discord-akairo";
+import { MessageEmbed } from "discord.js";
 import { Settings } from "../../models/settings";
-
+const { version } = require("../../../package.json");
 export default class ReadyListener extends Listener {
   constructor() {
     super("ready", {
@@ -12,10 +13,13 @@ export default class ReadyListener extends Listener {
   public async exec() {
     this.client.logger.info(`Logged in as "${this.client.user?.username}"`);
 
+    const devtech = this.client.channels.cache.get("420675341036814337");
+    if(devtech?.isText()) devtech.send(`Restarted. Current version: ${version}`);
+
     for (const [guild_id, guild] of this.client.guilds.cache) {
       if (!this.client.settings?.has(guild_id)) {
         const config = await Settings.create({ guild_id, commands: [] });
-                this.client.settings?.set(guild_id, config);
+        this.client.settings?.set(guild_id, config);
       }
     }
   }
