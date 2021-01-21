@@ -49,7 +49,6 @@ module.exports = class WeightCommand extends KauriCommand {
     }
 
     const qValue = typeof query === "number" ? query : query.weight;
-    const tValue = typeof target === "number" ? target : target.weight;
 
     this.client.logger.info({
       key: "weight",
@@ -58,6 +57,8 @@ module.exports = class WeightCommand extends KauriCommand {
     });
 
     if (qName && tName) {
+      const tValue = typeof target === "number" ? target : target?.weight;
+
       const twoEmbed = new MessageEmbed()
         .setTitle(`${qName} vs ${tName}`)
         .setDescription(`**Attacking Weight**: ${qValue}\n**Defending Weight**: ${tValue}`)
@@ -71,7 +72,7 @@ module.exports = class WeightCommand extends KauriCommand {
 
     const embed = new MessageEmbed()
       .setTitle(`${qName}`)
-      .setDescription("**Defending Speed**: ${tValue}")
+      .setDescription(`**Defending Weight**: ${qValue}`)
       .addFields([
         { name: "**Grass Knot / Low Kick**", value: `${this.calcOne(qValue)} BP`, inline: true }
       ]);
