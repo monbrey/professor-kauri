@@ -1,3 +1,4 @@
+import { Argument } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { Species } from "urpg.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
@@ -21,62 +22,61 @@ module.exports = class WeightCommand extends KauriCommand {
 
   public *args() {
     const query = yield {
-      type: "pokemon",
+      type: Argument.union("number", "pokemon"),
       prompt: {
-        start: "> Please provide the name of a Pokemon to lookup"
+        start: "> Please provide the name of a Pokemon to lookup, or a weight value"
       }
     };
 
     const target = yield {
-      type: "pokemon"
+      type: Argument.union("number", "pokemon"),
     };
 
-    return { query: query.value, target: target ? target.value : undefined };
+    return {
+      query: query.value ?? query,
+      target: target?.value ?? target
+    };
   }
 
   public async exec(message: Message, { query, target }: CommandArgs) {
-    const search = message.util?.parsed?.content;
-    console.log(search);
-    if (query && target) {
-      this.client.logger.info({
-        key: "weight",
-        search,
-        result: `${query.name} and ${target.name}`
-      });
+    console.log(query, target);
+    const qName = typeof query === "number" ? query : query.name;
+    const tName = typeof target === "number" ? target : target?.name;
 
-      const embed = new MessageEmbed()
-        .setTitle(`${query.name} vs ${target.name}`)
-        .setDescription("Using Heat Crash or Heavy Slam")
-        .addFields([
-          { name: `**${query.name}**`, value: `${query.weight}kg`, inline: true },
-          { name: `**${target.name}**`, value: `${target.weight}kg`, inline: true },
-          { name: "**Move Power**", value: `${this.calcTwo(query.weight, target.weight)} BP`, inline: true }
-        ]);
-
-      return message.util!.send(embed);
+    if (!qName) {
+      this.client.logger.info({ key: "weight", search: message.util?.parsed?.content, result: "none" });
+      return;
     }
 
-    if (query) {
+    const qValue = typeof query === "number" ? query : query.weight;
+    const tValue = typeof target === "number" ? target : target.weight;
 
-      this.client.logger.info({
-        key: "weight",
-        search,
-        result: query.name
-      });
+    this.client.logger.info({
+      key: "weight",
+      search: message.util?.parsed?.content,
+      result: `${qName}${tName ? `and ${tName}` : ""}`
+    });
 
-      const embed = new MessageEmbed()
-        .setTitle(query.name)
-        .setDescription("As the target of Grass Knot or Low Kick")
+    if (qName && tName) {
+      const twoEmbed = new MessageEmbed()
+        .setTitle(`${qName} vs ${tName}`)
+        .setDescription(`**Attacking Weight**: ${qValue}\n**Defending Weight**: ${tValue}`)
         .addFields([
-          { name: "**Weight**", value: `${query.weight}kg`, inline: true },
-          { name: "**Move Power**", value: `${this.calcOne(query.weight)} BP`, inline: true }
+          { name: "**Heat Crash / Heavy Slam**", value: `${this.calcTwo(qValue, tValue)} BP`, inline: true },
+          { name: "**Grass Knot / Low Kick**", value: `${this.calcOne(tValue)} BP`, inline: true }
         ]);
 
-      return message.channel.send(embed);
-    } else {
-      this.client.logger.info({ key: "weight", search, result: "none" });
-      message.channel.embed("warn", `No results found for ${query}`);
+      return message.util!.send(twoEmbed);
     }
+
+    const embed = new MessageEmbed()
+      .setTitle(`${qName}`)
+      .setDescription("**Defending Speed**: ${tValue}")
+      .addFields([
+        { name: "**Grass Knot / Low Kick**", value: `${this.calcOne(qValue)} BP`, inline: true }
+      ]);
+
+    return message.channel.send(embed);
   }
 
   private calcOne(weight: number) {
