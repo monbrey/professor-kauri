@@ -8,7 +8,7 @@ interface CommandArgs {
   target: Species | number;
 }
 
-module.exports = class SpeedCommand extends KauriCommand {
+export default class SpeedCommand extends KauriCommand {
   constructor() {
     super("Speed", {
       aliases: ["speed"],
