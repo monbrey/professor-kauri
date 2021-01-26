@@ -2,6 +2,7 @@ import { Listener } from "discord-akairo";
 import KauriClient from "../../client/KauriClient";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { KauriMessage } from "../../lib/structures/KauriMessage";
+import { argMapper } from "../../util/argMapper";
 
 export default class extends Listener {
   constructor() {
@@ -21,15 +22,13 @@ export default class extends Listener {
 
       const message = new KauriMessage(this.client as KauriClient, { ...interaction, author: interaction.member.user }, channel);
 
-      const args = new Map(interaction.data.options.map((o: { name: string; value: any }) => [o.name, o.value]));
+      const args = argMapper(interaction.data.options);
 
       const inhibited = await command.handler.runPostTypeInhibitors(message, command);
 
       if (!inhibited) {
         command.interact(message, args);
       }
-
-      // command.interact(interaction, args);
     }
   }
 }
