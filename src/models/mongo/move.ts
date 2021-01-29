@@ -84,6 +84,7 @@ MoveSchema.statics.metronome = async function () {
 };
 
 MoveSchema.methods.info = async function () {
+  console.log(this.tm);
   const type = `Type: ${this.moveType}`;
   const power = `Power: ${this.power ? this.power : "-"}`;
   const acc = `Accuracy: ${this.accuracy ? this.accuracy : "-"}`;
@@ -109,10 +110,15 @@ MoveSchema.methods.info = async function () {
   if (this.note) embed.addField("**Note**", this.note);
   if (this.additional) embed.addField("**Additional note**", this.additional);
   if (this.list && this.list.length !== 0) embed.addField("**Helpful data**", this.list.join("\n"));
-  if (this.tm) {
+  if (this.tm?.number) {
     const tmNum = this.tm.number.toString().padStart(2, "0");
     const tmPrice = this.tm.price.toLocaleString();
     embed.addField("**TM**", `Taught by TM${tmNum} ($${tmPrice})`);
+  }
+  if (this.hm?.number) {
+    const tmNum = this.hm.number.toString().padStart(2, "0");
+    const tmPrice = this.hm.price.toLocaleString();
+    embed.addField("**HM**", `Taught by HM${tmNum} ($${tmPrice})`);
   }
 
   if (this.zmove) embed.addField("**Z-Move**", this.zmove);

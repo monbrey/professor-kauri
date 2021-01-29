@@ -1,6 +1,5 @@
 import { Listener } from "discord-akairo";
 import { readFileSync } from "fs";
-import { join } from "path";
 import { Settings } from "../../models/mongo/settings";
 export default class ReadyListener extends Listener {
   constructor() {
@@ -13,7 +12,7 @@ export default class ReadyListener extends Listener {
   public async exec() {
     this.client.logger.info(`Logged in as "${this.client.user?.username}"`);
 
-    const { version } = JSON.parse(readFileSync("package.json", "utf-8"));
+    const { version } = JSON.parse(readFileSync("./package.json", "utf-8"));
     const devtech = this.client.channels.cache.get("420675341036814337");
     if (devtech?.isText()) devtech.send(`Restarted. Current version: ${version}`);
 
