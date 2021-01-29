@@ -1,7 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
-import { db } from "../util/db";
+import { db } from "../../util/db";
 
 export interface IAbilityDocument extends Document {
   abilityName: string;
@@ -19,7 +19,7 @@ export interface IAbilityModel extends Model<IAbility> {
 
 }
 
-const AbilitySchema: Schema = new Schema({
+const AbilitySchema = new Schema<IAbility, IAbilityModel>({
   abilityName: { type: String, required: true },
   announcement: { type: String },
   desc: { type: String },

@@ -13,6 +13,6 @@ export default class DatabaseConfigInhibitor extends Inhibitor {
   }
 
   public exec(message: Message, command: KauriCommand): boolean {
-    return command.requiresDatabase && this.client.db.main.readyState !== this.client.db.main.states.connected;
+    return command.requiresDatabase && this.client.db.main.readyState !== 1;
   }
 }

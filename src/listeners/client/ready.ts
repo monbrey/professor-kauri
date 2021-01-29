@@ -1,7 +1,7 @@
 import { Listener } from "discord-akairo";
 import { readFileSync } from "fs";
 import { join } from "path";
-import { Settings } from "../../models/settings";
+import { Settings } from "../../models/mongo/settings";
 export default class ReadyListener extends Listener {
   constructor() {
     super("ready", {

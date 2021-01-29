@@ -1,7 +1,7 @@
 import { Document, Model, Schema } from "mongoose";
-import { CommandConfig, ICommandConfigDocument } from "./schemas/commandConfig";
-import { IStarboardConfigDocument, StarboardConfig } from "./schemas/starboardConfig";
-import { instanceDB } from "../util/db";
+import { CommandConfig, ICommandConfigDocument } from "../schemas/commandConfig";
+import { IStarboardConfigDocument, StarboardConfig } from "../schemas/starboardConfig";
+import { instanceDB } from "../../util/db";
 
 export interface ISettingsDocument extends Document {
   guild_id: string;
@@ -19,7 +19,7 @@ export interface ISettings extends ISettingsDocument {
 
 export interface ISettingsModel extends Model<ISettings> { }
 
-const SettingsSchema: Schema = new Schema({
+const SettingsSchema = new Schema<ISettings, ISettingsModel>({
   guild_id: { type: String, required: true },
   prefix: String,
   starboard: StarboardConfig,

@@ -1,7 +1,7 @@
 import { stripIndents } from "common-tags";
 import { MessageEmbed } from "discord.js";
 import { Attack, AttackTarget, ContestMoveType, PokemonType } from "urpg.js";
-import { Color } from "./color";
+import { Color } from "./mongo/color";
 
 export class Move implements Partial<Attack> {
   name: string;

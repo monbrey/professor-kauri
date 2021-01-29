@@ -2,7 +2,7 @@ import { stripIndents } from "common-tags";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import emoji from "node-emoji";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
-import { ITrainerDocument, Trainer } from "../../../models/trainer";
+import { ITrainerDocument, Trainer } from "../../../models/mongo/trainer";
 
 module.exports = class LadderCommand extends KauriCommand {
   constructor() {

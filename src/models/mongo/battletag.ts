@@ -13,7 +13,7 @@ export interface IBattleTagModel extends Model<IBattleTag> {
   swap(a: string, b: string): Promise<IBattleTag[]>;
 }
 
-const BattleTagSchema = new Schema({
+const BattleTagSchema = new Schema<IBattleTag, IBattleTagModel>({
   user: { type: String, required: true, unique: true },
   tag: { type: Number, required: true },
 }, { collection: "battletags" });
@@ -24,9 +24,11 @@ BattleTagSchema.plugin(autoIncrement, {
   startAt: 1
 });
 
-BattleTagSchema.statics.swap = async function(a: string, b: string) {
+BattleTagSchema.statics.swap = async function (a: string, b: string) {
   const userA = await this.findOne({ user: a });
   const userB = await this.findOne({ user: b });
+
+  if (!userA || !userB) return [];
 
   const temp = userA.tag;
   userA.tag = userB.tag;

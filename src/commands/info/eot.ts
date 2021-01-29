@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { Eot } from "../../models/eot";
+import { Eot } from "../../models/mongo/eot";
 
 interface CommandArgs {
   query: string;

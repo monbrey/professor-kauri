@@ -1,6 +1,6 @@
 import { Listener } from "discord-akairo";
 import { Guild } from "discord.js";
-import { Settings } from "../../models/settings";
+import { Settings } from "../../models/mongo/settings";
 
 export default class GuildCreateListener extends Listener {
   constructor() {

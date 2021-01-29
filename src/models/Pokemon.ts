@@ -2,7 +2,7 @@ import { MessageEmbed, Util } from "discord.js";
 import { CreativeRank, Location, PokemonAbility, PokemonAttack, PokemonMega, Species } from "urpg.js";
 import KauriClient from "../client/KauriClient";
 import { ICON_BASE, SPRITE_BASE } from "../util/constants";
-import { Color } from "./color";
+import { Color } from "./mongo/color";
 
 export class Pokemon {
   name: string;

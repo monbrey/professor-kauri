@@ -2,7 +2,7 @@ import { Argument, Flag } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
 import { Roles } from "../../../util/constants";
-import { ITrainerDocument, Trainer } from "../../../models/trainer";
+import { ITrainerDocument, Trainer } from "../../../models/mongo/trainer";
 import emoji from "node-emoji";
 import { stripIndents } from "common-tags";
 

@@ -5,8 +5,8 @@ import { Connection } from "mongoose";
 import queue from "p-queue";
 import { join } from "path";
 import { Client as UrpgClient } from "urpg.js";
-import { IRoleConfig, RoleConfig } from "../models/roleConfig";
-import { ISettings, Settings } from "../models/settings";
+import { IRoleConfig, RoleConfig } from "../models/mongo/roleConfig";
+import { ISettings, Settings } from "../models/mongo/settings";
 // Utilities
 import { db, instanceDB } from "../util/db";
 import Logger from "../util/logger";
@@ -43,7 +43,7 @@ export default class KauriClient extends AkairoClient {
   public urpg: UrpgClient;
 
   constructor(options: ClientOptions = {}) {
-    super({ ownerID: "122157285790187530", fetchAllMembers: true }, options);
+    super({ ownerID: "122157285790187530" }, options);
 
     this.logger = new Logger(this);
     this.urpg = new UrpgClient({ nullHandling: true });

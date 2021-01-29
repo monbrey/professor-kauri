@@ -1,6 +1,6 @@
 import { Client, MessageEmbed } from "discord.js";
 import { Document, Model, Schema } from "mongoose";
-import { db } from "../util/db";
+import { db } from "../../util/db";
 
 export interface IWeatherDocument extends Document {
   _id: number;
@@ -19,7 +19,7 @@ export interface IWeatherModel extends Model<IWeather> {
 
 }
 
-const WeatherSchema = new Schema({
+const WeatherSchema = new Schema<IWeather, IWeatherModel>({
   _id: { type: Number, required: true },
   weatherName: { type: String, required: true },
   shortCode: { type: String, required: true },

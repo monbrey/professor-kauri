@@ -1,7 +1,7 @@
 import { Listener } from "discord-akairo";
 import { Message } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { CommandStats } from "../../models/commandStats";
+import { CommandStats } from "../../models/mongo/commandStats";
 
 export default class CommandFinishedListener extends Listener {
   constructor() {

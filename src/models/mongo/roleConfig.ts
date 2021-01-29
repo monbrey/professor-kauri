@@ -1,5 +1,5 @@
 import { Document, Model, Schema } from "mongoose";
-import { db } from "../util/db";
+import { db } from "../../util/db";
 
 export interface IRoleConfigDocument extends Document {
   role_id: string;
@@ -13,7 +13,7 @@ export interface IRoleConfig extends IRoleConfigDocument { }
 
 export interface IRoleConfigModel extends Model<IRoleConfig> { }
 
-const RoleConfigSchema: Schema = new Schema({
+const RoleConfigSchema = new Schema<IRoleConfig, IRoleConfigModel>({
   role_id: { type: String, required: true, index: true },
   name: { type: String, required: true },
   children: [String],

@@ -3,8 +3,8 @@ import { Snowflake } from "discord.js";
 import { connection, Document, Model, Schema } from "mongoose";
 import timestamp from "mongoose-timestamp";
 
-import { BattleRecord, IBattleRecordDocument } from "./schemas/battleRecord";
-import { instanceDB } from "../util/db";
+import { BattleRecord, IBattleRecordDocument } from "../schemas/battleRecord";
+import { instanceDB } from "../../util/db";
 
 export interface ITrainerDocument extends Document {
   _id: Snowflake;
@@ -23,7 +23,7 @@ export interface ITrainerModel extends Model<ITrainer> {
 
 }
 
-const TrainerSchema = new Schema({
+const TrainerSchema = new Schema<ITrainer, ITrainerModel>({
   _id: { type: String, required: true },
   cash: { type: Number, required: true, default: 0 },
   battleRecord: { type: BattleRecord, default: {} },

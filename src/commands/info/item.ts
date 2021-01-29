@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { Item } from "../../models/item";
+import { Item } from "../../models/mongo/item";
 
 interface CommandArgs {
   query: string;

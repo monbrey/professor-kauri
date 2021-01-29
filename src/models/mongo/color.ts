@@ -1,6 +1,6 @@
 import { Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
-import { db } from "../util/db";
+import { db } from "../../util/db";
 
 export interface IColorDocument extends Document {
   key: string;
@@ -14,7 +14,7 @@ export interface IColorModel extends Model<IColorDocument> {
   getColorForType(type: string): Promise<string>;
 }
 
-const ColorSchema = new Schema({
+const ColorSchema = new Schema<IColor, IColorModel>({
   key: { type: String, required: true },
   color: { type: String, required: true }
 }, { collection: "colors" });

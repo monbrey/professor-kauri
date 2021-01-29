@@ -1,7 +1,7 @@
 import { stripIndents } from "common-tags";
 import { GuildMember, Message, Role } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { IRoleConfig, RoleConfig } from "../../models/roleConfig";
+import { IRoleConfig, RoleConfig } from "../../models/mongo/roleConfig";
 
 interface ICommandArgs {
   config: IRoleConfig;

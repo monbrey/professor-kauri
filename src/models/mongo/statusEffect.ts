@@ -1,7 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { connection, Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
-import { db } from "../util/db";
+import { db } from "../../util/db";
 
 export interface IStatusEffectDocument extends Document {
   statusName: string;
@@ -18,7 +18,7 @@ export interface IStatusEffectModel extends Model<IStatusEffect> {
 
 }
 
-const StatusEffectSchema = new Schema({
+const StatusEffectSchema = new Schema<IStatusEffect, IStatusEffectModel>({
   statusName: { type: String, required: true },
   shortCode: { type: String, required: true },
   desc: { type: String, required: true },

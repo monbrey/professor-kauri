@@ -1,6 +1,6 @@
 import { Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
-import { instanceDB } from "../util/db";
+import { instanceDB } from "../../util/db";
 
 export interface ICommandStatsDocument extends Document {
   guild_id: string;
@@ -16,7 +16,7 @@ export interface ICommandStatsModel extends Model<ICommandStats> {
   // static methods
 }
 
-const CommandStatsSchema = new Schema({
+const CommandStatsSchema = new Schema<ICommandStats, ICommandStatsModel>({
   guild_id: { type: String, required: true },
   command_id: { type: String, required: true },
   count: { type: Number, default: 0 }

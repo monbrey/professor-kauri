@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { Weather } from "../../models/weather";
+import { IWeather, Weather } from "../../models/mongo/weather";
 
 interface CommandArgs {
   query: string;
@@ -29,7 +29,7 @@ module.exports = class WeatherCommand extends KauriCommand {
 
   public async exec(message: Message, { query }: CommandArgs) {
     if (!query) {
-      const weathers = await Weather.find({});
+      const weathers: IWeather[] = await Weather.find({});
       const list = weathers.map(w => `${this.client.emojis.cache.get(w.emoji) ?? w.emoji} ${w.weatherName} - \`[${w.shortCode}]\``);
 
       const embed = new MessageEmbed()

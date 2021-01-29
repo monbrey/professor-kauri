@@ -3,7 +3,7 @@ import { MessageEmbed } from "discord.js";
 import { Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
 import { db } from "../../util/db";
-import { Color } from "../color";
+import { Color } from "./color";
 
 
 export interface IMoveDocument extends Document {
@@ -49,7 +49,7 @@ export interface IMoveModel extends Model<IMove> {
   metronome(): IMove;
 }
 
-const MoveSchema = new Schema({
+const MoveSchema = new Schema<IMove, IMoveModel>({
   moveName: { type: String, required: true },
   moveType: { type: String, reuqired: true },
   desc: { type: String },
@@ -121,8 +121,8 @@ MoveSchema.methods.info = async function () {
   if (this.note) embed.addField("**Note**", this.note);
   if (this.additional) embed.addField("**Additional note**", this.additional);
   if (this.list && this.list.length !== 0) embed.addField("**Helpful data**", this.list.join("\n"));
-  if (this.tm.number && this.tm.martPrice) {
-    const tmNum = this.tm.number.toString().padStart(2, 0);
+  if (this.tm?.number && this.tm.martPrice) {
+    const tmNum = this.tm.number.toString().padStart(2, "0");
     const tmPrice = this.tm.martPrice.pokemart.toLocaleString();
     embed.addField("**TM**", `Taught by TM${tmNum} ($${tmPrice})`);
   }

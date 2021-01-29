@@ -1,6 +1,6 @@
 import { Document, Model, Schema } from "mongoose";
 import { autoIncrement } from "mongoose-plugin-autoinc";
-import { db } from "../util/db";
+import { db } from "../../util/db";
 
 export interface IEotDocument extends Document {
   order: number;
@@ -15,7 +15,7 @@ export interface IEotModel extends Model<IEot> {
   getSurrounding(num: number): IEot[];
 }
 
-const EotSchema = new Schema({
+const EotSchema = new Schema<IEot, IEotModel>({
   order: { type: Number, required: true },
   effect: { type: String, required: true }
 }, { collection: "eotEffects" });

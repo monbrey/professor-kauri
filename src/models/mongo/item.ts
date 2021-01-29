@@ -24,7 +24,7 @@ export interface IItemModel extends Model<IItem> {
   findPartial(itemName: string): IItemDocument[];
 }
 
-const ItemSchema = new Schema({
+const ItemSchema = new Schema<IItem, IItemModel>({
   itemName: { type: String, required: true },
   desc: { type: String },
   category: [{ type: String }],

@@ -1,0 +1,17 @@
+{
+    "guild": [],
+    "global": [
+        {
+            "name": "dex",
+            "description": "Query the Ultradex for Pokemon data",
+            "options": [
+                {
+                    "name": "query",
+                    "description": "Pokemon to search for",
+                    "type": "3",
+                    "required": true
+                }
+            ]
+        }
+    ]
+}

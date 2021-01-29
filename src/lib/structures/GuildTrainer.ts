@@ -1,6 +1,6 @@
 import { Guild, Structures } from "discord.js";
 import KauriClient from "../../client/KauriClient";
-import { ITrainer, Trainer } from "../../models/trainer";
+import { ITrainer, Trainer } from "../../models/mongo/trainer";
 
 declare module "discord.js" {
   interface GuildMember {
@@ -19,7 +19,7 @@ Structures.extend("GuildMember", GuildMember => {
     }
 
     private async resolveTrainer() {
-      this.trainer = await Trainer.findOne({ _id: this.id }) || await Trainer.create<Omit<ITrainer, "cash" | "battleRecord" | "stats" | "migrated">>({ _id: this.id });
+      this.trainer = await Trainer.findOne({ _id: this.id }) || await Trainer.create({ _id: this.id });
     }
   }
 
