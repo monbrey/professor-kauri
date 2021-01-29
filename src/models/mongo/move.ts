@@ -23,6 +23,7 @@ export interface IMoveDocument extends Document {
   additional?: string;
   note?: string;
   zmove?: string;
+  maxmove?: string;
   metronome: boolean;
   tm?: {
     number: number;
@@ -65,6 +66,7 @@ const MoveSchema = new Schema({
   additional: { type: String },
   note: { type: String },
   zmove: { type: String },
+  maxmove: { type: String },
   metronome: { type: Boolean, default: true },
   tm: {
     number: { type: Number },
@@ -116,16 +118,17 @@ MoveSchema.methods.info = async function () {
     .setDescription(propString)
     .setColor(await Color.getColorForType(this.moveType.toLowerCase()));
 
-  if (this.note) embed.addFields({ name: "**Note**", value: this.note });
-  if (this.additional) embed.addFields({ name: "**Additional note**", value: this.additional });
-  if (this.list && this.list.length !== 0) embed.addFields({ name: "**Helpful data**", value: this.list.join("\n") });
+  if (this.note) embed.addField("**Note**", this.note);
+  if (this.additional) embed.addField("**Additional note**", this.additional);
+  if (this.list && this.list.length !== 0) embed.addField("**Helpful data**", this.list.join("\n"));
   if (this.tm.number && this.tm.martPrice) {
     const tmNum = this.tm.number.toString().padStart(2, 0);
     const tmPrice = this.tm.martPrice.pokemart.toLocaleString();
-    embed.addFields({ name: "**TM**", value: `Taught by TM${tmNum} ($${tmPrice})` });
+    embed.addField("**TM**", `Taught by TM${tmNum} ($${tmPrice})`);
   }
 
-  if (this.zmove) embed.addFields({ name: "**Z-Move**", value: this.zmove });
+  if (this.zmove) embed.addField("**Z-Move**", this.zmove);
+  if (this.maxmove) embed.addField("**Dynamax Move**", this.maxmove);
 
   return embed;
 };
