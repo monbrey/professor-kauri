@@ -27,17 +27,11 @@ export interface IMoveDocument extends Document {
   metronome: boolean;
   tm?: {
     number: number;
-    martPrice: {
-      pokemart: number;
-      berryStore?: number;
-    };
+    price: number;
   };
   hm?: {
     number: number;
-    martPrice: {
-      pokemart: number;
-      berryStore?: number;
-    };
+    price: number;
   };
 }
 
@@ -70,17 +64,11 @@ const MoveSchema = new Schema<IMove, IMoveModel>({
   metronome: { type: Boolean, default: true },
   tm: {
     number: { type: Number },
-    martPrice: {
-      pokemart: { type: Number },
-      berryStore: { type: Number }
-    }
+    price: { type: Number },
   },
   hm: {
     number: { type: Number },
-    martPrice: {
-      pokemart: { type: Number },
-      berryStore: { type: Number }
-    }
+    price: { type: Number },
   }
 }, { collection: "moves" });
 
@@ -121,9 +109,9 @@ MoveSchema.methods.info = async function () {
   if (this.note) embed.addField("**Note**", this.note);
   if (this.additional) embed.addField("**Additional note**", this.additional);
   if (this.list && this.list.length !== 0) embed.addField("**Helpful data**", this.list.join("\n"));
-  if (this.tm?.number && this.tm.martPrice) {
+  if (this.tm) {
     const tmNum = this.tm.number.toString().padStart(2, "0");
-    const tmPrice = this.tm.martPrice.pokemart.toLocaleString();
+    const tmPrice = this.tm.price.toLocaleString();
     embed.addField("**TM**", `Taught by TM${tmNum} ($${tmPrice})`);
   }
 
