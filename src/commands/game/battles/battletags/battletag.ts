@@ -17,6 +17,7 @@ export default class extends KauriCommand {
   public *args() {
     const method = yield {
       type: [
+        ["battletag-list", "list"],
         ["battletag-add", "add"],
         ["battletag-swap", "swap"],
       ],
@@ -29,6 +30,7 @@ export default class extends KauriCommand {
     const action = args.keys().next().value;
     const arg = await new Argument(this, {
       type: [
+        ["battletag-list", "list"],
         ["battletag-add", "add"],
         ["battletag-swap", "swap"]
       ]

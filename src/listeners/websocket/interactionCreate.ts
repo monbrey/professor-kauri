@@ -22,7 +22,7 @@ export default class extends Listener {
 
       const message = new KauriMessage(this.client as KauriClient, { ...interaction, author: interaction.member.user }, channel);
 
-      const args = argMapper(interaction.data.options);
+      const args = argMapper(interaction.data.options ?? []);
 
       const inhibited = await command.handler.runPostTypeInhibitors(message, command);
 

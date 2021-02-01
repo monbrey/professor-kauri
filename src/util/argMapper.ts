@@ -2,5 +2,5 @@ interface InteractionOption { name: string; options: Record<string, any>; value:
 
 export const argMapper = (options: any) => {
   return new Map(options.map(
-    (o: InteractionOption) => [o.name, o.value ? o.value : argMapper(o.options)]));
+    (o: InteractionOption) => [o.name, o.value ? o.value : argMapper(o.options ?? [])]));
 };
