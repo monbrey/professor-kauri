@@ -15,13 +15,16 @@ export interface IBattleTagModel extends Model<IBattleTag> {
 
 const BattleTagSchema = new Schema<IBattleTag, IBattleTagModel>({
   user: { type: String, required: true, unique: true },
-  tag: { type: Number, required: true },
+  tag: { type: Number },
 }, { collection: "battletags" });
 
-BattleTagSchema.plugin(autoIncrement, {
-  model: "BattleTag",
-  field: "tag",
-  startAt: 1
+BattleTagSchema.pre("save", function(next) {
+  if(this.tag) return next();
+
+  BattleTag.findOne({}).sort({ tag: -1 }).then(doc => {
+    this.tag = (doc?.tag ?? 0)+1;
+    next();
+  });
 });
 
 BattleTagSchema.statics.swap = async function (a: string, b: string) {
