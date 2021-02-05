@@ -12,7 +12,7 @@ export default class extends KauriCommand {
       category: "Battles",
       description: "Swaps battle tags between two battlers",
       clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
-      userRoles: [Roles.Approver, Roles.Referee]
+      userRoles: [Roles.Referee]
     });
   }
 

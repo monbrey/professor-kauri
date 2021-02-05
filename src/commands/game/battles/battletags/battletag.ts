@@ -10,7 +10,6 @@ export default class extends KauriCommand {
       category: "Battles",
       description: "Assigns a tag to a battlers and swaps battler tags",
       clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
-      userRoles: [Roles.Approver, Roles.Referee]
     });
   }
 
