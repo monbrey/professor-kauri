@@ -2,24 +2,25 @@ import { MessageEmbed } from "discord.js";
 import { KauriCommand } from "../../../../lib/commands/KauriCommand";
 import { KauriMessage } from "../../../../lib/structures/KauriMessage";
 import { BattleTag } from "../../../../models/mongo/battletag";
+import { Roles } from "../../../../util/constants";
 
 export default class extends KauriCommand {
   constructor() {
-    super("battletag-schedule", {
-      aliases: ["battletag-schedule"],
+    super("battletag-clear", {
+      aliases: ["battletag-clear"],
       category: "Battles",
-      description: "Schedule a battle between two users",
+      description: "Clears a scheduled battle",
       clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
+      userRoles: [Roles.Referee]
     });
   }
 
   public async interact(message: KauriMessage, args: Map<string, any>) {
     const userA = args.get("user-a");
-    const userB = args.get("user-b") ?? message.author.id;
+    const userB = args.get("user-b");
 
-    let time;
     try {
-      time = await BattleTag.schedule(userA, userB);
+      await BattleTag.clear(userA, userB);
     } catch (e) {
       const error = new MessageEmbed().setColor("RED").setDescription(e);
       // @ts-ignore
@@ -34,8 +35,8 @@ export default class extends KauriCommand {
     }
 
     const embed = new MessageEmbed()
-      .setFooter("Battle scheduled")
-      .setDescription(`<@${userA}> and <@${userB}> scheduled to battle`);
+      .setFooter("Schedule cleared")
+      .setDescription(`<@${userA}> and <@${userB}> are free to challenge again.`);
 
     // @ts-ignore
     await this.client.api.interactions(message.id)(message.interaction.token).callback.post({

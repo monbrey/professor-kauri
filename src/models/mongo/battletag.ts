@@ -14,6 +14,7 @@ export interface IBattleTag extends IBattleTagDocument { }
 export interface IBattleTagModel extends Model<IBattleTag> {
   swap(a: string, b: string): Promise<IBattleTag[]>;
   schedule(a: string, b: string): Promise<IBattleTag[]>;
+  clear(a: string, b: string): Promise<void>;
 }
 
 const BattleTagSchema = new Schema<IBattleTag, IBattleTagModel>({
@@ -61,8 +62,8 @@ BattleTagSchema.statics.schedule = async function (a: string, b: string) {
   if (!userA) throw new Error(`No tag found for <@${a}>`);
   if (!userB) throw new Error(`No tag found for <@${b}>`);
 
-  if(userA.schedule.user) throw new Error(`<@${a}> already has a battle scheduled`);
-  if(userB.schedule.user) throw new Error(`<@${b}> already has a battle scheduled`);
+  if (userA.schedule.user) throw new Error(`<@${a}> already has a battle scheduled`);
+  if (userB.schedule.user) throw new Error(`<@${b}> already has a battle scheduled`);
 
   const time = Date.now();
 
@@ -74,6 +75,26 @@ BattleTagSchema.statics.schedule = async function (a: string, b: string) {
 
   return [userA, userB];
 
+};
+
+BattleTagSchema.statics.clear = async function (a: string, b: string) {
+  const userA = await this.findOne({ user: a });
+  const userB = await this.findOne({ user: b });
+
+  if (!userA) throw new Error(`No tag found for <@${a}>`);
+  if (!userB) throw new Error(`No tag found for <@${b}>`);
+
+  if (!userA.schedule.user) throw new Error(`<@${a}> has no battle scheduled`);
+  if (!userB.schedule.user) throw new Error(`<@${b}> has no battle scheduled`);
+
+  if (userA.schedule.user !== userB.user || userB.schedule.user !== userA.user)
+    throw new Error("Those two aren't scheduled to fight each other");
+
+  userA.schedule = {};
+  userB.schedule = {};
+
+  await userA.save();
+  await userB.save();
 };
 
 export const BattleTag: IBattleTagModel = db.model<IBattleTag, IBattleTagModel>("BattleTag", BattleTagSchema);

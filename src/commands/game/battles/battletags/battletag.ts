@@ -8,21 +8,9 @@ export default class extends KauriCommand {
     super("battletag", {
       aliases: ["battletag"],
       category: "Battles",
-      description: "Assigns a tag to a battlers and swaps battler tags",
+      description: "Commands for interacting with Battle Tags",
       clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
     });
-  }
-
-  public *args() {
-    const method = yield {
-      type: [
-        ["battletag-list", "list"],
-        ["battletag-add", "add"],
-        ["battletag-swap", "swap"],
-      ],
-    };
-
-    return Flag.continue(method);
   }
 
   public async interact(message: KauriMessage, args: Map<string, any>) {
@@ -32,7 +20,8 @@ export default class extends KauriCommand {
         ["battletag-list", "list"],
         ["battletag-add", "add"],
         ["battletag-swap", "swap"],
-        ["battletag-schedule", "schedule"]
+        ["battletag-schedule", "schedule"],
+        ["battletag-clear", "clear"]
       ]
     }).process(message, action);
 
