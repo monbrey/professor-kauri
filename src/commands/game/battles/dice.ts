@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
 import { KauriCommand } from "../../../lib/commands/KauriCommand";
+import { DiceLog } from "../../../models/mongo/dicelog";
 
 interface CommandArgs {
   die: string[];
@@ -14,7 +15,7 @@ export default class DiceCommand extends KauriCommand {
       editable: false,
       flags: ["-v", "--verify"],
       description: "Rolls one or more x-sided dice",
-      usage: ["d 100","d 2,100","d 2d100"]
+      usage: ["d 100", "d 2,100", "d 2d100"]
     });
   }
 
@@ -24,18 +25,13 @@ export default class DiceCommand extends KauriCommand {
       match: "separate"
     };
 
-    const verify = yield {
-      match: "flag",
-      flag: ["-v", "--verify"]
-    };
-
-    return { die, verify };
+    return { die };
   }
 
   public async exec(message: Message, { die, verify }: CommandArgs) {
     let reduction = true;
-    const valid = die.reduce((acc,d) => {
-      if(/^[1-9]\d*(?:[,d]?[1-9]\d*)?$/.test(d) && reduction)
+    const valid = die.reduce((acc, d) => {
+      if (/^[1-9]\d*(?:[,d]?[1-9]\d*)?$/.test(d) && reduction)
         acc.push(d);
       else reduction = false;
       return acc;
@@ -56,17 +52,8 @@ export default class DiceCommand extends KauriCommand {
 
     if (rolls.length === 0) return;
 
-    const response = await message.util!.send({
-      embed: {
-        color: "WHITE",
-        author: { name: message.member ? message.member.displayName : message.author!.username, icon_url: message.author!.displayAvatarURL() },
-        fields: [
-          { name: rolls.length > 1 ? "Rolls" : "Roll", value: rolls.join(", "), inline: true },
-          { name: dice.length > 1 ? "Dice" : "Die", value: dice.join(", "), inline: true }
-        ]
-      }
-    }) as Message;
-    if (verify) response.edit(response.embeds[0].setFooter(`ID: ${response.id}`));
-    return this.client.logger.dice(message, response.id, rolls.join(", "));
+    const response = await message.util!.reply(`\\🎲 ${rolls.join(", ")}`);
+
+    DiceLog.log(response.id, message, rolls.join(", "));
   }
 }
