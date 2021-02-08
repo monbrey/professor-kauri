@@ -31,9 +31,12 @@ export default class extends KauriCommand {
       type: [
         ["battletag-list", "list"],
         ["battletag-add", "add"],
-        ["battletag-swap", "swap"]
+        ["battletag-swap", "swap"],
+        ["battletag-schedule", "schedule"]
       ]
     }).process(message, action);
+
+    if(!arg) return;
 
     const sub = this.handler.findCommand(arg) as KauriCommand;
     if (sub.interact) {

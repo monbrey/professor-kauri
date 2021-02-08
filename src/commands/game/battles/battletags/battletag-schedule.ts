@@ -5,8 +5,8 @@ import { BattleTag } from "../../../../models/mongo/battletag";
 
 export default class extends KauriCommand {
   constructor() {
-    super("battletag-list", {
-      aliases: ["battletag-list"],
+    super("battletag-schedule", {
+      aliases: ["battletag-schedule"],
       category: "Battles",
       description: "Lists battle tags",
       clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS"],
@@ -14,17 +14,28 @@ export default class extends KauriCommand {
   }
 
   public async interact(message: KauriMessage, args: Map<string, any>) {
-    const tags = await BattleTag.find({}).sort({ tag: 1 });
+    const userA = args.get("user-a");
+    const userB = args.get("user-b") ?? message.author.id;
+
+    let time;
+    try {
+      time = await BattleTag.schedule(userA, userB);
+    } catch (e) {
+      const error = new MessageEmbed().setColor("RED").setDescription(e);
+      // @ts-ignore
+      return await this.client.api.interactions(message.id)(message.interaction.token).callback.post({
+        data: {
+          type: 4,
+          data: {
+            embeds: [error.toJSON()]
+          }
+        }
+      });
+    }
 
     const embed = new MessageEmbed()
-      .setTitle("Battle Tag Current Standings")
-      .setDescription(tags.map(t => {
-        let line = `**${t.tag}**: <@${t.user}>`;
-        if(t.schedule.user && t.schedule.time) {
-          line += `\nIn challenge with <@${t.schedule.user}> since ${new Date(t.schedule.time).toISOString().slice(0, 16).replace("T", " ")}`;
-        }
-        return line;
-      }).join("\n"));
+      .setFooter("Battle scheduled")
+      .setDescription(`<@${userA}> and <@${userB}> scheduled to battle`);
 
     // @ts-ignore
     await this.client.api.interactions(message.id)(message.interaction.token).callback.post({
