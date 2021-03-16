@@ -20,7 +20,7 @@ export default class CashModCommand extends KauriCommand {
     });
   }
 
-  public *args(message: Message) {
+  public *args(message: Message): any {
     const alias = message.util?.parsed?.alias;
 
     const member = yield {

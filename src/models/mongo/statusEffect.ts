@@ -25,11 +25,6 @@ const StatusEffectSchema = new Schema<IStatusEffect, IStatusEffectModel>({
   color: { type: String, required: true }
 }, { collection: "statuseffects" });
 
-StatusEffectSchema.plugin(autoIncrement, {
-  model: "StatusEffect",
-  startAt: 1
-});
-
 StatusEffectSchema.methods.info = async function() {
   const embed = new MessageEmbed()
     .setTitle(`${this.statusName} (${this.shortCode})`)

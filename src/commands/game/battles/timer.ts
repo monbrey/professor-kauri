@@ -33,7 +33,7 @@ export default class TimerCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const operation = yield {
       default: "set",
       index: 0,

@@ -20,7 +20,7 @@ export default class PruneCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const count = yield {
       type: Argument.range("number", 1, 100),
       default: 100,

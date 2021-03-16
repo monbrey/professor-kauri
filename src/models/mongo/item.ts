@@ -34,12 +34,6 @@ const ItemSchema = new Schema<IItem, IItemModel>({
   }
 }, { collection: "items" });
 
-ItemSchema.plugin(autoIncrement, {
-  model: "Item",
-  startAt: 1
-});
-// ItemSchema.plugin(paginate);
-
 ItemSchema.virtual("priceString").get(function(this: IItemDocument) {
   if (!this.martPrice) { return ""; }
   if (this.martPrice.pokemart && this.martPrice.berryStore) {

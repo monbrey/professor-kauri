@@ -19,11 +19,6 @@ const ColorSchema = new Schema<IColor, IColorModel>({
   color: { type: String, required: true }
 }, { collection: "colors" });
 
-ColorSchema.plugin(autoIncrement, {
-  model: "Color",
-  startAt: 1
-});
-
 ColorSchema.statics.getColorForType = async function(type: string) {
   const colors = await this.find({});
   const pair = colors.find((c: IColorDocument) => c.key === type);

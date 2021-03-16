@@ -22,7 +22,7 @@ export default class ConfigCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const command = yield {
       type: "commandAlias",
       prompt: {

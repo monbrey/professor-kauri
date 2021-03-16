@@ -9,7 +9,7 @@ interface CommandArgs {
   silent: boolean;
 }
 
-export default class EvalCommand extends KauriCommand {
+export default class extends KauriCommand {
   constructor() {
     super("eval", {
       aliases: ["eval"],
@@ -20,7 +20,7 @@ export default class EvalCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const code = yield {
       match: "content"
     };

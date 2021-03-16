@@ -26,7 +26,7 @@ export default class DexCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const match = yield {
       type: "pokemon",
       match: "text",

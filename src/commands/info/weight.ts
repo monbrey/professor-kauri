@@ -20,7 +20,7 @@ module.exports = class WeightCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const query = yield {
       type: Argument.union("number", "pokemon"),
       prompt: {

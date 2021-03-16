@@ -1,4 +1,5 @@
 // Load environment variables from file
+import { Intents } from "discord.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -22,6 +23,7 @@ import "./util/db";
 const client = new KauriClient({
   allowedMentions: { parse: ["users", "roles"] },
   partials: ["MESSAGE", "CHANNEL", "REACTION", "USER", "GUILD_MEMBER"],
+  intents: [new Intents(Intents.NON_PRIVILEGED).add(Intents.FLAGS.GUILD_MEMBERS).toArray()],
   restTimeOffset: 100
 });
 

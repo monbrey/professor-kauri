@@ -22,9 +22,4 @@ const CommandStatsSchema = new Schema<ICommandStats, ICommandStatsModel>({
   count: { type: Number, default: 0 }
 });
 
-CommandStatsSchema.plugin(autoIncrement, {
-  model: "CommandStats",
-  startAt: 1
-});
-
 export const CommandStats: ICommandStatsModel =  instanceDB.model<ICommandStats, ICommandStatsModel>("CommandStats", CommandStatsSchema);

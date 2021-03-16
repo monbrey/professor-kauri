@@ -8,7 +8,7 @@ interface CommandArgs {
   command: KauriCommand;
 }
 
-export default class HelpCommand extends KauriCommand {
+export default class extends KauriCommand {
   public constructor() {
     super("Help", {
       aliases: ["help", "h"],
@@ -19,7 +19,7 @@ export default class HelpCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): IterableIterator<any> {
     const command = yield {
       type: Argument.union("command", "commandAlias"),
       unordered: true

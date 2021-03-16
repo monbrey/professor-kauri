@@ -72,11 +72,6 @@ const MoveSchema = new Schema<IMove, IMoveModel>({
   }
 }, { collection: "moves" });
 
-MoveSchema.plugin(autoIncrement, {
-  model: "Move",
-  startAt: 1
-});
-
 MoveSchema.statics.metronome = async function () {
   const move = await this.aggregate([{ $match: { metronome: true } }, { $sample: { size: 1 } }]);
 

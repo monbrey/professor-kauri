@@ -5,7 +5,7 @@ interface CommandArgs {
   command: KauriCommand;
 }
 
-export default class ReloadCommand extends KauriCommand {
+export default class extends KauriCommand {
   constructor() {
     super("reload", {
       aliases: ["reload"],
@@ -14,7 +14,7 @@ export default class ReloadCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const command = yield {
       type: "commandAlias"
     };

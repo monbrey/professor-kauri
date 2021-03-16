@@ -18,7 +18,7 @@ export default class ResetCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const target = yield {
       type: "channel",
       default: (message: Message) => message.channel

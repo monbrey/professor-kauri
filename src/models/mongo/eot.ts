@@ -20,11 +20,6 @@ const EotSchema = new Schema<IEot, IEotModel>({
   effect: { type: String, required: true }
 }, { collection: "eotEffects" });
 
-EotSchema.plugin(autoIncrement, {
-  model: "EOT",
-  startAt: 1
-});
-
 EotSchema.statics.getSurrounding = async function(num: number) {
   const effects = await this.find({
     order: {

@@ -17,7 +17,7 @@ module.exports = class LadderCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
 
   }
 

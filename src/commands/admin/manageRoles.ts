@@ -22,7 +22,7 @@ export default class AddRoleCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const config = yield {
       type: "roleConfig",
       unordered: true

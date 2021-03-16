@@ -24,7 +24,7 @@ export default class extends KauriCommand {
     this.running = false;
   }
 
-  public *args() {
+  public *args(): any {
     const control = yield {
       type: ["start", "stop"],
     };

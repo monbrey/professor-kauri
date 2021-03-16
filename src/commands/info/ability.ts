@@ -18,7 +18,7 @@ export default class AbilityCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const query = yield {
       type: "string",
       match: "text",

@@ -20,7 +20,7 @@ export default class SpeedCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const query = yield {
       type: Argument.union("number", "pokemon"),
       prompt: {

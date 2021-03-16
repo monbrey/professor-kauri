@@ -16,7 +16,7 @@
 //     });
 //   }
 
-//   public *args() {
+//   public *args(): any {
 //     const category = yield {
 //       type: ["pokemon", "moves", "items"],
 //       prompt: {

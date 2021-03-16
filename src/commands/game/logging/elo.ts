@@ -48,7 +48,7 @@ export default class EloCommand extends KauriCommand {
     return message.util!.send(ladder);
   }
 
-  public *args(message: Message) {
+  public *args(message: Message): any {
     const winner = yield {
       type: Argument.validate("member", member => member.id !== message.author.id)
     };

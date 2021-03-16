@@ -21,7 +21,7 @@ export default class MoveCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const move = yield {
       type: "api-attack",
       match: "text",

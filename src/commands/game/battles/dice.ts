@@ -19,7 +19,7 @@ export default class DiceCommand extends KauriCommand {
     });
   }
 
-  public *args() {
+  public *args(): any {
     const die = yield {
       type: "string",
       match: "separate"

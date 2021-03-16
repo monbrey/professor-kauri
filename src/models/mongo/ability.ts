@@ -27,11 +27,6 @@ const AbilitySchema = new Schema<IAbility, IAbilityModel>({
   affects: { type: String }
 }, { collection: "abilities" });
 
-AbilitySchema.plugin(autoIncrement, {
-  model: "Ability",
-  startAt: 1
-});
-
 AbilitySchema.methods.info = function () {
   const embed = new MessageEmbed()
     .setDescription(this.desc);

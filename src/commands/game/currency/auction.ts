@@ -39,7 +39,7 @@ export default class AuctionCommand extends KauriCommand {
     });
   }
 
-  public *args(message: Message) {
+  public *args(message: Message): any {
     const now = yield {
       match: "flag",
       flag: ["-now"]
