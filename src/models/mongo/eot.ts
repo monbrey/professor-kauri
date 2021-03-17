@@ -3,6 +3,7 @@ import { autoIncrement } from "mongoose-plugin-autoinc";
 import { db } from "../../util/db";
 
 export interface IEotDocument extends Document {
+  _id: number;
   order: number;
   effect: string;
 }
@@ -16,6 +17,7 @@ export interface IEotModel extends Model<IEot> {
 }
 
 const EotSchema = new Schema<IEot, IEotModel>({
+  _id: { type: Number, required: true },
   order: { type: Number, required: true },
   effect: { type: String, required: true }
 }, { collection: "eotEffects" });

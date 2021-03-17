@@ -217,7 +217,6 @@ export default class ConfigCommand extends KauriCommand {
     const reacts = ["✅", "❌", "🔲", "🔄"].filter(e =>
       sent.embeds[0].fields[sent.embeds[0].fields.length - 1].value.includes(e)
     );
-    console.log(reacts);
     try {
       for (const r of reacts) { await sent.react(r); }
     } catch (e) {

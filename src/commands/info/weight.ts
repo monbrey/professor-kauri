@@ -39,7 +39,6 @@ module.exports = class WeightCommand extends KauriCommand {
   }
 
   public async exec(message: Message, { query, target }: CommandArgs) {
-    console.log(query, target);
     const qName = typeof query === "number" ? query : query.name;
     const tName = typeof target === "number" ? target : target?.name;
 

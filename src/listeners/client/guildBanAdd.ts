@@ -14,7 +14,5 @@ export default class GuildBanAddListener extends Listener {
       type: "MEMBER_BAN_ADD",
       user
     });
-
-    console.log(audit);
   }
 }

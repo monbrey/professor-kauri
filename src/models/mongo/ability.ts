@@ -4,6 +4,7 @@ import { autoIncrement } from "mongoose-plugin-autoinc";
 import { db } from "../../util/db";
 
 export interface IAbilityDocument extends Document {
+  _id: number;
   abilityName: string;
   announcement?: string;
   desc: string;
@@ -20,6 +21,7 @@ export interface IAbilityModel extends Model<IAbility> {
 }
 
 const AbilitySchema = new Schema<IAbility, IAbilityModel>({
+  _id: { type: Number, required: true },
   abilityName: { type: String, required: true },
   announcement: { type: String },
   desc: { type: String },

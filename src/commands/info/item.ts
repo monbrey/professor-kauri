@@ -33,7 +33,6 @@ export default class ItemCommand extends KauriCommand {
   public async exec(message: Message, { query }: CommandArgs) {
     try {
       const item = await Item.findClosest("itemName", query);
-      console.log(item);
       if (item) {
         this.client.logger.item(message, query, item.itemName);
         return message.util!.send(item.info());

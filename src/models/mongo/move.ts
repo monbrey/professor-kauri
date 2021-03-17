@@ -7,6 +7,7 @@ import { Color } from "./color";
 
 
 export interface IMoveDocument extends Document {
+  _id: number;
   moveName: string;
   moveType: string;
   desc?: string;
@@ -44,6 +45,7 @@ export interface IMoveModel extends Model<IMove> {
 }
 
 const MoveSchema = new Schema<IMove, IMoveModel>({
+  _id: { type: Number, required: true },
   moveName: { type: String, required: true },
   moveType: { type: String, reuqired: true },
   desc: { type: String },
@@ -79,7 +81,6 @@ MoveSchema.statics.metronome = async function () {
 };
 
 MoveSchema.methods.info = async function () {
-  console.log(this.tm);
   const type = `Type: ${this.moveType}`;
   const power = `Power: ${this.power ? this.power : "-"}`;
   const acc = `Accuracy: ${this.accuracy ? this.accuracy : "-"}`;

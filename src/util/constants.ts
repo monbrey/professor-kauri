@@ -34,7 +34,9 @@ export const MongooseOptions = {
   useNewUrlParser: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
-  w: "majority"
+  writeConcern: {
+    w: "majority"
+  }
 };
 
 export const InhibitorReasons = {

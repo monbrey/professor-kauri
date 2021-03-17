@@ -3,6 +3,7 @@ import { autoIncrement } from "mongoose-plugin-autoinc";
 import { db } from "../../util/db";
 
 export interface IColorDocument extends Document {
+  _id: number;
   key: string;
   color: string;
 }
@@ -15,6 +16,7 @@ export interface IColorModel extends Model<IColorDocument> {
 }
 
 const ColorSchema = new Schema<IColor, IColorModel>({
+  _id: { type: Number, required: true },
   key: { type: String, required: true },
   color: { type: String, required: true }
 }, { collection: "colors" });

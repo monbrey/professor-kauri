@@ -105,12 +105,8 @@ export default class AuctionCommand extends KauriCommand {
 
       const strVal = m.content.toLowerCase().replace(/[$,]/g, "");
 
-      console.log(strVal, !/[0-9.]+k?/.test(strVal));
       if(!/[0-9.]+k?/.test(strVal)) return false;
-
       const value = strVal.endsWith("k") ? Math.floor(parseFloat(strVal.slice(0, -1)) * 1000) : parseInt(strVal, 10);
-
-      console.log(value, isNaN(value));
 
       if (isNaN(value)) return false;
       if (value < bid.value) return false;

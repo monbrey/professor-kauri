@@ -39,7 +39,6 @@ export default class extends KauriCommand {
     const species = this.speciesList[Math.floor(Math.random() * this.speciesList.length)];
 
     const random = new Pokemon(await urpg.species.fetch(species));
-    console.log(species);
 
     await message.channel.send(new MessageEmbed().setTitle("Who's that Pokemon?").setDescription(stripIndents`\`\`\`
     HP:  ${random.hp}

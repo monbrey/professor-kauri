@@ -4,6 +4,7 @@ import { autoIncrement } from "mongoose-plugin-autoinc";
 import { db } from "../../util/db";
 
 export interface IStatusEffectDocument extends Document {
+  _id: number;
   statusName: string;
   shortCode: string;
   desc: string;
@@ -19,6 +20,7 @@ export interface IStatusEffectModel extends Model<IStatusEffect> {
 }
 
 const StatusEffectSchema = new Schema<IStatusEffect, IStatusEffectModel>({
+  _id: { type: Number, required: true },
   statusName: { type: String, required: true },
   shortCode: { type: String, required: true },
   desc: { type: String, required: true },

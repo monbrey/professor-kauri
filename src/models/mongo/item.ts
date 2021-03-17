@@ -5,6 +5,7 @@ import { autoIncrement } from "mongoose-plugin-autoinc";
 // import { paginate } from "./plugins/paginator";
 
 export interface IItemDocument extends Document {
+  _id: number;
   itemName: string;
   desc?: string;
   category?: string[];
@@ -25,6 +26,7 @@ export interface IItemModel extends Model<IItem> {
 }
 
 const ItemSchema = new Schema<IItem, IItemModel>({
+  _id: { type: Number, required: true },
   itemName: { type: String, required: true },
   desc: { type: String },
   category: [{ type: String }],
