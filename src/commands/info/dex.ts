@@ -55,8 +55,11 @@ export default class DexCommand extends KauriCommand {
 
       } else {
         const dex: Partial<DexMessage> = alias === "dex" ?
-          await message.channel.send(await pokemon.dex(this.client as KauriClient, query)) as Message :
-          await message.channel.send(await pokemon.learnset(query)) as Message;
+          await message.channel.send(
+            "*Calling this command via messages has been deprecated and will be disabled in a future release.\nPlease use the `/dex` Slash Command in future*",
+            await pokemon.dex(this.client as KauriClient, query)
+          ) :
+          await message.channel.send(await pokemon.learnset(query));
         dex.pokemon = pokemon;
         dex.origAuthor = message.author!;
 
