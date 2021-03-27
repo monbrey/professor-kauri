@@ -68,6 +68,8 @@ export default class DexCommand extends KauriCommand {
   }
 
   public async interact(message: KauriMessage, args: Map<string, any>) {
+    await this.deferResponse(message.id, message.interaction.token);
+
     const arg = new Argument(this, { type: "pokemon", match: "text" }).process(message, args.get("query"));
     const pokemon = new Pokemon((await arg).value);
 
@@ -78,13 +80,8 @@ export default class DexCommand extends KauriCommand {
     });
 
     // @ts-ignore
-    await this.client.api.interactions(message.id)(message.interaction.token).callback.post({
-      data: {
-        type: 4,
-        data: {
-          embeds: [(await pokemon.dex(this.client as KauriClient, args.get("query"), false)).toJSON()]
-        }
-      }
+    await this.updateResponse(message.interaction.token, {
+      embeds: [(await pokemon.dex(this.client as KauriClient, args.get("query"), false)).toJSON()]
     });
   }
 
