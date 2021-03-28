@@ -31,10 +31,10 @@ export default class MessageReactionAddListener extends Listener {
 
   public async exec(reaction: MessageReaction, user: User) {
     // Fetch partial messages
-    if (reaction.message.partial) await reaction.message.fetch();
     if (reaction.partial) await reaction.fetch();
 
-    const { message, emoji, users, count } = reaction;
+    const { emoji, users, count } = reaction;
+    const message: Message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;
 
     // Ignore messages that arent in a guild
     if (!message.guild) { return; }

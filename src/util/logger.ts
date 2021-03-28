@@ -129,12 +129,12 @@ class CustomLogger {
      * @param {Message} input
      */
   public location(input: Message) {
-    if (input.channel.type === "dm") {
-      return { channel: { id: input.channel.id, name: `${input.author!.username} (DM)` } };
+    if (!input.guild) {
+      return { channel: { id: input.channel.id, name: `${input.author.username} (DM)` } };
     }
 
     return {
-      server: { id: input.guild!.id, name: input.guild!.name },
+      server: { id: input.guild.id, name: input.guild.name },
       channel: { id: input.channel.id, name: (input.channel as GuildChannel).name }
     };
   }
@@ -256,7 +256,7 @@ class CustomLogger {
     this.winston.info({
       message: "Message reaction added",
       target: reaction.message.id,
-      ...this.location(reaction.message),
+      ...this.location(reaction.message as Message),
       reactor: user.id,
       count: reaction.count,
       key: "messageReactionAdd"
@@ -267,7 +267,7 @@ class CustomLogger {
     this.winston.info({
       message: "Message reaction removed",
       target: reaction.message.id,
-      ...this.location(reaction.message),
+      ...this.location(reaction.message as Message),
       reactor: user.id,
       count: reaction.count,
       key: "messageReactionRemove"
