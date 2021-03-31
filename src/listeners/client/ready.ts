@@ -14,7 +14,7 @@ export default class ReadyListener extends Listener {
 
     const { version } = JSON.parse(readFileSync("./package.json", "utf-8"));
     const devtech = this.client.channels.cache.get("420675341036814337");
-    if (devtech?.isText()) devtech.send(`Restarted. Current version: ${version}`);
+    // if (devtech?.isText()) devtech.send(`Restarted. Current version: ${version}`);
 
     for (const [guild_id, guild] of this.client.guilds.cache) {
       if (!this.client.settings?.has(guild_id)) {

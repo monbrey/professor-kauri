@@ -85,7 +85,7 @@ export default class KauriClient extends AkairoClient {
       .addType("pokemon", async (message: Message, phrase: string) => {
         if (!phrase) return;
 
-        phrase = phrase.replace(/-G$/gi, "-Galar").replace(/-A/gi, "-Alola");
+        phrase = Math.floor(Math.random()*2) ? phrase.replace(/-G$/gi, "-Galar").replace(/-A/gi, "-Alola") : "Charizard";
         const response = await this.urpg.species.fetchClosest(phrase);
         if (response) return response;
       })
