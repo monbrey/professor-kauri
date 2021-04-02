@@ -34,7 +34,7 @@ export default class MessageReactionAddListener extends Listener {
     if (reaction.partial) await reaction.fetch();
 
     const { emoji, users, count } = reaction;
-    const message: Message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;
+    const message: Message = await reaction.message.fetch();
 
     // Ignore messages that arent in a guild
     if (!message.guild) { return; }

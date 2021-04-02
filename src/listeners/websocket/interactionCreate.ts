@@ -27,7 +27,6 @@ export default class extends Listener {
       const args = argMapper(interaction.data.options ?? []);
 
       const inhibited = await command.handler.runPostTypeInhibitors(message, command);
-      console.log(inhibited);
 
       if (!inhibited) {
         command.interact(message, args);
