@@ -1,4 +1,5 @@
 import { stripIndents } from "common-tags";
+import { Argument } from "discord-akairo";
 import { GuildMember, Message, Role } from "discord.js";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { IRoleConfig, RoleConfig } from "../../models/mongo/roleConfig";
@@ -24,9 +25,11 @@ export default class AddRoleCommand extends KauriCommand {
 
   public *args(): any {
     const config = yield {
-      type: "roleConfig",
+      type: Argument.compose("role", "roleConfig"),
       unordered: true
     };
+
+    console.log(config);
 
     const member = yield {
       type: "member",

@@ -1,11 +1,11 @@
 // Dependencies
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
-import { ClientOptions, Collection, Message } from "discord.js";
+import { ClientOptions, Collection, Message, Role } from "discord.js";
 import { Connection } from "mongoose";
 import queue from "p-queue";
 import { join } from "path";
 import { Client as UrpgClient } from "urpg.js";
-import { IRoleConfig, RoleConfig } from "../models/mongo/roleConfig";
+import { RoleConfig } from "../models/mongo/roleConfig";
 import { ISettings, Settings } from "../models/mongo/settings";
 // Utilities
 import { db, instanceDB } from "../util/db";
@@ -43,7 +43,7 @@ export default class KauriClient extends AkairoClient {
   public urpg: UrpgClient;
 
   constructor(options: ClientOptions) {
-    super({ ...options,  ownerID: "122157285790187530" }, options);
+    super({ ...options, ownerID: "122157285790187530" }, options);
 
     this.logger = new Logger(this);
     this.urpg = new UrpgClient({ nullHandling: true });
@@ -93,9 +93,9 @@ export default class KauriClient extends AkairoClient {
         if (!phrase) return;
         return phrase.split(/,\s+?/).map(p => this.commandHandler.resolver.type("pokemon")(message, phrase));
       })
-      .addType("roleConfig", async (message: Message, phrase: string) => {
+      .addType("roleConfig", async (message: Message, phrase: string | Role) => {
         if (!phrase) return;
-        return await RoleConfig.findClosest("name", phrase);
+        return typeof phrase === "string" ? RoleConfig.findClosest("name", phrase) : RoleConfig.findOne({ role_id: phrase.id });
       });
 
     this.inhibitorHandler = new InhibitorHandler(this, {
