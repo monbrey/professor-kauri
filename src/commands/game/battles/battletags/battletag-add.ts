@@ -1,5 +1,4 @@
 import { MessageEmbed } from "discord.js";
-import KauriClient from "../../../../client/KauriClient";
 import { KauriCommand } from "../../../../lib/commands/KauriCommand";
 import { KauriMessage } from "../../../../lib/structures/KauriMessage";
 import { BattleTag } from "../../../../models/mongo/battletag";

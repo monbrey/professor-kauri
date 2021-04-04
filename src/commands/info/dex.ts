@@ -1,7 +1,7 @@
 import { Argument } from "discord-akairo";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { Matched, Species } from "urpg.js";
-import KauriClient from "../../client/KauriClient";
+import { KauriClient } from "../../lib/client/KauriClient";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { KauriMessage } from "../../lib/structures/KauriMessage";
 import { Pokemon } from "../../models/Pokemon";

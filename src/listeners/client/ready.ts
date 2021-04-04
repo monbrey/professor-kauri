@@ -1,5 +1,6 @@
 import { Listener } from "discord-akairo";
 import { readFileSync } from "fs";
+import { KauriClient } from "../../lib/client/KauriClient";
 import { Settings } from "../../models/mongo/settings";
 export default class ReadyListener extends Listener {
   constructor() {
@@ -11,6 +12,7 @@ export default class ReadyListener extends Listener {
 
   public async exec() {
     this.client.logger.info(`Logged in as "${this.client.user?.username}"`);
+    (this.client as KauriClient).interactionHandler.loadAll();
 
     const { version } = JSON.parse(readFileSync("./package.json", "utf-8"));
     const devtech = this.client.channels.cache.get("420675341036814337");

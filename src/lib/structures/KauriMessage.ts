@@ -1,5 +1,5 @@
 import { DMChannel, Message, MessageReaction, NewsChannel, Snowflake, Structures, TextChannel, User } from "discord.js";
-import KauriClient from "../../client/KauriClient";
+import { KauriClient } from "../client/KauriClient";
 
 declare module "discord.js" {
   interface Message {

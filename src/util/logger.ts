@@ -1,6 +1,6 @@
 import { Guild, GuildAuditLogsEntry, GuildChannel, GuildMember, Message, MessageEmbed, MessageReaction, TextChannel, User, Util } from "discord.js";
 import { createLogger, format, Logger, transports } from "winston";
-import KauriClient from "../client/KauriClient";
+import { KauriClient } from "../lib/client/KauriClient";
 import { KauriCommand } from "../lib/commands/KauriCommand";
 
 const logFormat = format.combine(

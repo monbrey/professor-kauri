@@ -45,3 +45,11 @@ export const InhibitorReasons = {
   ROLE_NOT_PERMITTED: "ROLE_NOT_PERMITTED",
   NO_DATABASE: "NO_DATABASE"
 };
+
+export const EmbedColors: { [index: string]: number } = {
+  ERROR: 0xe50000,
+  WARN: 0xffc107,
+  CANCEL: 0x004a7f,
+  SUCCESS: 0x267f00,
+  INFO: 0xffffff
+};

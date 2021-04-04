@@ -1,4 +1,3 @@
-import { timeStamp } from "console";
 import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { KauriMessage } from "../../lib/structures/KauriMessage";
 import { Roles } from "../../util/constants";

@@ -1,7 +1,6 @@
 import { Structures } from "discord.js";
-import { connection } from "mongoose";
-import KauriClient from "../../client/KauriClient";
 import { IStarboardConfigDocument } from "../../models/schemas/starboardConfig";
+import { KauriClient } from "../client/KauriClient";
 
 declare module "discord.js" {
   interface Guild {

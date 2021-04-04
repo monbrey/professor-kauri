@@ -1,19 +1,12 @@
 import { CommandUtil } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
+import { EmbedColors } from "../../util/constants";
 
 declare module "discord-akairo" {
   interface CommandUtil {
     embed(type: string, content?: string | { [index: string]: string }): Promise<Message>;
   }
 }
-
-const EMBED_COLORS: { [index: string]: number } = {
-  error: 0xe50000,
-  warn: 0xffc107,
-  cancel: 0x004a7f,
-  success: 0x267f00,
-  info: 0xffffff
-};
 
 type EmbedTypes = "error" | "warn" | "cancel" | "success" | "info";
 
@@ -27,7 +20,7 @@ Object.defineProperties(CommandUtil.prototype, {
     async value(this: CommandUtil, type: EmbedTypes, content?: string | { [index: string]: string }) {
       if (!type) { throw new Error("A popup type must be specified"); }
 
-      let embed = new MessageEmbed({ color: EMBED_COLORS[type] });
+      let embed = new MessageEmbed({ color: EmbedColors[type.toUpperCase()] });
       switch (typeof content) {
         case "string":
           embed.setDescription(content);

@@ -5,11 +5,12 @@ import { Connection } from "mongoose";
 import queue from "p-queue";
 import { join } from "path";
 import { Client as UrpgClient } from "urpg.js";
-import { RoleConfig } from "../models/mongo/roleConfig";
-import { ISettings, Settings } from "../models/mongo/settings";
+import { RoleConfig } from "../../models/mongo/roleConfig";
+import { ISettings, Settings } from "../../models/mongo/settings";
 // Utilities
-import { db, instanceDB } from "../util/db";
-import Logger from "../util/logger";
+import { db, instanceDB } from "../../util/db";
+import Logger from "../../util/logger";
+import { InteractionHandler } from "../commands/InteractionHandler";
 
 interface IKauriClient {
   commandHandler: CommandHandler;
@@ -31,12 +32,13 @@ declare module "discord.js" {
   interface Client extends IKauriClient { }
 }
 
-export default class KauriClient extends AkairoClient {
+export class KauriClient extends AkairoClient {
   public logger: Logger;
   public reactionQueue: queue;
   public settings?: Collection<string, ISettings>;
 
   public commandHandler: CommandHandler;
+  public interactionHandler: InteractionHandler;
   public inhibitorHandler: InhibitorHandler;
   public listenerHandler: ListenerHandler;
 
@@ -62,7 +64,7 @@ export default class KauriClient extends AkairoClient {
 
     this.commandHandler = new CommandHandler(this, {
       argumentDefaults: { prompt: { time: 60000, cancel: "Command cancelled" } },
-      directory: join(__dirname, "..", "commands"),
+      directory: join(__dirname, "..", "..", "commands"),
       commandUtil: true,
       commandUtilLifetime: 60000,
       fetchMembers: true,
@@ -98,12 +100,16 @@ export default class KauriClient extends AkairoClient {
         return typeof phrase === "string" ? RoleConfig.findClosest("name", phrase) : RoleConfig.findOne({ role_id: phrase.id });
       });
 
+    this.interactionHandler = new InteractionHandler(this, {
+      directory: join(__dirname, "..", "..", "interactions")
+    });
+
     this.inhibitorHandler = new InhibitorHandler(this, {
-      directory: join(__dirname, "..", "inhibitors"),
+      directory: join(__dirname, "..", "..", "inhibitors"),
     });
 
     this.listenerHandler = new ListenerHandler(this, {
-      directory: join(__dirname, "..", "listeners"),
+      directory: join(__dirname, "..", "..", "listeners"),
     });
   }
 
