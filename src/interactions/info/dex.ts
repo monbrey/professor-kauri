@@ -29,15 +29,21 @@ export default class extends InteractionCommand {
         .setColor(EmbedColors.ERROR)
     );
 
-    const arg = await this.client.urpg.species.fetchClosest(query);
-    const pokemon = new Pokemon(arg.value);
+    try {
+      const arg = await this.client.urpg.species.fetchClosest(query);
+      const pokemon = new Pokemon(arg.value);
 
-    this.client.logger.info({
-      key: interaction.commandName,
-      query,
-      result: pokemon.name
-    });
+      this.client.logger.info({
+        key: interaction.commandName,
+        query,
+        result: pokemon.name
+      });
 
-    return interaction.editReply(await pokemon.dex(this.client as KauriClient, query, arg.rating));
+      return interaction.editReply(await pokemon.dex(this.client as KauriClient, query, arg.rating));
+    } catch (err) {
+      new MessageEmbed()
+        .setDescription(`Error executing command:\n${err.message}`)
+        .setColor(EmbedColors.ERROR);
+    }
   }
 }
