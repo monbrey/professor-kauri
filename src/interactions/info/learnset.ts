@@ -6,23 +6,23 @@ import { EmbedColors } from "../../util/constants";
 
 export default class extends InteractionCommand {
   constructor() {
-    super("dex", {
+    super("learnset", {
       data: {
-        name: "dex",
-        description: "Get Ultradex data for a Pokemon",
+        name: "learnset",
+        description: "Get the movelist for a Pokemon",
         options: [{
           name: "name",
           description: "Name of the Pokemon to search for",
           type: "STRING",
           required: true
         }]
-      }
+      },
     });
   }
 
 
   public async exec(interaction: CommandInteraction) {
-    await interaction.defer();
+    const deferred = await interaction.defer();
 
     const query = interaction.options.find(o => o.name === "name")?.value as string;
     if (!query) return interaction.editReply(
@@ -40,6 +40,6 @@ export default class extends InteractionCommand {
       result: pokemon.name
     });
 
-    return interaction.editReply(await pokemon.dex(this.client as KauriClient, query, arg.rating));
+    return interaction.editReply(await pokemon.learnset(query, arg.rating));
   }
 }

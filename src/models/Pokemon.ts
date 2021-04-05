@@ -119,7 +119,17 @@ export class Pokemon {
     return this.attacks.reduce((acc, val) => val.method === method ? [...acc, val.name] : acc, [] as string[]);
   }
 
-  async dex(client: KauriClient, query?: string, reactions: boolean = true) {
+  public get icon(): string {
+    const variant = this.name.indexOf("-") > -1 ? `${this.name.slice(this.name.indexOf("-"))}` : "";
+    return `https://pokemonurpg.com/img/icons/${this.dexno}${variant.toLowerCase() ?? ""}.png`;
+  }
+
+  public get sprite(): string {
+    const variant = this.name.indexOf("-") > -1 ? `${this.name.slice(this.name.indexOf("-"))}` : "";
+    return `https://pokemonurpg.com/img/sprites/${this.dexno}${variant.toLowerCase() ?? ""}.gif`;
+  }
+
+  async dex(client: KauriClient, query?: string, rating?: number) {
     const color = await Color.getColorForType(this.type1.toLowerCase());
     const [t1, t2] = [client.getTypeEmoji(this.type1), client.getTypeEmoji(this.type2, true)];
 
@@ -131,8 +141,8 @@ export class Pokemon {
       .setTitle(`URPG Ultradex - ${this.displayName}${this.formName ? ` - ${this.formName}` : ""} (#${this.dexno.toString().padStart(3, "0")})`)
       .setURL(`https://pokemonurpg.com/pokemon/${encodeURIComponent(this.name)}`)
       .setColor(color)
-      .setThumbnail(`${ICON_BASE}${this.dexno}${this.suffix}.png`)
-      .setImage(`${SPRITE_BASE}${this.dexno}${this.suffix}.gif`)
+      .setThumbnail(this.icon)
+      .setImage(this.sprite)
       .addFields([{
         name: `**${this.type2 ? "Types" : "Type"}**`,
         value: `${t1} ${this.type1.toTitleCase()}${this.type2 ? ` | ${this.type2.toTitleCase()} ${t2}` : ""}`
@@ -149,40 +159,31 @@ export class Pokemon {
         name: "**Stats**",
         value: `\`\`\`${statsStrings}\`\`\``
       }]);
-    if (reactions) embed.setFooter("Reactions | [M] View Moves ");
 
-    // if (this.matchRating && this.matchRating !== 1 && query) {
-    //     const percent = Math.round(this.matchRating * 100);
-    //     embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
-    // }
+    if (query && rating && rating !== 1) {
+      const percent = Math.round(rating * 100);
+      embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
+    }
 
     if (this.ranks) embed.addFields({ name: "**Creative Ranks**", value: this.ranks.join(" | ") });
     if (this.prices) embed.addFields({ name: "**Price**", value: `${this.prices.join(" | ")}` });
 
-    if (reactions) {
-      if (this.mega.length === 1) {
-        const mp = this.mega[0].name.split("-")[1];
-        embed.footer!.text += `| [${mp === "Mega" ? "X" : "P"}] View ${mp}`;
-      }
-      if (this.mega.length === 2) { embed.footer!.text += "| [X] View Mega-X | [Y] View Mega-Y"; }
-    }
-
     return embed;
   }
 
-  async learnset(query?: string) {
+  async learnset(query?: string, rating?: number) {
     const color = await Color.getColorForType(this.type1.toLowerCase());
     const count = this.attacks.filter(a => a.method !== "LEVEL-UP").length;
 
     const embed = new MessageEmbed()
       .setTitle(`${this.displayName} can learn ${count} move(s)`)
-      .setColor(color)
-      .setFooter("Reactions | ⬅️ Back ");
+      .setThumbnail(this.icon)
+      .setColor(color);
 
-    // if (this.matchRating && this.matchRating !== 1 && query) {
-    //     const percent = Math.round(this.matchRating * 100);
-    //     embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
-    // }
+    if (query && rating && rating !== 1) {
+      const percent = Math.round(rating * 100);
+      embed.setDescription(`Closest match to your search "${query}" with ${percent}% similarity`);
+    }
 
     const learnset: { [index: string]: string[] } = {};
 
@@ -202,44 +203,6 @@ export class Pokemon {
       if (value.length === 1) embed.addFields({ name: `**${name}**`, value: value[0] });
       else embed.addFields(value.map((v, i) => ({ name: `**${name} (${i + 1})**`, value: v })));
     }
-
-    return embed;
-  }
-
-  async megaDex(client: KauriClient, whichMega: number) {
-    const mega = this.mega[whichMega];
-
-    const color = await Color.getColorForType(this.type1.toLowerCase());
-    const [t1, t2] = [client.getTypeEmoji(this.type1), client.getTypeEmoji(this.type2, true)];
-
-    const stats = Object.values(this.megaStats(whichMega));
-    const statsStringArray = stats.map(s => s.toString().padEnd(3, " "));
-    const statsStrings = `HP  | Att | Def | SpA | SpD | Spe\n${statsStringArray.join(" | ")} `;
-
-    const embed = new MessageEmbed()
-      .setTitle(`URPG Ultradex - ${mega.displayName} (#${mega.dexno.toString().padStart(3, "0")})`)
-      .setURL(`https://pokemonurpg.com/pokemon/${encodeURIComponent(this.name)}`)
-      .setColor(color)
-      .setThumbnail(`${ICON_BASE}${mega.dexno}${mega.name.replace(this.name, "").toLowerCase()}.png`)
-      .setImage(`${SPRITE_BASE}${mega.dexno}${mega.name.replace(this.name, "").toLowerCase()}.gif`)
-      .addFields([{
-        name: `** ${mega.type2 ? "Types" : "Type"} ** `,
-        value: `${t1} ${mega.type1.toTitleCase()}${mega.type2 ? ` | ${mega.type2.toTitleCase()} ${t2}` : ""}`
-      }, {
-        name: "**Ability**",
-        value: mega.ability.name
-      }, {
-        name: "**Legal Genders**",
-        value: this.genders.join(" | ")
-      }, {
-        name: "**Height and Weight**",
-        value: `${mega.height}m, ${mega.weight}kg`
-      }, {
-        name: "**Stats**",
-        value: `\`\`\`${statsStrings}\`\`\``
-      }])
-      .setFooter("Reactions | ⬅️ Back ");
-
 
     return embed;
   }
