@@ -1,25 +1,37 @@
 import { AkairoError, AkairoModule } from "discord-akairo";
-import { ApplicationCommandData, CommandInteraction, PermissionResolvable, Snowflake } from "discord.js";
+import { ApplicationCommandData, ApplicationCommandOption, CommandInteraction, PermissionResolvable } from "discord.js";
+import { threadId } from "node:worker_threads";
 
-export class InteractionCommand extends AkairoModule {
-  public data: ApplicationCommandData;
+export class InteractionCommand extends AkairoModule implements ApplicationCommandData {
+  public name: string;
   public guild: boolean;
+  public description: string;
+  public options?: ApplicationCommandOption[] | undefined;
 
-  constructor(id: string, options: InteractionCommandOptions) {
-    super(id, options);
-    this.data = options.data;
-    this.guild = options.guild ?? false;
+  constructor(id: string, data: InteractionCommandOptions) {
+    super(id, data);
+    this.name = data.name;
+    this.description = data.description;
+    this.options = data.options;
+    this.guild = data.guild ?? false;
   }
 
   exec(interaction: CommandInteraction): any | Promise<any> {
     // @ts-ignore
     throw new AkairoError("NOT_IMPLEMENTED", this.constructor.name, "exec");
   }
+
+  public apiTransform() {
+    return {
+      name: this.name,
+      description: this.description,
+      options: this.options
+    };
+  }
 }
 
-export interface InteractionCommandOptions {
+export interface InteractionCommandOptions extends ApplicationCommandData {
   category?: string;
   clientPermissions?: PermissionResolvable | PermissionResolvable[];
-  data: ApplicationCommandData;
   guild?: boolean;
 }

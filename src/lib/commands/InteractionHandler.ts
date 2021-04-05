@@ -64,8 +64,8 @@ export class InteractionHandler extends AkairoHandler {
 
     const [global, guild] = this.modules.partition((m: InteractionCommand) => !m.guild);
 
-    this.client.application?.commands.set(global.map(c => c.data));
-    this.client.guilds.resolve(process.env.KAURI_GUILD!)?.commands.set(guild.map(c => c.data));
+    this.client.application?.commands.set(global.map(c => c.apiTransform()));
+    this.client.guilds.resolve(process.env.KAURI_GUILD!)?.commands.set(guild.map(c => c.apiTransform()));
 
     return this;
   }

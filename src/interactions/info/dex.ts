@@ -7,16 +7,14 @@ import { EmbedColors } from "../../util/constants";
 export default class extends InteractionCommand {
   constructor() {
     super("dex", {
-      data: {
-        name: "dex",
-        description: "Get Ultradex data for a Pokemon",
-        options: [{
-          name: "name",
-          description: "Name of the Pokemon to search for",
-          type: "STRING",
-          required: true
-        }]
-      }
+      name: "dex",
+      description: "Get Ultradex data for a Pokemon",
+      options: [{
+        name: "name",
+        description: "Name of the Pokemon to search for",
+        type: "STRING",
+        required: true
+      }]
     });
   }
 

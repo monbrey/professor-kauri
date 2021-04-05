@@ -5,27 +5,25 @@ import { EmbedColors } from "../../util/constants";
 export default class extends InteractionCommand {
   constructor() {
     super("role", {
-      data: {
+      name: "role",
+      description: "Add or remove a Role from a member",
+      options: [{
+        name: "action",
+        description: "Action to take: add | remove",
+        type: "STRING",
+        choices: [{ name: "add", value: "add" }, { name: "remove", value: "remove" }],
+        required: true
+      }, {
+        name: "member",
+        description: "Guild member to action",
+        type: "USER",
+        required: true
+      }, {
         name: "role",
-        description: "Add or remove a Role from a member",
-        options: [{
-          name: "action",
-          description: "Action to take: add | remove",
-          type: "STRING",
-          choices: [{ name: "add", value: "add" }, { name: "remove", value: "remove" }],
-          required: true
-        }, {
-          name: "member",
-          description: "Guild member to action",
-          type: "USER",
-          required: true
-        }, {
-          name: "role",
-          description: "Role to add or remove",
-          type: "ROLE",
-          required: true
-        }]
-      },
+        description: "Role to add or remove",
+        type: "ROLE",
+        required: true
+      }],
       guild: true,
       clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS", "MANAGE_ROLES"]
     });

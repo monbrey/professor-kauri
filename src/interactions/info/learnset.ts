@@ -7,16 +7,14 @@ import { EmbedColors } from "../../util/constants";
 export default class extends InteractionCommand {
   constructor() {
     super("learnset", {
-      data: {
-        name: "learnset",
-        description: "Get the movelist for a Pokemon",
-        options: [{
-          name: "name",
-          description: "Name of the Pokemon to search for",
-          type: "STRING",
-          required: true
-        }]
-      },
+      name: "learnset",
+      description: "Get the movelist for a Pokemon",
+      options: [{
+        name: "name",
+        description: "Name of the Pokemon to search for",
+        type: "STRING",
+        required: true
+      }]
     });
   }
 
