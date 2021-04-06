@@ -20,7 +20,8 @@ Object.defineProperties(Model, {
       const values = await this.find(query)
         .sort("_id")
         .select(`_id ${field}`);
-      // .cache(0, `${this.modelName.toLowerCase()}-${field}`);
+
+      if (!values.length) { return; }
 
       const matchValues = values.map((x: Document) => x.get(field).toLowerCase());
       const closestResult = strsim.findBestMatch(value.toLowerCase(), matchValues);

@@ -1,5 +1,6 @@
 import { CommandInteraction, MessageEmbed, Snowflake } from "discord.js";
 import { InteractionCommand } from "../../lib/commands/InteractionCommand";
+import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 import { EmbedColors } from "../../util/constants";
 
 export default class extends InteractionCommand {
@@ -25,33 +26,35 @@ export default class extends InteractionCommand {
         required: true
       }],
       guild: true,
+      ownerOnly: true,
       clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS", "MANAGE_ROLES"]
     });
   }
 
   public async exec(interaction: CommandInteraction & { guildID: Snowflake }) {
-    await interaction.defer();
-
     const action = interaction.options.find(o => o.name === "action")?.value as string;
     const memberID = interaction.options.find(o => o.name === "member")?.value as Snowflake;
-    const role = interaction.options.find(o => o.name === "role")?.value as Snowflake;
+    const roleID = interaction.options.find(o => o.name === "role")?.value as Snowflake;
 
-    if (memberID && role) {
-      const member = await interaction.guild?.members.fetch(memberID);
-      if (member) {
-        await (action === "add" ? member.roles.add(role) : member.roles.remove(role));
-        return interaction.editReply(
-          new MessageEmbed()
-            .setDescription(`<@&${role}> ${action === "add" ? "added to" : "removed from"} ${member}`)
-            .setColor(EmbedColors.SUCCESS)
-        );
-      }
-    }
+    if (!action || !memberID || !roleID)
+      throw new CommandExecutionError("Command parameters missing");
 
-    return interaction.editReply(
+    const member = await interaction.guild?.members.fetch(memberID);
+    if (!member)
+      throw new CommandExecutionError("Provided user could not be found in the server");
+
+    this.client.logger.info({
+      key: interaction.commandName,
+      action,
+      member: memberID,
+      role: roleID
+    });
+
+    await (action === "add" ? member.roles.add(roleID) : member.roles.remove(roleID));
+    return interaction.reply(
       new MessageEmbed()
-        .setDescription("An error occurred, unable to action role changes")
-        .setColor(EmbedColors.ERROR)
+        .setDescription(`<@&${roleID}> ${action === "add" ? "added to" : "removed from"} ${member}`)
+        .setColor(EmbedColors.SUCCESS)
     );
   }
 }

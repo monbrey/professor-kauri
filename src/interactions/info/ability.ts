@@ -1,37 +1,39 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 import { InteractionCommand } from "../../lib/commands/InteractionCommand";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
-import { Move } from "../../models/mongo/move";
+import { Ability } from "../../models/mongo/ability";
 import { EmbedColors } from "../../util/constants";
 
 export default class extends InteractionCommand {
   constructor() {
-    super("move", {
-      name: "move",
-      description: "Look-up Pokemon attack data",
+    super("ability", {
+      name: "ability",
+      description: "Get Infohub data for an Ability",
       options: [{
         name: "name",
-        description: "Name of the move to search for",
+        description: "Name of the Item to search for",
         type: "STRING",
         required: true
-      }]
+      }],
+      guild: true
     });
   }
 
   public async exec(interaction: CommandInteraction) {
     const query = interaction.options.find(o => o.name === "name")?.value as string;
-    if (!query) throw new CommandExecutionError("Command parameter 'name' not found");
+    if (!query)
+      throw new CommandExecutionError("Command parameter 'name' not found");
 
-    const move = await Move.findClosest("moveName", query);
-    if (!move) throw new CommandExecutionError(`No Move found matching \`${query}\``);
-
+    const ability = await Ability.findClosest("ability", query);
+    if (!ability)
+      throw new CommandExecutionError(`No Item found matching \`${query}\``);
 
     this.client.logger.info({
       key: interaction.commandName,
       query,
-      result: move.moveName
+      result: ability.abilityName
     });
 
-    await interaction.reply(await move.info());
+    return interaction.reply(ability.info());
   }
 }

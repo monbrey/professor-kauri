@@ -39,15 +39,17 @@ export class InteractionHandler extends AkairoHandler {
   async handle(interaction: CommandInteraction) {
     const command = this.findCommand(interaction.commandName);
 
-    if (!command) interaction.reply(`\`${interaction.commandName}\`is not yet implemented!`, { ephemeral: true });
+    if (!command)
+      return interaction.reply(`\`${interaction.commandName}\` is not yet implemented!`, { ephemeral: true });
+
+    if (command.ownerOnly && interaction.user.id !== "122157285790187530")
+      return interaction.reply(`\`${interaction.commandName}\` usage is restricted`, { ephemeral: true });
 
     try {
       await command.exec(interaction);
     } catch (err) {
       console.error(err);
-      interaction.reply(`An error occurred while running \`${interaction.commandName}\`:\n\t${err.message}`).catch(e => {
-        if (err.code === 10062) interaction.editReply(`An error occurred while running \`${interaction.commandName}\`:\n\t${err.message}`);
-      });
+      interaction.reply(`[${interaction.commandName}] ${err.stack}`, { ephemeral: true, code: true });
     }
   }
 

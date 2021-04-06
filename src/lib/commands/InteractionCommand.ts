@@ -5,6 +5,7 @@ import { threadId } from "node:worker_threads";
 export class InteractionCommand extends AkairoModule implements ApplicationCommandData {
   public name: string;
   public guild: boolean;
+  public ownerOnly: boolean;
   public description: string;
   public options?: ApplicationCommandOption[] | undefined;
 
@@ -14,6 +15,7 @@ export class InteractionCommand extends AkairoModule implements ApplicationComma
     this.description = data.description;
     this.options = data.options;
     this.guild = data.guild ?? false;
+    this.ownerOnly = data.ownerOnly ?? false;
   }
 
   exec(interaction: CommandInteraction): any | Promise<any> {
@@ -34,4 +36,5 @@ export interface InteractionCommandOptions extends ApplicationCommandData {
   category?: string;
   clientPermissions?: PermissionResolvable | PermissionResolvable[];
   guild?: boolean;
+  ownerOnly?: boolean;
 }

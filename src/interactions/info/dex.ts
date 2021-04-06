@@ -1,8 +1,8 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { CommandInteraction } from "discord.js";
 import { KauriClient } from "../../lib/client/KauriClient";
 import { InteractionCommand } from "../../lib/commands/InteractionCommand";
+import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 import { Pokemon } from "../../models/Pokemon";
-import { EmbedColors } from "../../util/constants";
 
 export default class extends InteractionCommand {
   constructor() {
@@ -10,8 +10,8 @@ export default class extends InteractionCommand {
       name: "dex",
       description: "Get Ultradex data for a Pokemon",
       options: [{
-        name: "name",
-        description: "Name of the Pokemon to search for",
+        name: "species",
+        description: "Pokemon species to search for",
         type: "STRING",
         required: true
       }]
@@ -20,30 +20,19 @@ export default class extends InteractionCommand {
 
 
   public async exec(interaction: CommandInteraction) {
-    await interaction.defer();
-
     const query = interaction.options.find(o => o.name === "name")?.value as string;
-    if (!query) return interaction.editReply(
-      new MessageEmbed()
-        .setDescription("Error executing command - search term not detected")
-        .setColor(EmbedColors.ERROR)
-    );
+    if (!query) throw new CommandExecutionError("Command parameter 'species' not found");
 
-    try {
-      const arg = await this.client.urpg.species.fetchClosest(query);
-      const pokemon = new Pokemon(arg.value);
+    const arg = await this.client.urpg.species.fetchClosest(query);
+    const pokemon = new Pokemon(arg.value);
 
-      this.client.logger.info({
-        key: interaction.commandName,
-        query,
-        result: pokemon.name
-      });
+    if (!arg) throw new CommandExecutionError(`No Pokemon found matching \`${query}\``);
+    this.client.logger.info({
+      key: interaction.commandName,
+      query,
+      result: pokemon.name
+    });
 
-      return interaction.editReply(await pokemon.dex(this.client as KauriClient, query, arg.rating));
-    } catch (err) {
-      new MessageEmbed()
-        .setDescription(`Error executing command:\n${err.message}`)
-        .setColor(EmbedColors.ERROR);
-    }
+    return interaction.reply(await pokemon.dex(this.client as KauriClient, query, arg.rating));
   }
 }
