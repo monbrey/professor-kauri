@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node -r source-map-support/register dist/index.js",
+    "monitor": "nodemon -r source-map-support/register dist/index.js",
     "build": "rimraf dist/ && tsc -p src/tsconfig.json",
     "watch": "tsc -p src/tsconfig.json --watch",
     "lint": "npx eslint src/**/*.ts --fix",

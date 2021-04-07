@@ -20,7 +20,7 @@ export default class extends InteractionCommand {
 
 
   public async exec(interaction: CommandInteraction) {
-    const query = interaction.options.find(o => o.name === "name")?.value as string;
+    const query = interaction.options.find(o => o.name === "species")?.value as string;
     if (!query) throw new CommandExecutionError("Command parameter 'species' not found");
 
     const arg = await this.client.urpg.species.fetchClosest(query);

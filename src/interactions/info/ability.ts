@@ -8,10 +8,10 @@ export default class extends InteractionCommand {
   constructor() {
     super("ability", {
       name: "ability",
-      description: "Get Infohub data for an Ability",
+      description: "Get Infohub data for an ability",
       options: [{
-        name: "name",
-        description: "Name of the Item to search for",
+        name: "ability",
+        description: "Name of the ability to search for",
         type: "STRING",
         required: true
       }],
@@ -19,14 +19,14 @@ export default class extends InteractionCommand {
     });
   }
 
-  public async exec(interaction: CommandInteraction) {
-    const query = interaction.options.find(o => o.name === "name")?.value as string;
+  public async exec(interaction: CommandInteraction, args: Map<string, any>) {
+    const query = interaction.options.find(o => o.name === "ability")?.value as string;
     if (!query)
-      throw new CommandExecutionError("Command parameter 'name' not found");
+      throw new CommandExecutionError("Command parameter 'ability' not found");
 
-    const ability = await Ability.findClosest("ability", query);
+    const ability = await Ability.findClosest("abilityName", query);
     if (!ability)
-      throw new CommandExecutionError(`No Item found matching \`${query}\``);
+      throw new CommandExecutionError(`No ability found matching \`${query}\``);
 
     this.client.logger.info({
       key: interaction.commandName,

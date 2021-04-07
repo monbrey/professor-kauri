@@ -18,7 +18,7 @@ export class InteractionCommand extends AkairoModule implements ApplicationComma
     this.ownerOnly = data.ownerOnly ?? false;
   }
 
-  exec(interaction: CommandInteraction): any | Promise<any> {
+  exec(interaction: CommandInteraction, args: Map<string, any>): any | Promise<any> {
     // @ts-ignore
     throw new AkairoError("NOT_IMPLEMENTED", this.constructor.name, "exec");
   }

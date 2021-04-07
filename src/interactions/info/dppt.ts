@@ -1,37 +1,42 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { Collection, CommandInteraction, MessageEmbed } from "discord.js";
 import { InteractionCommand } from "../../lib/commands/InteractionCommand";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
-import { Move } from "../../models/mongo/move";
-import { EmbedColors } from "../../util/constants";
 
 export default class extends InteractionCommand {
   constructor() {
-    super("move", {
-      name: "move",
-      description: "Look-up Pokemon attack data",
+    super("dppt", {
+      name: "dppt",
+      description: "Get DPPt Contest data for a move",
       options: [{
         name: "move",
         description: "Name of the move to search for",
         type: "STRING",
         required: true
-      }]
+      }],
+      guild: true
     });
   }
+
 
   public async exec(interaction: CommandInteraction) {
     const query = interaction.options.find(o => o.name === "move")?.value as string;
     if (!query) throw new CommandExecutionError("Command parameter 'move' not found");
 
-    const move = await Move.findClosest("moveName", query);
-    if (!move) throw new CommandExecutionError(`No move found matching \`${query}\``);
-
+    const { value } = await this.client.urpg.attack.fetchClosest(query);
+    if (!value) throw new CommandExecutionError(`No move found matching \`${query}\``);
 
     this.client.logger.info({
       key: interaction.commandName,
       query,
-      result: move.moveName
+      result: value.name
     });
 
-    await interaction.reply(await move.info());
+    const { dppContestAttribute: attribute, dppContestMoveType: { score, description } } = value;
+
+    const embed = new MessageEmbed()
+      .setTitle(value.name)
+      .addField(`| Attribute: ${attribute} | Score: ${score > 0 ? `+${score}` : `${score}`} |`, description);
+
+    return interaction.reply(embed);
   }
 }

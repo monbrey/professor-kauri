@@ -2,6 +2,7 @@ import { codeBlock } from "common-tags";
 import { AkairoHandler, LoadPredicate } from "discord-akairo";
 import { Collection, CommandInteraction } from "discord.js";
 import { resolve } from "path";
+import { argMapper } from "../../util/argMapper";
 import { KauriClient } from "../client/KauriClient";
 import { InteractionCommand } from "./InteractionCommand";
 
@@ -46,7 +47,8 @@ export class InteractionHandler extends AkairoHandler {
       return interaction.reply(`\`${interaction.commandName}\` usage is restricted`, { ephemeral: true });
 
     try {
-      await command.exec(interaction);
+      const args = argMapper(interaction.options ?? []);
+      await command.exec(interaction, args);
     } catch (err) {
       console.error(err);
       interaction.reply(`[${interaction.commandName}] ${err.stack}`, { ephemeral: true, code: true });

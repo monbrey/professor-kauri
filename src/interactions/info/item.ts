@@ -8,10 +8,10 @@ export default class extends InteractionCommand {
   constructor() {
     super("item", {
       name: "item",
-      description: "Get Infohub data for an Item",
+      description: "Get Infohub data for an item",
       options: [{
-        name: "name",
-        description: "Name of the Item to search for",
+        name: "item",
+        description: "Name of the item to search for",
         type: "STRING",
         required: true
       }]
@@ -19,11 +19,11 @@ export default class extends InteractionCommand {
   }
 
   public async exec(interaction: CommandInteraction) {
-    const query = interaction.options.find(o => o.name === "name")?.value as string;
-    if (!query) throw new CommandExecutionError("Command parameter 'name' not found");
+    const query = interaction.options.find(o => o.name === "item")?.value as string;
+    if (!query) throw new CommandExecutionError("Command parameter 'item' not found");
 
     const item = await Item.findClosest("itemName", query);
-    if (!item) throw new CommandExecutionError(`No Item found matching \`${query}\``);
+    if (!item) throw new CommandExecutionError(`No item found matching \`${query}\``);
 
     this.client.logger.info({
       key: interaction.commandName,

@@ -31,7 +31,7 @@ export default class extends InteractionCommand {
     });
   }
 
-  public async exec(interaction: CommandInteraction & { guildID: Snowflake }) {
+  public async exec(interaction: CommandInteraction & { guildID: Snowflake }, args: Map<string, any>) {
     const action = interaction.options.find(o => o.name === "action")?.value as string;
     const memberID = interaction.options.find(o => o.name === "member")?.value as Snowflake;
     const roleID = interaction.options.find(o => o.name === "role")?.value as Snowflake;

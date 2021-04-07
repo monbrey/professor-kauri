@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  workflow-dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Use Node v12
+      uses: actions/setup-node@v2.1.4
+      with:
+        node-version: 12
+
+    - name: Build Project
+      run:
+        npm install && npm run build --if-present
+
+    - name: List output files
+      run: ls
+
+    - name: Deploy bot code
+      uses: appleboy/scp-action@master
+      env:
+        KEY: ${{ secrets.OVH_PRIVATE_KEY }}
+        HOST: ${{ secrets.OVH_HOST }}
+        USERNAME: ${{ secrets.OVH_USER }}
+        PASSPHRASE: ${{ secrets.OVH_PASSPHRASE }}
+      with:
+        source: "dist/*"
+        target: "bots/professor-kauri-dev"
+        strip_components: 1
+
+    - name: Deploy package.json
+      uses: appleboy/scp-action@master
+      env:
+        KEY: ${{ secrets.OVH_PRIVATE_KEY }}
+        HOST: ${{ secrets.OVH_HOST }}
+        USERNAME: ${{ secrets.OVH_USER }}
+        PASSPHRASE: ${{ secrets.OVH_PASSPHRASE }}
+      with:
+        source: "package.json,package-lock.json"
+        target: "bots/professor-kauri-dev"
+
+    - name: Update dependencies
+      uses: appleboy/ssh-action@master
+      with:
+        key: ${{ secrets.OVH_PRIVATE_KEY }}
+        host: ${{ secrets.OVH_HOST }}
+        username: ${{ secrets.OVH_USER }}
+        passphrase: ${{ secrets.OVH_PASSPHRASE }}
+        script: cd bots/professor-kauri-dev && npm install
+
+    - name: Restart the bot
+      uses: appleboy/ssh-action@master
+      with:
+        key: ${{ secrets.OVH_PRIVATE_KEY }}
+        host: ${{ secrets.OVH_HOST }}
+        username: ${{ secrets.OVH_USER }}
+        passphrase: ${{ secrets.OVH_PASSPHRASE }}
+        script: pm2 restart ecosystem.config.js --only professor-kauri --env=production
