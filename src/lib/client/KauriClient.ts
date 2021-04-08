@@ -17,7 +17,7 @@ interface IKauriClient {
   inhibitorHandler: InhibitorHandler;
   listenerHandler: ListenerHandler;
   logger: Logger;
-  prefix: (m: Message) => string;
+  prefix: string;
   reactionQueue: queue;
   settings?: Collection<string, ISettings>;
   urpg: UrpgClient;
@@ -69,7 +69,7 @@ export class KauriClient extends AkairoClient {
       commandUtilLifetime: 60000,
       fetchMembers: true,
       handleEdits: true,
-      prefix: message => message.guild ? this.settings?.get(message.guild?.id)?.prefix || "!" : "!",
+      prefix: "!",
       storeMessages: true,
     });
 
