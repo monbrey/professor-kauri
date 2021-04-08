@@ -13,7 +13,6 @@ export default class extends InteractionCommand {
         type: "STRING",
         required: true
       }],
-      guild: true
     });
   }
 
