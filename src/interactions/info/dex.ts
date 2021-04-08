@@ -1,12 +1,12 @@
 import { CommandInteraction } from "discord.js";
 import { KauriClient } from "../../lib/client/KauriClient";
-import { InteractionCommand } from "../../lib/commands/InteractionCommand";
+import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 import { Pokemon } from "../../models/Pokemon";
 
-export default class extends InteractionCommand {
+export default class extends KauriInteraction {
   constructor() {
-    super("dex", {
+    super({
       name: "dex",
       description: "Get Ultradex data for a Pokemon",
       options: [{

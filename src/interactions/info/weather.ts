@@ -1,10 +1,10 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { InteractionCommand } from "../../lib/commands/InteractionCommand";
+import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { IWeather, Weather } from "../../models/mongo/weather";
 
-export default class extends InteractionCommand {
+export default class extends KauriInteraction {
   constructor() {
-    super("weather", {
+    super({
       name: "weather",
       description: "Retrieve weather effect information",
       options: [{
@@ -22,7 +22,6 @@ export default class extends InteractionCommand {
           { "value": 8, "name": "Mysterious Air Current" }
         ]
       }],
-      guild: true
     });
   }
 

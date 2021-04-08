@@ -1,12 +1,12 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { InteractionCommand } from "../../lib/commands/InteractionCommand";
+import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 import { Ability } from "../../models/mongo/ability";
 import { EmbedColors } from "../../util/constants";
 
-export default class extends InteractionCommand {
+export default class extends KauriInteraction {
   constructor() {
-    super("ability", {
+    super({
       name: "ability",
       description: "Get Infohub data for an ability",
       options: [{
@@ -15,7 +15,6 @@ export default class extends InteractionCommand {
         type: "STRING",
         required: true
       }],
-      guild: true
     });
   }
 

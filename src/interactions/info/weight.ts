@@ -1,10 +1,10 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { InteractionCommand } from "../../lib/commands/InteractionCommand";
+import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 
-export default class extends InteractionCommand {
+export default class extends KauriInteraction {
   constructor() {
-    super("weight", {
+    super({
       name: "weight",
       description: "Provides information on weight-based moves between one or two Pokemon / weights",
       options: [{
@@ -25,7 +25,7 @@ export default class extends InteractionCommand {
     const doubleArg: string = args.get("double");
 
     if (!singleArg)
-      throw new CommandExecutionError("Required ommand parameter 'singleValue' not found");
+      throw new CommandExecutionError("Required command parameter 'single' not found");
 
     const promises = [];
     promises.push(

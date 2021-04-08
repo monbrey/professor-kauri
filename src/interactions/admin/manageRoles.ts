@@ -1,11 +1,11 @@
 import { CommandInteraction, MessageEmbed, Snowflake } from "discord.js";
-import { InteractionCommand } from "../../lib/commands/InteractionCommand";
+import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 import { EmbedColors } from "../../util/constants";
 
-export default class extends InteractionCommand {
+export default class extends KauriInteraction {
   constructor() {
-    super("role", {
+    super({
       name: "role",
       description: "Add or remove a Role from a member",
       options: [{

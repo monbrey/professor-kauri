@@ -1,13 +1,13 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 import { KauriClient } from "../../lib/client/KauriClient";
-import { InteractionCommand } from "../../lib/commands/InteractionCommand";
+import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 import { Pokemon } from "../../models/Pokemon";
 import { EmbedColors } from "../../util/constants";
 
-export default class extends InteractionCommand {
+export default class extends KauriInteraction {
   constructor() {
-    super("learnset", {
+    super({
       name: "learnset",
       description: "Get the movelist for a Pokemon",
       options: [{

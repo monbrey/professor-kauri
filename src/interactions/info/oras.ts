@@ -1,10 +1,10 @@
 import { Collection, CommandInteraction, MessageEmbed } from "discord.js";
-import { InteractionCommand } from "../../lib/commands/InteractionCommand";
+import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 
-export default class extends InteractionCommand {
+export default class extends KauriInteraction {
   constructor() {
-    super("oras", {
+    super({
       name: "oras",
       description: "Get ORAS Contest data for a move",
       options: [{
