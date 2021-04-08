@@ -4,18 +4,18 @@ import { Collection, CommandInteraction } from "discord.js";
 import { resolve } from "path";
 import { argMapper } from "../../util/argMapper";
 import { KauriClient } from "../client/KauriClient";
-import { InteractionCommand } from "./InteractionCommand";
+import { KauriInteraction } from "./KauriInteraction";
 
-export class InteractionHandler extends AkairoHandler {
-  public modules: Collection<string, InteractionCommand>;
+export class KauriInteractionHandler extends AkairoHandler {
+  public modules: Collection<string, KauriInteraction>;
 
   constructor(client: KauriClient, {
     directory,
-    classToHandle = InteractionCommand,
+    classToHandle = KauriInteraction,
     extensions = [".js", ".ts"],
     automateCategories,
     loadFilter,
-  }: InteractionHandlerOptions = {}) {
+  }: KauriInteractionHandlerOptions = {}) {
     super(client, {
       directory,
       classToHandle,
@@ -55,8 +55,8 @@ export class InteractionHandler extends AkairoHandler {
     }
   }
 
-  findCommand(name: string): InteractionCommand {
-    return this.modules.get(name) as InteractionCommand;
+  findCommand(name: string): KauriInteraction {
+    return this.modules.get(name) as KauriInteraction;
   }
 
   loadAll(directory = this.directory, filter = this.loadFilter || (() => true)) {
@@ -66,7 +66,7 @@ export class InteractionHandler extends AkairoHandler {
       if (filter(filepath)) this.load(filepath);
     }
 
-    const [global, guild] = this.modules.partition((m: InteractionCommand) => !m.guild);
+    const [global, guild] = this.modules.partition((m: KauriInteraction) => !m.guild);
 
     this.client.application?.commands.set(global.map(c => c.apiTransform()));
     this.client.guilds.resolve(process.env.KAURI_GUILD!)?.commands.set(guild.map(c => c.apiTransform()));
@@ -75,7 +75,7 @@ export class InteractionHandler extends AkairoHandler {
   }
 }
 
-export interface InteractionHandlerOptions {
+export interface KauriInteractionHandlerOptions {
   automateCategories?: boolean;
   classToHandle?: Function;
   directory?: string;

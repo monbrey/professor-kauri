@@ -10,7 +10,7 @@ import { ISettings, Settings } from "../../models/mongo/settings";
 // Utilities
 import { db, instanceDB } from "../../util/db";
 import Logger from "../../util/logger";
-import { InteractionHandler } from "../commands/InteractionHandler";
+import { KauriInteractionHandler } from "../commands/KauriInteractionHandler";
 
 interface IKauriClient {
   commandHandler: CommandHandler;
@@ -38,7 +38,7 @@ export class KauriClient extends AkairoClient {
   public settings?: Collection<string, ISettings>;
 
   public commandHandler: CommandHandler;
-  public interactionHandler: InteractionHandler;
+  public interactionHandler: KauriInteractionHandler;
   public inhibitorHandler: InhibitorHandler;
   public listenerHandler: ListenerHandler;
 
@@ -100,7 +100,7 @@ export class KauriClient extends AkairoClient {
         return typeof phrase === "string" ? RoleConfig.findClosest("name", phrase) : RoleConfig.findOne({ role_id: phrase.id });
       });
 
-    this.interactionHandler = new InteractionHandler(this, {
+    this.interactionHandler = new KauriInteractionHandler(this, {
       directory: join(__dirname, "..", "..", "interactions")
     });
 

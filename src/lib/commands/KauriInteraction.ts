@@ -2,15 +2,15 @@ import { AkairoError, AkairoModule } from "discord-akairo";
 import { ApplicationCommandData, ApplicationCommandOption, CommandInteraction, PermissionResolvable } from "discord.js";
 import { threadId } from "node:worker_threads";
 
-export class InteractionCommand extends AkairoModule implements ApplicationCommandData {
+export class KauriInteraction extends AkairoModule implements ApplicationCommandData {
   public name: string;
   public guild: boolean;
   public ownerOnly: boolean;
   public description: string;
   public options?: ApplicationCommandOption[] | undefined;
 
-  constructor(id: string, data: InteractionCommandOptions) {
-    super(id, data);
+  constructor(data: KauriInteractionOptions) {
+    super(data.name, data);
     this.name = data.name;
     this.description = data.description;
     this.options = data.options;
@@ -32,7 +32,7 @@ export class InteractionCommand extends AkairoModule implements ApplicationComma
   }
 }
 
-export interface InteractionCommandOptions extends ApplicationCommandData {
+export interface KauriInteractionOptions extends ApplicationCommandData {
   category?: string;
   clientPermissions?: PermissionResolvable | PermissionResolvable[];
   guild?: boolean;
