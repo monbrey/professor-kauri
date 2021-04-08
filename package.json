@@ -26,14 +26,14 @@
     "@types/dotenv": "^6.1.1",
     "@types/node": "^12.20.7",
     "@types/node-emoji": "^1.8.1",
-    "@types/node-fetch": "^2.5.9",
+    "@types/node-fetch": "^2.5.10",
     "@types/string-similarity": "^3.0.0",
     "@types/ws": "^6.0.4",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "eslint": "^6.8.0",
     "rimraf": "^3.0.2",
-    "typescript": "^4.2.3",
+    "typescript": "^4.2.4",
     "typescript-eslint": "0.0.1-alpha.0"
   },
   "dependencies": {
