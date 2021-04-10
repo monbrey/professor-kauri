@@ -66,10 +66,16 @@ export class KauriInteractionHandler extends AkairoHandler {
       if (filter(filepath)) this.load(filepath);
     }
 
-    const [global, guild] = this.modules.partition((m: KauriInteraction) => !m.guild);
+    const [globals, guilds] = this.modules.partition((m: KauriInteraction) => !m.guild);
 
-    this.client.application?.commands.set(global.map(c => c.apiTransform()));
-    this.client.guilds.resolve(process.env.KAURI_GUILD!)?.commands.set(guild.map(c => c.apiTransform()));
+    this.client.application?.commands.set(globals.map(c => c.apiTransform()));
+
+    if (!process.env.KAURI_GUILD)
+      console.error("[KauriInteractionHandler]: No guild configured");
+    else if (!this.client.guilds.resolve(process.env.KAURI_GUILD))
+      console.error("[KauriInteractionHandler]: Unable to resolve configured guild");
+    else
+      this.client.guilds.resolve(process.env.KAURI_GUILD!)?.commands.set(guilds.map(c => c.apiTransform()));
 
     return this;
   }
