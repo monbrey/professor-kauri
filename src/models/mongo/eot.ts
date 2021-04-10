@@ -13,7 +13,7 @@ export interface IEot extends IEotDocument {
 }
 
 export interface IEotModel extends Model<IEot> {
-  getSurrounding(num: number): IEot[];
+  getSurrounding(num: number): Promise<IEot[]>;
 }
 
 const EotSchema = new Schema<IEot, IEotModel>({
