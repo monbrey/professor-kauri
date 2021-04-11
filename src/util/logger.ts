@@ -424,7 +424,7 @@ class CustomLogger {
     return this.getLogChannel(message.guild)?.send(embed);
   }
 
-  public async prune(message: Message, numDeleted: number | string) {
+  public async purge(message: Message, numDeleted: number | string) {
     this.winston.info({
       message: "Messages pruned",
       ...this.location(message),

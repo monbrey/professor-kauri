@@ -25,9 +25,7 @@ export default class extends KauriInteraction {
         type: "ROLE",
         required: true
       }],
-      guild: true,
-      ownerOnly: true,
-      clientPermissions: ["SEND_MESSAGES", "EMBED_LINKS", "MANAGE_ROLES"]
+      guild: true
     });
   }
 

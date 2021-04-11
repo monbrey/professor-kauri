@@ -1,36 +1,30 @@
-import { Message } from "discord.js";
-import { KauriCommand } from "../../../lib/commands/KauriCommand";
-import { DiceLog } from "../../../models/mongo/dicelog";
+import { CommandInteraction } from "discord.js";
+import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 
 interface CommandArgs {
   die: string[];
   verify: boolean;
 }
 
-export default class DiceCommand extends KauriCommand {
+export default class extends KauriInteraction {
   constructor() {
-    super("Dice", {
-      aliases: ["dice", "d"],
-      category: "Game",
-      editable: false,
-      flags: ["-v", "--verify"],
+    super({
+      name: "d",
       description: "Rolls one or more x-sided dice",
-      usage: ["d 100", "d 2,100", "d 2d100"]
+      options: [{
+        name: "die",
+        description: "Die or dice to roll",
+        type: "STRING",
+        required: true
+      }]
     });
   }
 
-  public *args(): any {
-    const die = yield {
-      type: "string",
-      match: "separate"
-    };
+  public async exec(interaction: CommandInteraction, args: Map<string, any>) {
+    const die = args.get("die").split(" ");
 
-    return { die };
-  }
-
-  public async exec(message: Message, { die, verify }: CommandArgs) {
     let reduction = true;
-    const valid = die.reduce((acc, d) => {
+    const valid = die.reduce((acc: string[], d: string) => {
       if (/^[1-9]\d*(?:[,d]?[1-9]\d*)?$/.test(d) && reduction)
         acc.push(d);
       else reduction = false;
@@ -39,7 +33,7 @@ export default class DiceCommand extends KauriCommand {
 
     if (valid.length === 0) return;
 
-    const dice: number[] = valid.flatMap(d => {
+    const dice: number[] = valid.flatMap((d: string) => {
       if (!d.match(/[,d]/)) { return parseInt(d, 10); }
       if (/^[1-9]\d*$/.test(d.split(/[,d]/)[0]) && d.split(/[,d]/)[1] !== "") {
         if (/^[1-9]\d*$/.test(d.split(/[,d]/)[0]) && /^[1-9]\d*$/.test(d.split(/[,d]/)[1])) {
@@ -52,8 +46,8 @@ export default class DiceCommand extends KauriCommand {
 
     if (rolls.length === 0) return;
 
-    const response = await message.util!.reply(`\\🎲 ${rolls.join(", ")}`);
+    const response = await interaction.reply(`\\🎲 ${rolls.join(", ")}`);
 
-    DiceLog.log(response.id, message, rolls.join(", "));
+    // DiceLog.log(response.id, interaction, rolls.join(", "));
   }
 }
