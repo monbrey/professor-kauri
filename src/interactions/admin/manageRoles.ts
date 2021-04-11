@@ -25,7 +25,8 @@ export default class extends KauriInteraction {
         type: "ROLE",
         required: true
       }],
-      guild: true
+      guild: true,
+      defaultPermission: false
     });
   }
 

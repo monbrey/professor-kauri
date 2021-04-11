@@ -43,8 +43,8 @@ export class KauriInteractionHandler extends AkairoHandler {
     if (!command)
       return interaction.reply(`\`${interaction.commandName}\` is not yet implemented!`, { ephemeral: true });
 
-    if (command.ownerOnly && interaction.user.id !== "122157285790187530")
-      return interaction.reply(`\`${interaction.commandName}\` usage is restricted`, { ephemeral: true });
+    // if (command.ownerOnly && interaction.user.id !== "122157285790187530")
+    //   return interaction.reply(`\`${interaction.commandName}\` usage is restricted`, { ephemeral: true });
 
     try {
       const args = argMapper(interaction.options ?? []);
@@ -68,14 +68,15 @@ export class KauriInteractionHandler extends AkairoHandler {
 
     const [globals, guilds] = this.modules.partition((m: KauriInteraction) => !m.guild);
 
-    this.client.application?.commands.set(globals.map(c => c.apiTransform()));
+    // this.client.application?.commands.set(globals.map(c => c.apiTransform()));
 
     if (!process.env.KAURI_GUILD)
       console.error("[KauriInteractionHandler]: No guild configured");
     else if (!this.client.guilds.resolve(process.env.KAURI_GUILD))
       console.error("[KauriInteractionHandler]: Unable to resolve configured guild");
-    else
-      this.client.guilds.resolve(process.env.KAURI_GUILD!)?.commands.set(guilds.map(c => c.apiTransform()));
+    else {
+      // this.client.guilds.resolve(process.env.KAURI_GUILD!)?.commands.set(guilds.map(c => c.apiTransform()));
+    }
 
     return this;
   }
