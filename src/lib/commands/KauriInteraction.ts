@@ -1,15 +1,21 @@
 /* eslint-disable camelcase */
 import { AkairoError, AkairoModule } from "discord-akairo";
-import { ApplicationCommandData, ApplicationCommandOption, CommandInteraction, Snowflake } from "discord.js";
+import { ApplicationCommand, ApplicationCommandData, ApplicationCommandOption, ApplicationCommandPermissions, CommandInteraction } from "discord.js";
+import { CommandExecutionError } from "../misc/CommandExecutionError";
+import { KauriInteractionHandler } from "./KauriInteractionHandler";
 
 export class KauriInteraction extends AkairoModule implements ApplicationCommandData {
-  public description: string;
-  public defaultPermission: boolean;
-  public guild: boolean;
   public name: string;
+  public description: string;
   public options?: ApplicationCommandOption[];
-  public permissions?: KauriInteractionPermissionOptions[];
 
+  public defaultPermission?: boolean;
+  public permissions?: ApplicationCommandPermissions[];
+
+  public guild: boolean;
+  public handler!: KauriInteractionHandler;
+
+  public command?: ApplicationCommand;
 
   constructor(data: KauriInteractionOptions) {
     super(data.name, data);
@@ -21,12 +27,18 @@ export class KauriInteraction extends AkairoModule implements ApplicationCommand
     this.guild = data.guild ?? false;
   }
 
-  public exec(interaction: CommandInteraction, args: Map<string, any>): any | Promise<any> {
+  public exec(interaction: CommandInteraction, args?: Map<string, any>): any | Promise<any> {
     // @ts-ignore
     throw new AkairoError("NOT_IMPLEMENTED", this.constructor.name, "exec");
   }
 
-  public create() {
+  public async create() {
+    if (!this.client.application)
+      throw new CommandExecutionError("[KauriInteraction] Attempting to create commands before application ready");
+    if (this.command)
+      throw new CommandExecutionError(`[KauriInteraction] Command '${this.name}' already exists`);
+
+    let manager;
     if (this.guild) {
       if (!process.env.KAURI_GUILD)
         return console.error("[KauriInteraction]: No guild configured");
@@ -35,101 +47,57 @@ export class KauriInteraction extends AkairoModule implements ApplicationCommand
       if (!guild)
         return console.error("[KauriInteraction]: Unable to resolve configured guild");
 
-      return guild.commands.create(this.apiTransform());
+      manager = guild.commands;
+    } else {
+      manager = this.client.application.commands;
     }
 
-    return this.client.application?.commands.create(this.apiTransform());
+    this.command = await manager.create(KauriInteraction.apiTransform(this));
+    return this.command;
   }
 
   public async edit() {
-    if (this.guild) {
-      if (!process.env.KAURI_GUILD)
-        return console.error("[KauriInteraction]: No guild configured");
+    this.reload();
 
-      const guild = this.client.guilds.resolve(process.env.KAURI_GUILD);
-      if (!guild)
-        return console.error("[KauriInteraction]: Unable to resolve configured guild");
+    if (!this.client.application)
+      throw new CommandExecutionError("[KauriInteraction] Attempting to edit commands before application ready");
+    if (!this.command)
+      throw new CommandExecutionError(`[KauriInteraction] Command '${this.name}' does not exist, create it first`);
 
-      const command = await guild.commands.fetch().then(commands => commands.find(c => c.name === this.name));
-
-      if (!command)
-        return console.error("[KauriInteraction]: Command not found");
-
-      const edit = await command.edit(this.apiTransform());
-      console.log(edit);
-      return;
-    }
-
-    // return this.client.application?.commands.resolve(this.name)!.edit(this.apiTransform());
+    return this.command.edit(KauriInteraction.apiTransform(this));
   }
 
   public async delete() {
-    if (this.guild) {
-      if (!process.env.KAURI_GUILD)
-        return console.error("[KauriInteractionHandler]: No guild configured");
+    if (!this.client.application)
+      throw new CommandExecutionError("[KauriInteraction] Attempting to edit commands before application ready");
+    if (!this.command)
+      throw new CommandExecutionError(`[KauriInteraction] Command '${this.name}' does not exist, create it first`);
 
-      const guild = this.client.guilds.resolve(process.env.KAURI_GUILD);
-      if (!guild)
-        return console.error("[KauriInteractionHandler]: Unable to resolve configured guild");
-
-      // eslint-disable-next-line no-shadow
-      const command = await guild.commands.fetch().then(commands => commands.find(c => c.name === this.name));
-
-      if (!command)
-        return console.error("[KauriInteraction]: Command not found");
-
-      return command.delete();
-    }
-
-    const command = await this.client.application?.commands.fetch().then(commands => commands.find(c => c.name === this.name));
-
-    if (!command)
-      return console.error("[KauriInteraction]: Command not found");
-
-    return command.delete();
+    return this.command.delete();
   }
 
-  public updatePermissions() {
-    if (this.guild) {
-      if (!process.env.KAURI_GUILD)
-        return console.error("[KauriInteractionHandler]: No guild configured");
 
-      const guild = this.client.guilds.resolve(process.env.KAURI_GUILD);
-      if (!guild)
-        return console.error("[KauriInteractionHandler]: Unable to resolve configured guild");
+  public async updatePermissions() {
+    if (!this.client.application)
+      throw new CommandExecutionError("[KauriInteraction] Attempting to edit commands before application ready");
+    if (!this.command)
+      throw new CommandExecutionError(`[KauriInteraction] Command '${this.name}' does not exist, create it first`);
 
-      const command = guild.commands.resolve(this.name);
-      // @ts-ignore
-      return this.client.api.application(this.client.application.id).guilds(guild.id).commands(command.id).permissions.put({
-        permissions: this.permissions
-      });
-    }
-
-    // @ts-ignore
-    return this.client.api.application(this.client.application.id).commands(command.id).permissions.put({
-      permissions: this.permissions
-    });
+    return this.command.editPermissions(this.permissions ?? []);
   }
 
-  public apiTransform() {
+  static apiTransform(interaction: KauriInteraction) {
     return {
-      name: this.name,
-      description: this.description,
-      default_permission: this.defaultPermission,
-      options: this.options
+      name: interaction.name,
+      description: interaction.description,
+      default_permission: interaction.defaultPermission,
+      options: interaction.options,
     };
   }
 }
-
 export interface KauriInteractionOptions extends ApplicationCommandData {
   category?: string;
   defaultPermission?: boolean;
-  permissions?: KauriInteractionPermissionOptions[];
   guild?: boolean;
-}
-
-export interface KauriInteractionPermissionOptions {
-  id: Snowflake;
-  type: 1 | 2;
-  permission: boolean;
+  permissions?: ApplicationCommandPermissions[];
 }

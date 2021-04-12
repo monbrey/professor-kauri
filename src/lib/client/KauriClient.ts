@@ -129,6 +129,7 @@ export class KauriClient extends AkairoClient {
       websocket: this.ws
     });
 
+    this.interactionHandler.loadAll();
     this.commandHandler.loadAll();
     this.inhibitorHandler.loadAll();
     this.listenerHandler.loadAll();

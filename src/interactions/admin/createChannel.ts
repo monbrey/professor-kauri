@@ -1,7 +1,5 @@
 import { CommandInteraction } from "discord.js";
-import { KauriCommand } from "../../lib/commands/KauriCommand";
 import { KauriInteraction } from "../../lib/commands/KauriInteraction";
-import { KauriMessage } from "../../lib/structures/KauriMessage";
 import { Roles } from "../../util/constants";
 
 export default class extends KauriInteraction {
@@ -20,7 +18,13 @@ export default class extends KauriInteraction {
         type: "STRING",
         required: true
       }],
-      guild: true
+      guild: true,
+      defaultPermission: false,
+      permissions: [{
+        id: Roles.ContentUpkeep,
+        type: "ROLE",
+        permission: true
+      }]
     });
   }
 

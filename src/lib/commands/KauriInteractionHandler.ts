@@ -1,13 +1,15 @@
-import { codeBlock } from "common-tags";
 import { AkairoHandler, LoadPredicate } from "discord-akairo";
-import { Collection, CommandInteraction } from "discord.js";
+import { Collection, CommandInteraction, CommandInteractionOption } from "discord.js";
+import { S_IFBLK } from "node:constants";
+import { isRegExp } from "node:util";
 import { resolve } from "path";
-import { argMapper } from "../../util/argMapper";
 import { KauriClient } from "../client/KauriClient";
 import { KauriInteraction } from "./KauriInteraction";
 
 export class KauriInteractionHandler extends AkairoHandler {
   public modules: Collection<string, KauriInteraction>;
+
+  public client!: KauriClient;
 
   constructor(client: KauriClient, {
     directory,
@@ -37,6 +39,11 @@ export class KauriInteractionHandler extends AkairoHandler {
     });
   }
 
+  private argMapper(options: CommandInteractionOption[]): Map<string, any> {
+    return new Map(options.map(
+      (o: CommandInteractionOption) => [o.name, o.value ?? (o.type === "BOOLEAN" ? false : null) ?? (o.options !== undefined ? this.argMapper(o.options!) : null)]));
+  }
+
   async handle(interaction: CommandInteraction) {
     const command = this.findCommand(interaction.commandName);
 
@@ -47,7 +54,8 @@ export class KauriInteractionHandler extends AkairoHandler {
     //   return interaction.reply(`\`${interaction.commandName}\` usage is restricted`, { ephemeral: true });
 
     try {
-      const args = argMapper(interaction.options ?? []);
+      const args = this.argMapper(interaction.options ?? []);
+      console.log(args);
       await command.exec(interaction, args);
     } catch (err) {
       console.error(err);
@@ -55,7 +63,7 @@ export class KauriInteractionHandler extends AkairoHandler {
     }
   }
 
-  findCommand(name: string): KauriInteraction {
+  public findCommand(name: string): KauriInteraction {
     return this.modules.get(name) as KauriInteraction;
   }
 
@@ -66,16 +74,66 @@ export class KauriInteractionHandler extends AkairoHandler {
       if (filter(filepath)) this.load(filepath);
     }
 
-    const [globals, guilds] = this.modules.partition((m: KauriInteraction) => !m.guild);
+    return this;
+  }
 
-    // this.client.application?.commands.set(globals.map(c => c.apiTransform()));
+  async fetchAll({ global = true, guild = true } = {}) {
+    if (global && this.client.application) {
+      const globals = await this.client.application.commands.fetch();
+      this.modules.filter(m => !m.guild).forEach(m => {
+        const command = globals.find(g => g.name === m.name);
+        if (!command) return this.client.logger.warn(`[InteractionHandler] Interaction '${m.name}' has not been pushed to Discord`);
+        m.command = command;
+        globals.delete(command.id);
+      });
 
-    if (!process.env.KAURI_GUILD)
-      console.error("[KauriInteractionHandler]: No guild configured");
-    else if (!this.client.guilds.resolve(process.env.KAURI_GUILD))
-      console.error("[KauriInteractionHandler]: Unable to resolve configured guild");
-    else {
-      // this.client.guilds.resolve(process.env.KAURI_GUILD!)?.commands.set(guilds.map(c => c.apiTransform()));
+      if (globals.size !== 0) this.client.logger.warn(`[InteractionHandler] Unmapped global interactions found: ${globals.map(g => g.name).join(", ")}`);
+    }
+
+    if (guild) {
+      if (!process.env.KAURI_GUILD)
+        return console.error("[KauriInteractionHandler]: No guild configured");
+
+      const kauriGuild = this.client.guilds.resolve(process.env.KAURI_GUILD);
+      if (!kauriGuild)
+        return console.error("[KauriInteractionHandler]: Unable to resolve configured guild");
+
+      const guilds = await kauriGuild.commands.fetch();
+      this.modules.filter(m => m.guild).forEach(m => {
+        const command = guilds.find(g => g.name === m.name);
+        if (!command) return this.client.logger.warn(`[InteractionHandler] Interaction '${m.name}' has not been pushed to Discord`);
+        m.command = command;
+        guilds.delete(command.id);
+      });
+
+      if (guilds.size !== 0) this.client.logger.warn(`[InteractionHandler] Unmapped guild interactions found: ${guilds.map(g => g.name).join(", ")}`);
+    }
+  }
+
+  async setAll({ global = true, guild = true } = {}) {
+    const [_globals, _guilds] = this.modules.partition((m: KauriInteraction) => !m.guild);
+
+    if (global && this.client.application) {
+      const globals = await this.client.application.commands.set(_globals.map(KauriInteraction.apiTransform));
+      for (const [id, command] of globals) {
+        const interaction = _globals.find(g => g.name === command.name);
+        if (interaction) interaction.command = command;
+      }
+    }
+
+    if (guild) {
+      if (!process.env.KAURI_GUILD)
+        return console.error("[KauriInteractionHandler]: No guild configured");
+
+      const kauriGuild = this.client.guilds.resolve(process.env.KAURI_GUILD);
+      if (!kauriGuild)
+        return console.error("[KauriInteractionHandler]: Unable to resolve configured guild");
+
+      const guilds = await kauriGuild.commands.set(_guilds.map(KauriInteraction.apiTransform));
+      for (const [id, command] of guilds) {
+        const interaction = _guilds.find(g => g.name === command.name);
+        if (interaction) interaction.command = command;
+      }
     }
 
     return this;

@@ -2,7 +2,7 @@ import { Listener } from "discord-akairo";
 import { readFileSync } from "fs";
 import { KauriClient } from "../../lib/client/KauriClient";
 import { Settings } from "../../models/mongo/settings";
-export default class ReadyListener extends Listener {
+export default class extends Listener {
   constructor() {
     super("ready", {
       emitter: "client",
@@ -11,8 +11,7 @@ export default class ReadyListener extends Listener {
   }
 
   public async exec() {
-    this.client.logger.info(`Logged in as "${this.client.user?.username}"`);
-    (this.client as KauriClient).interactionHandler.loadAll();
+    this.client.logger.info(`[Ready] Logged in as "${this.client.user?.username}"`);
 
     const { version } = JSON.parse(readFileSync("./package.json", "utf-8"));
     const devtech = this.client.channels.cache.get("420675341036814337");
@@ -24,5 +23,8 @@ export default class ReadyListener extends Listener {
         this.client.settings?.set(guild_id, config);
       }
     }
+
+    await (this.client as KauriClient).interactionHandler.fetchAll();
+    // console.log((this.client as KauriClient).interactionHandler.modules);
   }
 }

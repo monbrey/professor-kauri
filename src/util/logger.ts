@@ -48,7 +48,7 @@ const consoleErrorFormat = format.combine(
 const outs: any[] = [
   new transports.Console({
     format: consoleLogFormat,
-    level: "info"
+    level: "debug"
   }),
   new transports.Console({
     format: consoleErrorFormat,
@@ -121,7 +121,15 @@ class CustomLogger {
   }
 
   public async debug(data: any) {
-    return this.winston.info(data);
+    return this.winston.debug(data);
+  }
+
+  public async warn(data: any) {
+    return this.winston.warn(data);
+  }
+
+  public async error(data: any) {
+    return this.winston.error(data);
   }
 
   /**

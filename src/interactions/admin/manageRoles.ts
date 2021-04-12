@@ -1,7 +1,7 @@
 import { CommandInteraction, MessageEmbed, Snowflake } from "discord.js";
 import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
-import { EmbedColors } from "../../util/constants";
+import { EmbedColors, Roles } from "../../util/constants";
 
 export default class extends KauriInteraction {
   constructor() {
@@ -26,7 +26,12 @@ export default class extends KauriInteraction {
         required: true
       }],
       guild: true,
-      defaultPermission: false
+      defaultPermission: false,
+      permissions: [{
+        id: Roles.Staff,
+        type: "ROLE",
+        permission: true
+      }]
     });
   }
 

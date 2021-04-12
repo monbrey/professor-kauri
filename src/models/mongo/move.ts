@@ -41,7 +41,7 @@ export interface IMove extends IMoveDocument {
 }
 
 export interface IMoveModel extends Model<IMove> {
-  metronome(): IMove;
+  metronome(): Promise<IMove>;
 }
 
 const MoveSchema = new Schema<IMove, IMoveModel>({

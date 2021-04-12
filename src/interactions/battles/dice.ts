@@ -16,7 +16,12 @@ export default class extends KauriInteraction {
         description: "Die or dice to roll",
         type: "STRING",
         required: true
-      }]
+      }, {
+        name: "private",
+        description: "Keep this dice roll private [default false]",
+        type: "BOOLEAN",
+      }],
+      guild: true
     });
   }
 
@@ -46,7 +51,7 @@ export default class extends KauriInteraction {
 
     if (rolls.length === 0) return;
 
-    const response = await interaction.reply(`\\🎲 ${rolls.join(", ")}`);
+    const response = await interaction.reply(`\\🎲 ${rolls.join(", ")}`, { ephemeral: args.get("private") });
 
     // DiceLog.log(response.id, interaction, rolls.join(", "));
   }

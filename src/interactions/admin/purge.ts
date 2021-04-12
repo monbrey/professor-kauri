@@ -1,12 +1,13 @@
 import { CommandInteraction, DMChannel, GuildMember } from "discord.js";
 import { KauriInteraction } from "../../lib/commands/KauriInteraction";
+import { Roles } from "../../util/constants";
 
 interface CommandArgs {
   count: number;
   user: GuildMember;
 }
 
-export default class PruneCommand extends KauriInteraction {
+export default class extends KauriInteraction {
   constructor() {
     super({
       name: "purge",
@@ -16,7 +17,13 @@ export default class PruneCommand extends KauriInteraction {
         description: "Number of messages to remove [default/max 100]",
         type: "INTEGER"
       }],
-      guild: true
+      guild: true,
+      defaultPermission: false,
+      permissions: [{
+        id: Roles.Staff,
+        type: "ROLE",
+        permission: true
+      }]
     });
   }
 
