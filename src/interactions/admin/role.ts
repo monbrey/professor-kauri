@@ -1,8 +1,13 @@
-import { CommandInteraction, MessageEmbed, Snowflake } from "discord.js";
+import { CommandInteraction, GuildMember, MessageEmbed, Role, Snowflake } from "discord.js";
 import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 import { EmbedColors, Roles } from "../../util/constants";
 
+interface CommandArgs {
+  action: string;
+  member: GuildMember;
+  role: Role;
+}
 export default class extends KauriInteraction {
   constructor() {
     super({
@@ -28,6 +33,10 @@ export default class extends KauriInteraction {
       guild: true,
       defaultPermission: false,
       permissions: [{
+        id: process.env.OWNER_ID as string,
+        type: "USER",
+        permission: true
+      }, {
         id: Roles.Staff,
         type: "ROLE",
         permission: true
@@ -35,29 +44,24 @@ export default class extends KauriInteraction {
     });
   }
 
-  public async exec(interaction: CommandInteraction & { guildID: Snowflake }, args: Map<string, any>) {
-    const action = interaction.options.find(o => o.name === "action")?.value as string;
-    const memberID = interaction.options.find(o => o.name === "member")?.value as Snowflake;
-    const roleID = interaction.options.find(o => o.name === "role")?.value as Snowflake;
-
-    if (!action || !memberID || !roleID)
+  public async exec(interaction: CommandInteraction & { guildID: Snowflake }, { action, member, role }: CommandArgs) {
+    if (!action || !member || !role)
       throw new CommandExecutionError("Command parameters missing");
 
-    const member = await interaction.guild?.members.fetch(memberID);
     if (!member)
       throw new CommandExecutionError("Provided user could not be found in the server");
 
     this.client.logger.info({
       key: interaction.commandName,
       action,
-      member: memberID,
-      role: roleID
+      member: member.id,
+      role: role.id
     });
 
-    await (action === "add" ? member.roles.add(roleID) : member.roles.remove(roleID));
+    await (action === "add" ? member.roles.add(role) : member.roles.remove(role));
     return interaction.reply(
       new MessageEmbed()
-        .setDescription(`<@&${roleID}> ${action === "add" ? "added to" : "removed from"} ${member}`)
+        .setDescription(`${role} ${action === "add" ? "added to" : "removed from"} ${member}`)
         .setColor(EmbedColors.SUCCESS)
     );
   }
