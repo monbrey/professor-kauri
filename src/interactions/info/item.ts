@@ -18,19 +18,18 @@ export default class extends KauriInteraction {
     });
   }
 
-  public async exec(interaction: CommandInteraction) {
-    const query = interaction.options.find(o => o.name === "item")?.value as string;
-    if (!query) throw new CommandExecutionError("Command parameter 'item' not found");
+  public async exec(interaction: CommandInteraction, { item }: Record<string, string>) {
+    if (!item) throw new CommandExecutionError("Command parameter 'item' not found");
 
-    const item = await Item.findClosest("itemName", query);
-    if (!item) throw new CommandExecutionError(`No item found matching \`${query}\``);
+    const value = await Item.findClosest("itemName", item);
+    if (!value) throw new CommandExecutionError(`No item found matching \`${item}\``);
 
     this.client.logger.info({
       key: interaction.commandName,
-      query,
-      result: item.itemName
+      query: item,
+      result: value.itemName
     });
 
-    return interaction.reply(item.info());
+    return interaction.reply(value.info());
   }
 }

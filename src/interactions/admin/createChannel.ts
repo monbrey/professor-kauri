@@ -1,7 +1,11 @@
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, GuildChannel } from "discord.js";
 import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { Roles } from "../../util/constants";
 
+interface CommandArgs {
+  category: GuildChannel;
+  name: string;
+}
 export default class extends KauriInteraction {
   constructor() {
     super({
@@ -28,19 +32,16 @@ export default class extends KauriInteraction {
     });
   }
 
-  public async exec(interaction: CommandInteraction, args: Map<string, any>) {
+  public async exec(interaction: CommandInteraction, { category, name }: CommandArgs) {
     if (!interaction.guild)
       return interaction.reply("This command can only be run in the server", { ephemeral: true });
 
-    const parentID = args.get("category");
-    const parent = interaction.guild.channels.cache.get(parentID)?.type === "category" ?
-      parentID :
-      interaction.guild.channels.cache.get(parentID)?.parentID;
+    const parent = category.type === "category" ? category.id : category.parentID;
 
     if (!parent)
       return interaction.reply("Supplied category not found, or supplied channel is not in a category", { ephemeral: true });
 
-    const channel = await interaction.guild.channels.create(args.get("name"), { type: "text", parent });
+    const channel = await interaction.guild.channels.create(name, { type: "text", parent });
 
     interaction.reply(`New channel ${channel} created`, { ephemeral: true });
   }

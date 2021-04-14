@@ -17,16 +17,15 @@ export default class extends KauriInteraction {
   }
 
 
-  public async exec(interaction: CommandInteraction) {
-    const query = interaction.options.find(o => o.name === "move")?.value as string;
-    if (!query) throw new CommandExecutionError("Command parameter 'move' not found");
+  public async exec(interaction: CommandInteraction, { move }: Record<string, string>) {
+    if (!move) throw new CommandExecutionError("Command parameter 'move' not found");
 
-    const { value } = await this.client.urpg.attack.fetchClosest(query);
-    if (!value) throw new CommandExecutionError(`No move found matching \`${query}\``);
+    const { value } = await this.client.urpg.attack.fetchClosest(move);
+    if (!value) throw new CommandExecutionError(`No move found matching \`${move}\``);
 
     this.client.logger.info({
       key: interaction.commandName,
-      query,
+      query: move,
       result: value.name
     });
 

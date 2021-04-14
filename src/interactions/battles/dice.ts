@@ -2,8 +2,8 @@ import { CommandInteraction } from "discord.js";
 import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 
 interface CommandArgs {
-  die: string[];
-  verify: boolean;
+  die: string;
+  private: boolean;
 }
 
 export default class extends KauriInteraction {
@@ -25,11 +25,11 @@ export default class extends KauriInteraction {
     });
   }
 
-  public async exec(interaction: CommandInteraction, args: Map<string, any>) {
-    const die = args.get("die").split(" ");
+  public async exec(interaction: CommandInteraction, { die, private: priv }: CommandArgs) {
+    const dies = (die as string).split(" ");
 
     let reduction = true;
-    const valid = die.reduce((acc: string[], d: string) => {
+    const valid = dies.reduce((acc: string[], d: string) => {
       if (/^[1-9]\d*(?:[,d]?[1-9]\d*)?$/.test(d) && reduction)
         acc.push(d);
       else reduction = false;
@@ -51,7 +51,7 @@ export default class extends KauriInteraction {
 
     if (rolls.length === 0) return;
 
-    const response = await interaction.reply(`\\🎲 ${rolls.join(", ")}`, { ephemeral: args.get("private") });
+    const response = await interaction.reply(`\\🎲 ${rolls.join(", ")}`, { ephemeral: Boolean(priv) });
 
     // DiceLog.log(response.id, interaction, rolls.join(", "));
   }

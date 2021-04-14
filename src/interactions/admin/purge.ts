@@ -27,14 +27,12 @@ export default class extends KauriInteraction {
     });
   }
 
-  public async exec(interaction: CommandInteraction, args: Map<string, any>) {
+  public async exec(interaction: CommandInteraction, { amount = 100 }: Record<string, number>) {
     if (!interaction.channel || !interaction.channel.isText() || !interaction.guild)
       return interaction.reply("No channel detected to delete messages from", { ephemeral: true });
 
     if (interaction.channel instanceof DMChannel)
       return interaction.reply("This command cannot be used in DMs", { ephemeral: true });
-
-    const amount = args.get("amount") ?? 100;
 
     try {
       const deleted = await interaction.channel.bulkDelete(amount, true);

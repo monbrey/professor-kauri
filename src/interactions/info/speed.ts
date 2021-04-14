@@ -20,36 +20,33 @@ export default class extends KauriInteraction {
     });
   }
 
-  public async exec(interaction: CommandInteraction, args: Map<string, any>) {
-    const atkArg: string = args.get("attacker");
-    const defArg: string = args.get("defender");
-
-    if (!atkArg)
+  public async exec(interaction: CommandInteraction, { attacker, defender }: Record<string, string>) {
+    if (!attacker)
       throw new CommandExecutionError("Required command parameter 'attacker' not found");
-    if (!defArg)
+    if (!defender)
       throw new CommandExecutionError("Required command parameter 'defender' not found");
 
     const promises = [];
     promises.push(
-      !isNaN(parseInt(atkArg)) ?
-        Promise.resolve({ name: atkArg, value: parseInt(atkArg) }) :
-        this.client.urpg.species.fetchClosest(atkArg).then(s => ({ name: s.value.name, value: s.value.weight }))
+      !isNaN(parseInt(attacker)) ?
+        Promise.resolve({ name: attacker, value: parseInt(attacker) }) :
+        this.client.urpg.species.fetchClosest(attacker).then(s => ({ name: s.value.name, value: s.value.weight }))
     );
 
     promises.push(
-      !isNaN(parseInt(defArg)) ?
-        Promise.resolve({ name: defArg, value: parseInt(defArg) }) :
-        this.client.urpg.species.fetchClosest(defArg).then(s => ({ name: s.value.name, value: s.value.weight }))
+      !isNaN(parseInt(defender)) ?
+        Promise.resolve({ name: defender, value: parseInt(defender) }) :
+        this.client.urpg.species.fetchClosest(defender).then(s => ({ name: s.value.name, value: s.value.weight }))
     );
 
-    const [attacker, defender] = await Promise.all(promises);
+    const [a, d] = await Promise.all(promises);
 
     const embed = new MessageEmbed()
-      .setTitle(`${attacker.name} vs ${defender.name}`)
-      .setDescription(`**Attacking Speed**: ${attacker.value}\n**Defending Speed**: ${defender.value}`)
+      .setTitle(`${a.name} vs ${d.name}`)
+      .setDescription(`**Attacking Speed**: ${a.value}\n**Defending Speed**: ${d.value}`)
       .addFields([
-        { name: "**Electro Ball**", value: `${this.calcElectro(attacker.value, defender.value)} BP`, inline: true },
-        { name: "**Gyro Ball**", value: `${this.calcGyro(attacker.value, defender.value)} BP`, inline: true }
+        { name: "**Electro Ball**", value: `${this.calcElectro(a.value, d.value)} BP`, inline: true },
+        { name: "**Gyro Ball**", value: `${this.calcGyro(a.value, d.value)} BP`, inline: true }
       ]);
 
     return interaction.reply(embed);

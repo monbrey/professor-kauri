@@ -18,21 +18,20 @@ export default class extends KauriInteraction {
     });
   }
 
-  public async exec(interaction: CommandInteraction, args: Map<string, any>) {
-    const query = interaction.options.find(o => o.name === "ability")?.value as string;
-    if (!query)
+  public async exec(interaction: CommandInteraction, { ability }: Record<string, string>) {
+    if (!ability)
       throw new CommandExecutionError("Command parameter 'ability' not found");
 
-    const ability = await Ability.findClosest("abilityName", query);
-    if (!ability)
-      throw new CommandExecutionError(`No ability found matching \`${query}\``);
+    const value = await Ability.findClosest("abilityName", ability);
+    if (!value)
+      throw new CommandExecutionError(`No ability found matching \`${ability}\``);
 
     this.client.logger.info({
       key: interaction.commandName,
-      query,
-      result: ability.abilityName
+      query: ability,
+      result: value.abilityName
     });
 
-    return interaction.reply(ability.info());
+    return interaction.reply(value.info());
   }
 }

@@ -25,9 +25,7 @@ export default class extends KauriInteraction {
     });
   }
 
-  public async exec(interaction: CommandInteraction, args: Map<string, any>) {
-    const weather = args.get("weather");
-
+  public async exec(interaction: CommandInteraction, { weather }: Record<string, number>) {
     if (!weather) {
       const weathers: IWeather[] = await Weather.find({});
       const list = weathers.map(w => `${this.client.emojis.cache.get(w.emoji) ?? w.emoji} ${w.weatherName}`);

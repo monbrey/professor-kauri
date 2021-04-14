@@ -17,15 +17,12 @@ export default class extends KauriInteraction {
         type: "STRING",
         required: true
       }],
-      guild: true
     });
   }
 
-  public async exec(interaction: CommandInteraction, args: Map<string, any>) {
-    const query = args.get("effect");
-
-    const effect = await Eot.findClosest("effect", query, 0);
-    const surrounding = await Eot.getSurrounding(effect.order);
+  public async exec(interaction: CommandInteraction, { effect }: Record<string, string>) {
+    const value = await Eot.findClosest("effect", effect, 0);
+    const surrounding = await Eot.getSurrounding(value.order);
 
     const grouped = [];
     for (const e of surrounding) {
@@ -41,8 +38,8 @@ export default class extends KauriInteraction {
       .join("\n");
 
     const embed = new MessageEmbed()
-      .setTitle(effect.effect)
-      .setDescription(`${effect.effect} occurs at position ${effect.order}`)
+      .setTitle(value.effect)
+      .setDescription(`${value.effect} occurs at position ${value.order}`)
       .addFields({ name: "**Surrounding Effects**", value: `\`\`\`${groupString}\`\`\`` });
 
     return interaction.reply(embed);

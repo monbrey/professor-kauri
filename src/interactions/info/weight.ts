@@ -20,48 +20,45 @@ export default class extends KauriInteraction {
     });
   }
 
-  public async exec(interaction: CommandInteraction, args: Map<string, any>) {
-    const singleArg: string = args.get("single");
-    const doubleArg: string = args.get("double");
-
-    if (!singleArg)
+  public async exec(interaction: CommandInteraction, { single, double }: Record<string, string>) {
+    if (!single)
       throw new CommandExecutionError("Required command parameter 'single' not found");
 
     const promises = [];
     promises.push(
-      !isNaN(parseFloat(singleArg)) ?
-        Promise.resolve({ name: singleArg, value: parseFloat(singleArg) }) :
-        this.client.urpg.species.fetchClosest(singleArg).then(s => ({ name: s.value.name, value: s.value.weight }))
+      !isNaN(parseFloat(single)) ?
+        Promise.resolve({ name: single, value: parseFloat(single) }) :
+        this.client.urpg.species.fetchClosest(single).then(s => ({ name: s.value.name, value: s.value.weight }))
     );
 
-    if (doubleArg) {
+    if (double) {
       promises.push(
-        !isNaN(parseFloat(doubleArg)) ?
-          Promise.resolve({ name: doubleArg, value: parseFloat(doubleArg) }) :
-          this.client.urpg.species.fetchClosest(doubleArg).then(s => ({ name: s.value.name, value: s.value.weight }))
+        !isNaN(parseFloat(double)) ?
+          Promise.resolve({ name: double, value: parseFloat(double) }) :
+          this.client.urpg.species.fetchClosest(double).then(s => ({ name: s.value.name, value: s.value.weight }))
       );
 
       // eslint-disable-next-line no-shadow
-      const [single, double] = await Promise.all(promises);
+      const [a, b] = await Promise.all(promises);
 
       const twoEmbed = new MessageEmbed()
-        .setTitle(`${single.name} vs ${double.name}`)
-        .setDescription(`Attacking Weight: ${single.value}\nDefending Weight: ${double.value}`)
+        .setTitle(`${a.name} vs ${b.name}`)
+        .setDescription(`Attacking Weight: ${a.value}\nDefending Weight: ${b.value}`)
         .addFields([
-          { name: "Heat Crash / Heavy Slam", value: `${this.calcTwo(single.value, double.value)} BP`, inline: true },
-          { name: "Grass Knot / Low Kick", value: `${this.calcOne(double.value)} BP`, inline: true }
+          { name: "Heat Crash / Heavy Slam", value: `${this.calcTwo(a.value, b.value)} BP`, inline: true },
+          { name: "Grass Knot / Low Kick", value: `${this.calcOne(b.value)} BP`, inline: true }
         ]);
 
       return interaction.reply(twoEmbed);
     }
 
-    const [single] = await Promise.all(promises);
+    const [a] = await Promise.all(promises);
 
     const embed = new MessageEmbed()
-      .setTitle(`${single.name}`)
-      .setDescription(`**Defending Weight**: ${single.value}`)
+      .setTitle(`${a.name}`)
+      .setDescription(`**Defending Weight**: ${a.value}`)
       .addFields([
-        { name: "**Grass Knot / Low Kick**", value: `${this.calcOne(single.value)} BP`, inline: true }
+        { name: "**Grass Knot / Low Kick**", value: `${this.calcOne(a.value)} BP`, inline: true }
       ]);
 
     return interaction.reply(embed);

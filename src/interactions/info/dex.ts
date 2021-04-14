@@ -19,20 +19,19 @@ export default class extends KauriInteraction {
   }
 
 
-  public async exec(interaction: CommandInteraction) {
-    const query = interaction.options.find(o => o.name === "species")?.value as string;
-    if (!query) throw new CommandExecutionError("Command parameter 'species' not found");
+  public async exec(interaction: CommandInteraction, { species }: Record<string, string>) {
+    if (!species) throw new CommandExecutionError("Command parameter 'species' not found");
 
-    const arg = await this.client.urpg.species.fetchClosest(query);
+    const arg = await this.client.urpg.species.fetchClosest(species);
     const pokemon = new Pokemon(arg.value);
 
-    if (!arg) throw new CommandExecutionError(`No Pokemon found matching \`${query}\``);
+    if (!arg) throw new CommandExecutionError(`No Pokemon found matching \`${species}\``);
     this.client.logger.info({
       key: interaction.commandName,
-      query,
+      query: species,
       result: pokemon.name
     });
 
-    return interaction.reply(await pokemon.dex(this.client as KauriClient, query, arg.rating));
+    return interaction.reply(await pokemon.dex(this.client as KauriClient, species, arg.rating));
   }
 }
