@@ -39,9 +39,29 @@ export class KauriInteractionHandler extends AkairoHandler {
     });
   }
 
-  private argMapper(options: CommandInteractionOption[]): Map<string, any> {
-    return new Map(options.map(
-      (o: CommandInteractionOption) => [o.name, o.value ?? (o.type === "BOOLEAN" ? false : null) ?? (o.options !== undefined ? this.argMapper(o.options!) : null)]));
+  private argMapper(options: CommandInteractionOption[]): Record<string, any> {
+    const args: Record<string, any> = {};
+    for (const o of options) {
+      switch (o.type) {
+        case "SUB_COMMAND":
+        case "SUB_COMMAND_GROUP":
+          args["subcommand"] = { name: o.name, options: o.options ? this.argMapper(o.options) : null };
+          break;
+        case "USER":
+          args[o.name] = o.member ?? o.user ?? o.value;
+          break;
+        case "CHANNEL":
+          args[o.name] = o.channel ?? o.value;
+          break;
+        case "ROLE":
+          args[o.name] = o.role ?? o.value;
+          break;
+        default:
+          args[o.name] = o.value ?? (o.type === "BOOLEAN" ? false : null);
+      }
+    }
+
+    return args;
   }
 
   async handle(interaction: CommandInteraction) {
@@ -55,7 +75,6 @@ export class KauriInteractionHandler extends AkairoHandler {
 
     try {
       const args = this.argMapper(interaction.options ?? []);
-      console.log(args);
       await command.exec(interaction, args);
     } catch (err) {
       console.error(err);
