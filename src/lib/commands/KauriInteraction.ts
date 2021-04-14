@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
-import { AkairoError, AkairoModule } from "discord-akairo";
+import { AkairoModule } from "discord-akairo";
 import { ApplicationCommand, ApplicationCommandData, ApplicationCommandOption, ApplicationCommandPermissions, CommandInteraction } from "discord.js";
 import { CommandExecutionError } from "../misc/CommandExecutionError";
 import { KauriInteractionHandler } from "./KauriInteractionHandler";
 
-export class KauriInteraction extends AkairoModule implements ApplicationCommandData {
+export abstract class KauriInteraction extends AkairoModule implements ApplicationCommandData {
   public name: string;
   public description: string;
   public options?: ApplicationCommandOption[];
@@ -21,16 +21,13 @@ export class KauriInteraction extends AkairoModule implements ApplicationCommand
     super(data.name, data);
     this.name = data.name;
     this.description = data.description;
-    this.defaultPermission = data.defaultPermission ?? true;
+    this.defaultPermission = data.defaultPermission;
     this.options = data.options;
     this.permissions = data.permissions;
     this.guild = data.guild ?? false;
   }
 
-  public exec(interaction: CommandInteraction, args?: Map<string, any>): any | Promise<any> {
-    // @ts-ignore
-    throw new AkairoError("NOT_IMPLEMENTED", this.constructor.name, "exec");
-  }
+  abstract exec(interaction: CommandInteraction, args?: Record<string, any>): any | Promise<any>;
 
   public async create() {
     if (!this.client.application)
@@ -64,7 +61,8 @@ export class KauriInteraction extends AkairoModule implements ApplicationCommand
     if (!this.command)
       throw new CommandExecutionError(`[KauriInteraction] Command '${this.name}' does not exist, create it first`);
 
-    return this.command.edit(KauriInteraction.apiTransform(this));
+    this.command = await this.command.edit(this);
+    return this.command;
   }
 
   public async delete() {
@@ -73,7 +71,8 @@ export class KauriInteraction extends AkairoModule implements ApplicationCommand
     if (!this.command)
       throw new CommandExecutionError(`[KauriInteraction] Command '${this.name}' does not exist, create it first`);
 
-    return this.command.delete();
+    await this.command.delete();
+    delete this.command;
   }
 
 
@@ -90,14 +89,13 @@ export class KauriInteraction extends AkairoModule implements ApplicationCommand
     return {
       name: interaction.name,
       description: interaction.description,
-      default_permission: interaction.defaultPermission,
+      defaultPermission: interaction.defaultPermission,
       options: interaction.options,
     };
   }
 }
 export interface KauriInteractionOptions extends ApplicationCommandData {
   category?: string;
-  defaultPermission?: boolean;
   guild?: boolean;
   permissions?: ApplicationCommandPermissions[];
 }
