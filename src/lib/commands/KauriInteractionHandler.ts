@@ -77,8 +77,8 @@ export class KauriInteractionHandler extends AkairoHandler {
       const args = this.argMapper(interaction.options ?? []);
       await command.exec(interaction, args);
     } catch (err) {
-      console.error(err);
-      interaction.reply(`[${interaction.commandName}] ${err.stack}`, { ephemeral: true, code: true });
+      this.client.logger.parseError(err);
+      return interaction.reply(`[${interaction.commandName}] ${err.message}`, { ephemeral: true, code: true });
     }
   }
 
