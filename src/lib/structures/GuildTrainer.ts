@@ -1,5 +1,5 @@
 import { Guild, Structures } from "discord.js";
-import { KauriClient } from "../client/KauriClient";
+import { KauriClient } from "../KauriClient";
 import { ITrainer, Trainer } from "../../models/mongo/trainer";
 
 declare module "discord.js" {

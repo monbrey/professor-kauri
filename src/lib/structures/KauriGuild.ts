@@ -1,6 +1,6 @@
 import { Structures } from "discord.js";
 import { IStarboardConfigDocument } from "../../models/schemas/starboardConfig";
-import { KauriClient } from "../client/KauriClient";
+import { KauriClient } from "../KauriClient";
 
 declare module "discord.js" {
   interface Guild {

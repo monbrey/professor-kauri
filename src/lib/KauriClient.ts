@@ -5,12 +5,12 @@ import { Connection } from "mongoose";
 import queue from "p-queue";
 import { join } from "path";
 import { Client as UrpgClient } from "urpg.js";
-import { RoleConfig } from "../../models/mongo/roleConfig";
-import { ISettings, Settings } from "../../models/mongo/settings";
+import { RoleConfig } from "../models/mongo/roleConfig";
+import { ISettings, Settings } from "../models/mongo/settings";
 // Utilities
-import { db, instanceDB } from "../../util/db";
-import Logger from "../../util/logger";
-import { KauriInteractionHandler } from "../commands/KauriInteractionHandler";
+import { db, instanceDB } from "../util/db";
+import Logger from "../util/logger";
+import { InteractionHandler } from "./commands/InteractionHandler";
 
 interface IKauriClient {
   commandHandler: CommandHandler;
@@ -38,7 +38,7 @@ export class KauriClient extends AkairoClient {
   public settings?: Collection<string, ISettings>;
 
   public commandHandler: CommandHandler;
-  public interactionHandler: KauriInteractionHandler;
+  public interactionHandler: InteractionHandler;
   public inhibitorHandler: InhibitorHandler;
   public listenerHandler: ListenerHandler;
 
@@ -64,7 +64,7 @@ export class KauriClient extends AkairoClient {
 
     this.commandHandler = new CommandHandler(this, {
       argumentDefaults: { prompt: { time: 60000, cancel: "Command cancelled" } },
-      directory: join(__dirname, "..", "..", "commands"),
+      directory: join(__dirname, "..", "commands"),
       commandUtil: true,
       commandUtilLifetime: 60000,
       fetchMembers: true,
@@ -73,43 +73,16 @@ export class KauriClient extends AkairoClient {
       storeMessages: true,
     });
 
-    this.commandHandler.resolver
-      .addType("ability", async (message: Message, phrase: string) => {
-        if (!phrase) return;
-        const response = await this.urpg.ability.fetchClosest(phrase);
-        if (response) return response;
-      })
-      .addType("attack", async (message: Message, phrase: string) => {
-        if (!phrase) return;
-        const response = await this.urpg.attack.fetchClosest(phrase);
-        if (response) return response;
-      })
-      .addType("pokemon", async (message: Message, phrase: string) => {
-        if (!phrase) return;
-
-        phrase = phrase.replace(/-G$/gi, "-Galar").replace(/-A/gi, "-Alola");
-        const response = await this.urpg.species.fetchClosest(phrase);
-        if (response) return response;
-      })
-      .addType("pokemonTeam", (message: Message, phrase: string) => {
-        if (!phrase) return;
-        return phrase.split(/,\s+?/).map(p => this.commandHandler.resolver.type("pokemon")(message, phrase));
-      })
-      .addType("roleConfig", async (message: Message, phrase: string | Role) => {
-        if (!phrase) return;
-        return typeof phrase === "string" ? RoleConfig.findClosest("name", phrase) : RoleConfig.findOne({ role_id: phrase.id });
-      });
-
-    this.interactionHandler = new KauriInteractionHandler(this, {
-      directory: join(__dirname, "..", "..", "interactions")
+    this.interactionHandler = new InteractionHandler(this, {
+      directory: join(__dirname, "..", "interactions")
     });
 
     this.inhibitorHandler = new InhibitorHandler(this, {
-      directory: join(__dirname, "..", "..", "inhibitors"),
+      directory: join(__dirname, "..", "inhibitors"),
     });
 
     this.listenerHandler = new ListenerHandler(this, {
-      directory: join(__dirname, "..", "..", "listeners"),
+      directory: join(__dirname, "..", "listeners"),
     });
   }
 

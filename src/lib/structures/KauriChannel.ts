@@ -29,10 +29,10 @@ Structures.extend("TextChannel", TextChannel => {
     }
 
     /**
-         * @param {String} type - The type of popup to show
-         * @param {String} [description] - Content for the embed
-         * @param {Number} [timer] - How long to wait to delete the message in milliseconds
-         */
+     * @param {String} type - The type of popup to show
+     * @param {String} [description] - Content for the embed
+     * @param {Number} [timer] - How long to wait to delete the message in milliseconds
+     */
     public async embed(type: EmbedTypes, description?: string) {
       if (!type) { throw new Error("A popup type must be specified"); }
 

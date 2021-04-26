@@ -1,5 +1,5 @@
 import { DMChannel, Message, MessageReaction, NewsChannel, Snowflake, Structures, TextChannel, User } from "discord.js";
-import { KauriClient } from "../client/KauriClient";
+import { KauriClient } from "../KauriClient";
 
 declare module "discord.js" {
   interface Message {
@@ -10,29 +10,12 @@ declare module "discord.js" {
   }
 }
 
-export interface Interaction {
-  id: Snowflake;
-  name: string;
-  token: string;
-}
-
 export class KauriMessage extends Message {
-  public interaction: Interaction;
-
   constructor(client: KauriClient, data: any, channel: TextChannel | DMChannel | NewsChannel) {
     super(client, data, channel);
-
-    const { id, name, token } = data;
-    this.interaction = { id, name, token };
   }
 
-  /**
-     * Adds confirmation reactions to the message and listens to the response
-     * @param {Snowflake} [listenTo=''] The ID of the user to listen to
-     * @param {number} [timeout=30000] How long to wait for reactions
-     * @returns {Promise<boolean>}
-     */
-  public async reactConfirm(listenTo: Snowflake, timeout = 60000) {
+  public async reactConfirm(listenTo: Snowflake, timeout: number = 60000): Promise<boolean> {
     await this.react("✅");
     await this.react("❌");
 
@@ -48,14 +31,14 @@ export class KauriMessage extends Message {
   }
 
   /**
-     * Adds pagination controls to the message and listens to the response
-     * @param {String}      [listenTo=''] - The ID of the user to listen to
-     * @param {Boolean}     [back] - Should the back button be displayed
-     * @param {Boolean}     [next] - Should the next button be displayed
-     * @param {number}      [timeout=30000] - How long to wait for reactions
-     * @returns {Promise<boolean>}
-     */
-  public async paginate(listenTo: Snowflake, back: boolean, next: boolean, timeout = 30000) {
+   * Adds pagination controls to the message and listens to the response
+   * @param {String}      [listenTo=''] - The ID of the user to listen to
+   * @param {Boolean}     [back] - Should the back button be displayed
+   * @param {Boolean}     [next] - Should the next button be displayed
+   * @param {number}      [timeout=30000] - How long to wait for reactions
+   * @returns {Promise<boolean>}
+   */
+  public async paginate(listenTo: Snowflake, back: boolean, next: boolean, timeout: number = 30000): Promise<boolean> {
     // If we only have the 'forward' reaction, we want to remove it and put the 'back' in first
     if (back && !this.reactions.cache.has("⬅")) {
       if (this.reactions.cache.has("➡")) { await this.reactions.resolve("➡")?.remove(); }

@@ -1,6 +1,6 @@
 import { Listener } from "discord-akairo";
 import { Message } from "discord.js";
-import { KauriClient } from "../../lib/client/KauriClient";
+import { KauriClient } from "../../lib/KauriClient";
 
 export default class extends Listener {
   constructor() {

@@ -2,7 +2,7 @@
 import { AkairoModule } from "discord-akairo";
 import { ApplicationCommand, ApplicationCommandData, ApplicationCommandOption, ApplicationCommandPermissions, CommandInteraction } from "discord.js";
 import { CommandExecutionError } from "../misc/CommandExecutionError";
-import { KauriInteractionHandler } from "./KauriInteractionHandler";
+import { InteractionHandler } from "./InteractionHandler";
 
 export abstract class KauriInteraction extends AkairoModule implements ApplicationCommandData {
   public name: string;
@@ -13,7 +13,7 @@ export abstract class KauriInteraction extends AkairoModule implements Applicati
   public permissions?: ApplicationCommandPermissions[];
 
   public guild: boolean;
-  public handler!: KauriInteractionHandler;
+  public handler!: InteractionHandler;
 
   public command?: ApplicationCommand;
 
@@ -82,7 +82,7 @@ export abstract class KauriInteraction extends AkairoModule implements Applicati
     if (!this.command)
       throw new CommandExecutionError(`[KauriInteraction] Command '${this.name}' does not exist, create it first`);
 
-    return this.command.editPermissions(this.permissions ?? []);
+    return this.command.setPermissions(this.permissions ?? []);
   }
 
   static apiTransform(interaction: KauriInteraction) {

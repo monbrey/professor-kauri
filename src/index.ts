@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Custom Client
-import { KauriClient } from "./lib/client/KauriClient";
+import { KauriClient } from "./lib/KauriClient";
 // Akairo Extensions
 import "./lib/commands/KauriCommand";
 import "./lib/commands/KauriCommandUtil";

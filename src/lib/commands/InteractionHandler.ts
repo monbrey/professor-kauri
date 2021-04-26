@@ -3,10 +3,10 @@ import { Collection, CommandInteraction, CommandInteractionOption } from "discor
 import { S_IFBLK } from "node:constants";
 import { isRegExp } from "node:util";
 import { resolve } from "path";
-import { KauriClient } from "../client/KauriClient";
+import { KauriClient } from "../KauriClient";
 import { KauriInteraction } from "./KauriInteraction";
 
-export class KauriInteractionHandler extends AkairoHandler {
+export class InteractionHandler extends AkairoHandler {
   public modules: Collection<string, KauriInteraction>;
 
   public client!: KauriClient;
@@ -17,7 +17,7 @@ export class KauriInteractionHandler extends AkairoHandler {
     extensions = [".js", ".ts"],
     automateCategories,
     loadFilter,
-  }: KauriInteractionHandlerOptions = {}) {
+  }: InteractionHandlerOptions = {}) {
     super(client, {
       directory,
       classToHandle,
@@ -77,8 +77,9 @@ export class KauriInteractionHandler extends AkairoHandler {
       const args = this.argMapper(interaction.options ?? []);
       await command.exec(interaction, args);
     } catch (err) {
-      this.client.logger.parseError(err);
-      return interaction.reply(`[${interaction.commandName}] ${err.message}`, { ephemeral: true, code: true });
+      this.client.logger.error(err);
+      const method: keyof typeof interaction = interaction.replied ? "reply" : "editReply";
+      return interaction[method](`[${interaction.commandName}] ${err.message}`, { ephemeral: true, code: true });
     }
   }
 
@@ -159,7 +160,7 @@ export class KauriInteractionHandler extends AkairoHandler {
   }
 }
 
-export interface KauriInteractionHandlerOptions {
+export interface InteractionHandlerOptions {
   automateCategories?: boolean;
   classToHandle?: Function;
   directory?: string;

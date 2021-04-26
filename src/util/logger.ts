@@ -1,6 +1,6 @@
 import { Guild, GuildAuditLogsEntry, GuildChannel, GuildMember, Message, MessageEmbed, MessageReaction, TextChannel, User, Util } from "discord.js";
 import { createLogger, format, Logger, transports } from "winston";
-import { KauriClient } from "../lib/client/KauriClient";
+import { KauriClient } from "../lib/KauriClient";
 import { KauriCommand } from "../lib/commands/KauriCommand";
 
 const logFormat = format.combine(
@@ -200,7 +200,7 @@ class CustomLogger {
       this.winston.info({
         message: "Member removed",
         member: member.id,
-        executor: auditLog.executor.id,
+        executor: auditLog.executor?.id,
         action,
         reason: auditLog.reason ? auditLog.reason : "No reason provided",
         server: { name: member.guild.name, id: member.guild.id },

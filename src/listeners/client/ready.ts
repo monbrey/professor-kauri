@@ -1,6 +1,6 @@
 import { Listener } from "discord-akairo";
 import { readFileSync } from "fs";
-import { KauriClient } from "../../lib/client/KauriClient";
+import { KauriClient } from "../../lib/KauriClient";
 import { Settings } from "../../models/mongo/settings";
 export default class extends Listener {
   constructor() {

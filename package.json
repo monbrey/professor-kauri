@@ -20,6 +20,7 @@
   "bugs": {
     "url": "https://github.com/monbrey/professor-kauri-v2/issues"
   },
+  "typings": "index.d.ts",
   "homepage": "https://github.com/monbrey/professor-kauri-v2#readme",
   "devDependencies": {
     "@types/common-tags": "^1.8.0",
@@ -39,7 +40,7 @@
   "dependencies": {
     "common-tags": "^1.8.0",
     "discord-akairo": "^8.1.0",
-    "discord.js": "github:monbrey/discord.js#interactions",
+    "discord.js": "github:discordjs/discord.js#pull/5448/head",
     "dotenv": "^8.1.0",
     "dotenv-expand": "^5.1.0",
     "mongoose": "^5.12.3",

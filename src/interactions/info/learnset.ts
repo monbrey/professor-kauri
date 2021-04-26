@@ -1,5 +1,5 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { KauriClient } from "../../lib/client/KauriClient";
+import { KauriClient } from "../../lib/KauriClient";
 import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 import { Pokemon } from "../../models/Pokemon";

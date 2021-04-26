@@ -60,19 +60,4 @@ export class KauriCommand extends Command {
 
     return embed;
   }
-
-  protected async respond() { };
-
-  protected async deferResponse(id: string, token: string) {
-    // @ts-ignore
-    await this.client.api.interactions(id)(token).callback.post({
-      data: { type: 5 }
-    });
-  }
-
-  protected async updateResponse(token: string, data: Pick<WebhookMessageOptions, "embeds" | "allowedMentions"> & { content: string }) {
-    // @ts-ignore
-    await this.client.api.webhooks(this.client.user.id)(token).messages["@original"].patch({ data });
-  }
-
 }
