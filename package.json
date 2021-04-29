@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "common-tags": "^1.8.0",
-    "discord-akairo": "^8.1.0",
+    "discord-akairo": "github:discord-akairo/discord-akairo",
     "discord.js": "github:discordjs/discord.js#pull/5448/head",
     "dotenv": "^8.1.0",
     "dotenv-expand": "^5.1.0",
