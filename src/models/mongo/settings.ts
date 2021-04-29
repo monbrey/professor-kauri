@@ -14,7 +14,7 @@ export interface ISettingsDocument extends Document {
 type ISettingsDocumentKey = keyof Omit<ISettingsDocument, keyof Document>;
 
 export interface ISettings extends ISettingsDocument {
-  updateProperty(property: ISettingsDocumentKey, data: any): ISettingsDocument;
+  updateProperty(property: ISettingsDocumentKey, data: any): Promise<ISettingsDocument>;
 }
 
 export interface ISettingsModel extends Model<ISettings> { }

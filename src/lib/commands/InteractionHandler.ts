@@ -45,7 +45,7 @@ export class InteractionHandler extends AkairoHandler {
       switch (o.type) {
         case "SUB_COMMAND":
         case "SUB_COMMAND_GROUP":
-          args["subcommand"] = { name: o.name, options: o.options ? this.argMapper(o.options) : null };
+          args["subcommand"] = { name: o.name, options: o.options ? this.argMapper(o.options) : {} };
           break;
         case "USER":
           args[o.name] = o.member ?? o.user ?? o.value;
@@ -157,6 +157,16 @@ export class InteractionHandler extends AkairoHandler {
     }
 
     return this;
+  }
+
+  async setAllPermissions({ global = true, guild = true } = {}) {
+    const [_globals, _guilds] = this.modules.partition((m: KauriInteraction) => !m.guild);
+
+    if (global)
+      await Promise.all(_globals.map(command => command.updatePermissions()));
+
+    if (guild)
+      await Promise.all(_guilds.map(command => command.updatePermissions()));
   }
 }
 

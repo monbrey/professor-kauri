@@ -1,3 +1,5 @@
+import { ApplicationCommandPermissions } from "discord.js";
+
 export enum Roles {
   Head = "584793134475771934",
   Staff = "135868852092403713",
@@ -53,3 +55,13 @@ export const EmbedColors: { [index: string]: number } = {
   SUCCESS: 0x267f00,
   INFO: 0xffffff
 };
+
+export const DefaultPermissions: ApplicationCommandPermissions[] = [{
+  id: "122157285790187530",
+  type: "USER",
+  permission: true
+}, {
+  id: Roles.Staff,
+  type: "ROLE",
+  permission: true
+}];

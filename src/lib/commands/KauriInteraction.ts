@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { AkairoModule } from "discord-akairo";
 import { ApplicationCommand, ApplicationCommandData, ApplicationCommandOption, ApplicationCommandPermissions, CommandInteraction } from "discord.js";
+import { DefaultPermissions } from "../../util/constants";
 import { CommandExecutionError } from "../misc/CommandExecutionError";
 import { InteractionHandler } from "./InteractionHandler";
 
@@ -21,10 +22,11 @@ export abstract class KauriInteraction extends AkairoModule implements Applicati
     super(data.name, data);
     this.name = data.name;
     this.description = data.description;
-    this.defaultPermission = data.defaultPermission;
+    this.defaultPermission = Boolean(data.defaultPermission);
     this.options = data.options;
-    this.permissions = data.permissions;
     this.guild = data.guild ?? false;
+
+    this.permissions = [...DefaultPermissions, ...(data.permissions || [])];
   }
 
   abstract exec(interaction: CommandInteraction, args?: Record<string, any>): any | Promise<any>;
