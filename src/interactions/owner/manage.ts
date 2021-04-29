@@ -81,10 +81,13 @@ export default class ManageInteraction extends KauriInteraction {
     const cmd = this.handler.modules.get(command) as KauriInteraction | undefined;
 
     if (!cmd) {
-      if (command === "ALL") {
+      if (command === "ALL" && action === "reload") {
         await this.handler.setAll();
-        await this.handler.setAllPermissions();
         return interaction.reply("All Slash Command configurations have been overwritten.\nSome commands may take up to an hour for changes to appear.", { ephemeral: true });
+      }
+      else if(command === "ALL_PERMISSIONS" && action === "reload") {
+        await this.handler.setAllPermissions();
+        return interaction.reply("All Slash Command permissions have been overwritten.", { ephemeral: true });
       }
       else return interaction.reply(`No command matching '${command}' found`, { ephemeral: true });
     }
