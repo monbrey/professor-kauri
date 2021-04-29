@@ -22,7 +22,7 @@ export abstract class KauriInteraction extends AkairoModule implements Applicati
     super(data.name, data);
     this.name = data.name;
     this.description = data.description;
-    this.defaultPermission = Boolean(data.defaultPermission);
+    this.defaultPermission = data.defaultPermission ?? true;
     this.options = data.options;
     this.guild = data.guild ?? false;
 
