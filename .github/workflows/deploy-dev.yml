@@ -24,15 +24,15 @@ jobs:
       run: ls
 
     - name: Deploy bot code
-      uses: appleboy/scp-action@master
+      uses: burnett01/rsync-deployments@4.1
       env:
-        KEY: ${{ secrets.OVH_PRIVATE_KEY }}
-        HOST: ${{ secrets.OVH_HOST }}
-        USERNAME: ${{ secrets.OVH_USER }}
-        PASSPHRASE: ${{ secrets.OVH_PASSPHRASE }}
+        RSYNC_PASSWORD: ${{ secrets.OVH_PASSPHRASE }}
       with:
-        source: "dist/*"
-        target: "bots/professor-kauri-dev"
+        path: "dist/"
+        remote_path: "bots/professor-kauri-dev"
+        remote_host: ${{ secrets.OVH_HOST }}
+        remote_user: ${{ secrets.OVH_USER }}
+        remote_key: ${{ secrets.OVH_PRIVATE_KEY }}
         strip_components: 1
 
     - name: Deploy package.json
