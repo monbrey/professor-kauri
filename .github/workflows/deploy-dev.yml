@@ -33,7 +33,6 @@ jobs:
         remote_host: ${{ secrets.OVH_HOST }}
         remote_user: ${{ secrets.OVH_USER }}
         remote_key: ${{ secrets.OVH_PRIVATE_KEY }}
-        strip_components: 1
 
     - name: Deploy package.json
       uses: appleboy/scp-action@master
