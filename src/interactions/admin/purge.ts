@@ -18,12 +18,7 @@ export default class extends KauriInteraction {
         type: "INTEGER"
       }],
       guild: true,
-      defaultPermission: false,
-      permissions: [{
-        id: Roles.Staff,
-        type: "ROLE",
-        permission: true
-      }]
+      defaultPermission: false
     });
   }
 

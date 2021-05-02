@@ -6,8 +6,6 @@ dotenv.config();
 // Custom Client
 import { KauriClient } from "./lib/KauriClient";
 // Akairo Extensions
-import "./lib/commands/KauriCommand";
-import "./lib/commands/KauriCommandUtil";
 import "./lib/misc/Number";
 import "./lib/misc/String";
 // Mongoose Extensions

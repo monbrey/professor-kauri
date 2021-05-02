@@ -1,6 +1,6 @@
 {
   "name": "professor-kauri-v2",
-  "version": "2.10.8",
+  "version": "3.0.3",
   "description": "Typescript rewrite of Professor Kauri built on the Akairo framework",
   "main": "dist/index.js",
   "scripts": {
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "common-tags": "^1.8.0",
-    "discord-akairo": "^8.1.0",
+    "discord-akairo": "github:discord-akairo/discord-akairo",
     "discord.js": "github:discordjs/discord.js#pull/5448/head",
     "dotenv": "^8.1.0",
     "dotenv-expand": "^5.1.0",

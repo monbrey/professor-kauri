@@ -45,7 +45,7 @@ export class InteractionHandler extends AkairoHandler {
       switch (o.type) {
         case "SUB_COMMAND":
         case "SUB_COMMAND_GROUP":
-          args["subcommand"] = { name: o.name, options: o.options ? this.argMapper(o.options) : null };
+          args["subcommand"] = { name: o.name, options: o.options ? this.argMapper(o.options) : {} };
           break;
         case "USER":
           args[o.name] = o.member ?? o.user ?? o.value;
@@ -77,6 +77,7 @@ export class InteractionHandler extends AkairoHandler {
       const args = this.argMapper(interaction.options ?? []);
       await command.exec(interaction, args);
     } catch (err) {
+      console.log(err);
       this.client.logger.error(err);
       const method: keyof typeof interaction = interaction.replied ? "reply" : "editReply";
       return interaction[method](`[${interaction.commandName}] ${err.message}`, { ephemeral: true, code: true });
@@ -134,10 +135,14 @@ export class InteractionHandler extends AkairoHandler {
     const [_globals, _guilds] = this.modules.partition((m: KauriInteraction) => !m.guild);
 
     if (global && this.client.application) {
-      const globals = await this.client.application.commands.set(_globals.map(KauriInteraction.apiTransform));
-      for (const [id, command] of globals) {
-        const interaction = _globals.find(g => g.name === command.name);
-        if (interaction) interaction.command = command;
+      try {
+        const globals = await this.client.application.commands.set(_globals.map(KauriInteraction.apiTransform));
+        for (const [id, command] of globals) {
+          const interaction = _globals.find(g => g.name === command.name);
+          if (interaction) interaction.command = command;
+        }
+      } catch (e) {
+        throw e;
       }
     }
 
@@ -149,14 +154,29 @@ export class InteractionHandler extends AkairoHandler {
       if (!kauriGuild)
         return console.error("[KauriInteractionHandler]: Unable to resolve configured guild");
 
-      const guilds = await kauriGuild.commands.set(_guilds.map(KauriInteraction.apiTransform));
-      for (const [id, command] of guilds) {
-        const interaction = _guilds.find(g => g.name === command.name);
-        if (interaction) interaction.command = command;
+      try {
+        const guilds = await kauriGuild.commands.set(_guilds.map(KauriInteraction.apiTransform));
+        for (const [id, command] of guilds) {
+          const interaction = _guilds.find(g => g.name === command.name);
+          if (interaction) interaction.command = command;
+        }
+      } catch (e) {
+        throw e;
       }
+
     }
 
     return this;
+  }
+
+  async setAllPermissions() {
+    const guilds = this.modules.filter((m: KauriInteraction) => m.guild);
+
+    try {
+      await Promise.all(guilds.map(command => command.updatePermissions()));
+    } catch (e) {
+      throw e;
+    }
   }
 }
 

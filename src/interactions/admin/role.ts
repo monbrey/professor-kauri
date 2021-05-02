@@ -31,16 +31,7 @@ export default class extends KauriInteraction {
         required: true
       }],
       guild: true,
-      defaultPermission: false,
-      permissions: [{
-        id: process.env.OWNER_ID as string,
-        type: "USER",
-        permission: true
-      }, {
-        id: Roles.Staff,
-        type: "ROLE",
-        permission: true
-      }]
+      defaultPermission: false
     });
   }
 
