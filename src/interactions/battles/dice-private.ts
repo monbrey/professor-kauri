@@ -9,14 +9,15 @@ interface CommandArgs {
 export default class extends KauriInteraction {
   constructor() {
     super({
-      name: "d",
-      description: "Rolls one or more x-sided dice, publicly",
+      name: "dp",
+      description: "Rolls one or more x-sided dice. privately",
       options: [{
         name: "die",
         description: "Die or dice to roll",
         type: "STRING",
         required: true
-      }]
+      }],
+      guild: true
     });
   }
 
@@ -46,8 +47,6 @@ export default class extends KauriInteraction {
 
     if (rolls.length === 0) return;
 
-    const response = await interaction.reply(`\\🎲 ${rolls.join(", ")}`);
-
-    // DiceLog.log(response.id, interaction, rolls.join(", "));
+    const response = await interaction.reply(`\\🎲 ${rolls.join(", ")}`, { ephemeral: true });
   }
 }
