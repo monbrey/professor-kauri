@@ -20,7 +20,7 @@ export class KauriMessage extends Message {
     await this.react("❌");
 
     const filter = ({ emoji }: MessageReaction, u: User) =>
-      ["✅", "❌"].includes(emoji.name) && u.id === listenTo;
+      ["✅", "❌"].includes(emoji.name ?? "") && u.id === listenTo;
     const response = await this.awaitReactions(filter, {
       max: 1,
       time: timeout
@@ -49,7 +49,7 @@ export class KauriMessage extends Message {
     if (!next && this.reactions.cache.has("➡")) { await this.reactions.resolve("➡")?.remove(); }
 
     const filter = ({ emoji }: MessageReaction, u: User) =>
-      ["⬅", "➡"].includes(emoji.name) && u.id === listenTo;
+      ["⬅", "➡"].includes(emoji.name ?? "") && u.id === listenTo;
 
     try {
       const response = await this.awaitReactions(filter, {
