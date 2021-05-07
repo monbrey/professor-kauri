@@ -23,8 +23,5 @@ export default class extends Listener {
         this.client.settings?.set(guild_id, config);
       }
     }
-
-    await (this.client as KauriClient).interactionHandler.fetchAll();
-    // console.log((this.client as KauriClient).interactionHandler.modules);
   }
 }
