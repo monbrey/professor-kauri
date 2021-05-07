@@ -10,7 +10,7 @@ export default class extends KauriInteraction {
   constructor() {
     super({
       name: "dp",
-      description: "Rolls one or more x-sided dice. privately",
+      description: "Rolls one or more x-sided dice, privately",
       options: [{
         name: "die",
         description: "Die or dice to roll",
