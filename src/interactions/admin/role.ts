@@ -1,6 +1,7 @@
 import { CommandInteraction, GuildMember, MessageEmbed, Role, Snowflake } from "discord.js";
 import { KauriInteraction } from "../../lib/commands/KauriInteraction";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
+import { RoleConfig } from "../../models/mongo/roleConfig";
 import { EmbedColors, Roles } from "../../util/constants";
 
 interface CommandArgs {
@@ -31,7 +32,17 @@ export default class extends KauriInteraction {
         required: true
       }],
       guild: true,
-      defaultPermission: false
+      defaultPermission: false,
+      permissions: [
+        { id: Roles.Approver, type: "ROLE", permission: true },
+        { id: Roles.StaffAlumni, type: "ROLE", permission: true },
+        { id: Roles.MasterTechnician, type: "ROLE", permission: true },
+        { id: Roles.LeadGrader, type: "ROLE", permission: true },
+        { id: Roles.ChiefJudge, type: "ROLE", permission: true },
+        { id: Roles.ElderArbiter, type: "ROLE", permission: true },
+        { id: Roles.EliteRanger, type: "ROLE", permission: true },
+        { id: Roles.ExpertCurator, type: "ROLE", permission: true }
+      ]
     });
   }
 
@@ -41,6 +52,13 @@ export default class extends KauriInteraction {
 
     if (!member)
       throw new CommandExecutionError("Provided user could not be found in the server");
+
+    const config = await RoleConfig.findOne({ role_id: role.id });
+    if (!config)
+      throw new CommandExecutionError(`${role} does not appear to be configured - [log an issue](https://github.com/monbrey/professor-kauri-v2/issues) to have this resolved`);
+
+    if (!config.parents?.some(r => member.roles.cache.has(r)))
+      throw new CommandExecutionError(`None of your roles are configured to add/remove ${role}`);
 
     this.client.logger.info({
       key: interaction.commandName,

@@ -21,7 +21,9 @@ export enum Roles {
   EventCoordinator = "584764766921293825",
   Auction = "669282056722710552",
   ContentUpkeep = "584764993044611075",
-  AdvCoordinator = "806290347479007304"
+  AdvCoordinator = "806290347479007304",
+  MasterTechnician = "419692326638845952",
+  StaffAlumni = "244600394733322242"
 }
 
 export enum Categories {
