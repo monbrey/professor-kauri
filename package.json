@@ -40,7 +40,7 @@
   "dependencies": {
     "common-tags": "^1.8.0",
     "discord-akairo": "github:discord-akairo/discord-akairo",
-    "discord.js": "github:discordjs/discord.js#69dfce33a972305aa0d1b807ce92b75b9129c32a",
+    "discord.js": "github:discordjs/discord.js#452ac55a282fee38c12e11ee8fa6d0ee9573d2cb",
     "dotenv": "^8.1.0",
     "dotenv-expand": "^5.1.0",
     "mongoose": "^5.12.3",
