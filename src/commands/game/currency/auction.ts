@@ -50,7 +50,7 @@ export default class AuctionCommand extends KauriCommand {
       flag: ["-noresolve"]
     };
 
-    if(noResolve) {
+    if (noResolve) {
       const text = yield {
         type: "string",
         match: "rest"
@@ -105,7 +105,7 @@ export default class AuctionCommand extends KauriCommand {
 
       const strVal = m.content.toLowerCase().replace(/[$,]/g, "");
 
-      if(!/[0-9.]+k?/.test(strVal)) return false;
+      if (!/[0-9.]+k?/.test(strVal)) return false;
       const value = strVal.endsWith("k") ? Math.floor(parseFloat(strVal.slice(0, -1)) * 1000) : parseInt(strVal, 10);
 
       if (isNaN(value)) return false;
@@ -135,15 +135,17 @@ export default class AuctionCommand extends KauriCommand {
     });
 
     collector.on("end", () => {
-      if (!bid.member)
-        return message.channel.send("No bids received! Auction complete.");
+      if (!bid.member) {
+        message.channel.send("No bids received! Auction complete.");
+        return;
+      }
 
       const embed = new MessageEmbed()
         .setTitle("Auction Complete!")
         .setDescription(stripIndents`${name} sold to ${bid.member.displayName} for ${bid.value.to$()}.
                 Head over to the [Auction Room](https://forum.pokemonurpg.com/showthread.php?tid=1719) to claim! Include the link to this message:`);
 
-      return message.channel.send(embed).then(m => {
+      message.channel.send(embed).then(m => {
         embed.description += `\n${m.url}`;
         m.edit(embed);
       });

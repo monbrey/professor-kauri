@@ -1,8 +1,8 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { KauriInteraction } from "../../lib/commands/KauriInteraction";
+import { KauriSlashCommand } from "../../lib/commands/KauriSlashCommand";
 import { IWeather, Weather } from "../../models/mongo/weather";
 
-export default class extends KauriInteraction {
+export default class extends KauriSlashCommand {
   constructor() {
     super({
       name: "weather",

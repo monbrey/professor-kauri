@@ -1,5 +1,5 @@
 import { CommandInteraction, DMChannel, GuildMember } from "discord.js";
-import { KauriInteraction } from "../../lib/commands/KauriInteraction";
+import { KauriSlashCommand } from "../../lib/commands/KauriSlashCommand";
 import { Roles } from "../../util/constants";
 
 interface CommandArgs {
@@ -7,7 +7,7 @@ interface CommandArgs {
   user: GuildMember;
 }
 
-export default class extends KauriInteraction {
+export default class extends KauriSlashCommand {
   constructor() {
     super({
       name: "purge",
@@ -16,13 +16,22 @@ export default class extends KauriInteraction {
         name: "amount",
         description: "Number of messages to remove [default/max 100]",
         type: "INTEGER"
+      }, {
+        name: "reset",
+        description: "Fully reset the channel",
+        type: "BOOLEAN"
       }],
       guild: true,
-      defaultPermission: false
+      defaultPermission: false,
+      permissions: [{
+        type: "USER",
+        id: "122157285790187530",
+        permission: true
+      }]
     });
   }
 
-  public async exec(interaction: CommandInteraction, { amount = 100 }: Record<string, number>) {
+  public async exec(interaction: CommandInteraction, { amount = 100, reset }: Record<string, number>) {
     if (!interaction.channel || !interaction.channel.isText() || !interaction.guild)
       return interaction.reply("No channel detected to delete messages from", { ephemeral: true });
 
@@ -30,6 +39,12 @@ export default class extends KauriInteraction {
       return interaction.reply("This command cannot be used in DMs", { ephemeral: true });
 
     try {
+      if (reset) {
+        await interaction.channel.clone();
+        await interaction.channel.delete();
+        return;
+      }
+
       const deleted = await interaction.channel.bulkDelete(amount, true);
       this.client.logger.info({
         message: "Messages pruned",

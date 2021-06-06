@@ -1,4 +1,5 @@
 import { Listener } from "discord-akairo";
+import { TextChannel } from "discord.js";
 import { readFileSync } from "fs";
 import { KauriClient } from "../../lib/KauriClient";
 import { Settings } from "../../models/mongo/settings";

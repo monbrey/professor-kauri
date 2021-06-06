@@ -1,11 +1,11 @@
 /* eslint-disable camelcase */
 import { AkairoModule } from "discord-akairo";
-import { ApplicationCommand, ApplicationCommandData, ApplicationCommandOptionData, ApplicationCommandPermissions, CommandInteraction } from "discord.js";
+import { ApplicationCommand, ApplicationCommandData, ApplicationCommandOptionData, ApplicationCommandPermissions, CommandInteraction, Snowflake } from "discord.js";
 import { DefaultPermissions } from "../../util/constants";
 import { CommandExecutionError } from "../misc/CommandExecutionError";
 import { InteractionHandler } from "./InteractionHandler";
 
-export abstract class KauriInteraction extends AkairoModule implements ApplicationCommandData {
+export abstract class KauriSlashCommand extends AkairoModule implements ApplicationCommandData {
   public name: string;
   public description: string;
   public options?: ApplicationCommandOptionData[];
@@ -42,7 +42,7 @@ export abstract class KauriInteraction extends AkairoModule implements Applicati
       if (!process.env.KAURI_GUILD)
         return console.error("[KauriInteraction]: No guild configured");
 
-      const guild = this.client.guilds.resolve(process.env.KAURI_GUILD);
+      const guild = this.client.guilds.resolve(process.env.KAURI_GUILD as Snowflake);
       if (!guild)
         return console.error("[KauriInteraction]: Unable to resolve configured guild");
 
@@ -51,7 +51,7 @@ export abstract class KauriInteraction extends AkairoModule implements Applicati
       manager = this.client.application.commands;
     }
 
-    this.command = await manager.create(KauriInteraction.apiTransform(this));
+    this.command = await manager.create(KauriSlashCommand.apiTransform(this));
     return this.command;
   }
 
@@ -87,7 +87,7 @@ export abstract class KauriInteraction extends AkairoModule implements Applicati
     return this.command.setPermissions(this.permissions ?? []);
   }
 
-  static apiTransform(interaction: KauriInteraction) {
+  static apiTransform(interaction: KauriSlashCommand) {
     return {
       name: interaction.name,
       description: interaction.description,

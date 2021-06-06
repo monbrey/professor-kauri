@@ -1,8 +1,8 @@
 import { oneLine, stripIndents } from "common-tags";
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { KauriInteraction } from "../../lib/commands/KauriInteraction";
+import { KauriSlashCommand } from "../../lib/commands/KauriSlashCommand";
 
-export default class extends KauriInteraction {
+export default class extends KauriSlashCommand {
   constructor() {
     super({
       name: "veto",

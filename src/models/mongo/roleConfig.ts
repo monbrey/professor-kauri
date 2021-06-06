@@ -1,11 +1,12 @@
+import { Snowflake } from "discord.js";
 import { Document, Model, Schema } from "mongoose";
 import { db } from "../../util/db";
 
 export interface IRoleConfigDocument extends Document {
-  role_id: string;
+  role_id: Snowflake;
   name: string;
-  children?: string[];
-  parents?: string[];
+  children?: Snowflake[];
+  parents?: Snowflake[];
   self?: boolean;
 }
 

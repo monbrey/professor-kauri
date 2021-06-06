@@ -2,12 +2,13 @@ import { Document, Model, Schema } from "mongoose";
 import { CommandConfig, ICommandConfigDocument } from "../schemas/commandConfig";
 import { IStarboardConfigDocument, StarboardConfig } from "../schemas/starboardConfig";
 import { instanceDB } from "../../util/db";
+import { Snowflake } from "discord.js";
 
 export interface ISettingsDocument extends Document {
-  guild_id: string;
+  guild_id: Snowflake;
   prefix?: string;
   starboard?: IStarboardConfigDocument;
-  logs?: string;
+  logs?: Snowflake;
   commands: ICommandConfigDocument[];
 }
 

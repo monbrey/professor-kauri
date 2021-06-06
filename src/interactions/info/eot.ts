@@ -1,12 +1,12 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { KauriInteraction } from "../../lib/commands/KauriInteraction";
+import { KauriSlashCommand } from "../../lib/commands/KauriSlashCommand";
 import { Eot } from "../../models/mongo/eot";
 
 interface CommandArgs {
   query: string;
 }
 
-export default class extends KauriInteraction {
+export default class extends KauriSlashCommand {
   constructor() {
     super({
       name: "eot",

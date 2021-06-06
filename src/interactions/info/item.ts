@@ -1,10 +1,10 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { KauriInteraction } from "../../lib/commands/KauriInteraction";
+import { KauriSlashCommand } from "../../lib/commands/KauriSlashCommand";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 import { Item } from "../../models/mongo/item";
 import { EmbedColors } from "../../util/constants";
 
-export default class extends KauriInteraction {
+export default class extends KauriSlashCommand {
   constructor() {
     super({
       name: "item",

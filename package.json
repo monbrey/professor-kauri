@@ -32,6 +32,7 @@
     "@types/ws": "^6.0.4",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
+    "discord-api-types": "^0.18.1",
     "eslint": "^6.8.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.2.4",
@@ -40,7 +41,6 @@
   "dependencies": {
     "common-tags": "^1.8.0",
     "discord-akairo": "github:discord-akairo/discord-akairo",
-    "discord.js": "github:discordjs/discord.js#452ac55a282fee38c12e11ee8fa6d0ee9573d2cb",
     "dotenv": "^8.1.0",
     "dotenv-expand": "^5.1.0",
     "mongoose": "^5.12.3",

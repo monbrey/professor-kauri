@@ -1,12 +1,12 @@
 import { CommandInteraction } from "discord.js";
-import { KauriInteraction } from "../../lib/commands/KauriInteraction";
+import { KauriSlashCommand } from "../../lib/commands/KauriSlashCommand";
 
 interface CommandArgs {
   die: string;
   private: boolean;
 }
 
-export default class extends KauriInteraction {
+export default class extends KauriSlashCommand {
   constructor() {
     super({
       name: "d",

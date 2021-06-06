@@ -22,7 +22,7 @@ export default class extends KauriCommand {
 
   public *args(): any {
     const code = yield {
-      match: "content"
+      match: "rest"
     };
 
     const silent = yield {

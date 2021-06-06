@@ -1,19 +1,17 @@
 import { AkairoHandler, LoadPredicate } from "discord-akairo";
-import { Collection, CommandInteraction, CommandInteractionOption } from "discord.js";
-import { S_IFBLK } from "node:constants";
-import { isRegExp } from "node:util";
+import { Collection, CommandInteraction, CommandInteractionOption, Snowflake } from "discord.js";
 import { resolve } from "path";
 import { KauriClient } from "../KauriClient";
-import { KauriInteraction } from "./KauriInteraction";
+import { KauriSlashCommand } from "./KauriSlashCommand";
 
 export class InteractionHandler extends AkairoHandler {
-  public modules: Collection<string, KauriInteraction>;
+  public modules: Collection<string, KauriSlashCommand>;
 
   public client!: KauriClient;
 
   constructor(client: KauriClient, {
     directory,
-    classToHandle = KauriInteraction,
+    classToHandle = KauriSlashCommand,
     extensions = [".js", ".ts"],
     automateCategories,
     loadFilter,
@@ -31,7 +29,9 @@ export class InteractionHandler extends AkairoHandler {
   }
 
   setup() {
-    this.client.once("ready", () => {
+    this.client.once("ready", async () => {
+      await this.fetchAll();
+
       this.client.on("interaction", async i => {
         if (i.isCommand())
           this.handle(i);
@@ -39,25 +39,25 @@ export class InteractionHandler extends AkairoHandler {
     });
   }
 
-  private argMapper(options: CommandInteractionOption[]): Record<string, any> {
-    const args: Record<string, any> = {};
-    for (const o of options) {
-      switch (o.type) {
+  private argMapper(options: Collection<string, CommandInteractionOption>): Record<string, unknown> {
+    const args: Record<string, unknown> = {};
+    for (const [key, value] of options) {
+      switch (value.type) {
         case "SUB_COMMAND":
         case "SUB_COMMAND_GROUP":
-          args["subcommand"] = { name: o.name, options: o.options ? this.argMapper(o.options) : {} };
+          args["subcommand"] = { name: key, options: value.options ? this.argMapper(value.options) : {} };
           break;
         case "USER":
-          args[o.name] = o.member ?? o.user ?? o.value;
+          args[key] = value.member ?? value.user ?? value.value;
           break;
         case "CHANNEL":
-          args[o.name] = o.channel ?? o.value;
+          args[key] = value.channel ?? value.value;
           break;
         case "ROLE":
-          args[o.name] = o.role ?? o.value;
+          args[key] = value.role ?? value.value;
           break;
         default:
-          args[o.name] = o.value ?? (o.type === "BOOLEAN" ? false : null);
+          args[key] = value.value ?? (value.type === "BOOLEAN" ? false : null);
       }
     }
 
@@ -84,8 +84,8 @@ export class InteractionHandler extends AkairoHandler {
     }
   }
 
-  public findCommand(name: string): KauriInteraction {
-    return this.modules.get(name) as KauriInteraction;
+  public findCommand(name: string): KauriSlashCommand {
+    return this.modules.get(name) as KauriSlashCommand;
   }
 
   loadAll(directory = this.directory, filter = this.loadFilter || (() => true)) {
@@ -115,7 +115,7 @@ export class InteractionHandler extends AkairoHandler {
       if (!process.env.KAURI_GUILD)
         return console.error("[KauriInteractionHandler]: No guild configured");
 
-      const kauriGuild = this.client.guilds.resolve(process.env.KAURI_GUILD);
+      const kauriGuild = this.client.guilds.resolve(process.env.KAURI_GUILD as Snowflake);
       if (!kauriGuild)
         return console.error("[KauriInteractionHandler]: Unable to resolve configured guild");
 
@@ -132,11 +132,11 @@ export class InteractionHandler extends AkairoHandler {
   }
 
   async setAll({ global = true, guild = true } = {}) {
-    const [_globals, _guilds] = this.modules.partition((m: KauriInteraction) => !m.guild);
+    const [_globals, _guilds] = this.modules.partition((m: KauriSlashCommand) => !m.guild);
 
     if (global && this.client.application) {
       try {
-        const globals = await this.client.application.commands.set(_globals.map(KauriInteraction.apiTransform));
+        const globals = await this.client.application.commands.set(_globals.map(KauriSlashCommand.apiTransform));
         for (const [id, command] of globals) {
           const interaction = _globals.find(g => g.name === command.name);
           if (interaction) interaction.command = command;
@@ -150,12 +150,12 @@ export class InteractionHandler extends AkairoHandler {
       if (!process.env.KAURI_GUILD)
         return console.error("[KauriInteractionHandler]: No guild configured");
 
-      const kauriGuild = this.client.guilds.resolve(process.env.KAURI_GUILD);
+      const kauriGuild = this.client.guilds.resolve(process.env.KAURI_GUILD as Snowflake);
       if (!kauriGuild)
         return console.error("[KauriInteractionHandler]: Unable to resolve configured guild");
 
       try {
-        const guilds = await kauriGuild.commands.set(_guilds.map(KauriInteraction.apiTransform));
+        const guilds = await kauriGuild.commands.set(_guilds.map(KauriSlashCommand.apiTransform));
         for (const [id, command] of guilds) {
           const interaction = _guilds.find(g => g.name === command.name);
           if (interaction) interaction.command = command;
@@ -170,7 +170,7 @@ export class InteractionHandler extends AkairoHandler {
   }
 
   async setAllPermissions() {
-    const guilds = this.modules.filter((m: KauriInteraction) => m.guild);
+    const guilds = this.modules.filter((m: KauriSlashCommand) => m.guild);
 
     try {
       await Promise.all(guilds.map(command => command.updatePermissions()));

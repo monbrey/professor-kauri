@@ -36,7 +36,7 @@ Structures.extend("TextChannel", TextChannel => {
     public async embed(type: EmbedTypes, description?: string) {
       if (!type) { throw new Error("A popup type must be specified"); }
 
-      const embed = new MessageEmbed({ color: EMBED_COLORS[type] }).setDescription(description);
+      const embed = new MessageEmbed({ color: EMBED_COLORS[type] }).setDescription(description ?? "");
 
       return this.send(embed);
     }

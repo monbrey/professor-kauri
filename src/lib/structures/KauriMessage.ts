@@ -41,12 +41,12 @@ export class KauriMessage extends Message {
   public async paginate(listenTo: Snowflake, back: boolean, next: boolean, timeout: number = 30000): Promise<boolean> {
     // If we only have the 'forward' reaction, we want to remove it and put the 'back' in first
     if (back && !this.reactions.cache.has("⬅")) {
-      if (this.reactions.cache.has("➡")) { await this.reactions.resolve("➡")?.remove(); }
+      if (this.reactions.cache.has("➡")) { await this.reactions.cache.get("➡")?.remove(); }
       await this.react("⬅");
     }
-    if (!back && this.reactions.cache.has("⬅")) { await this.reactions.resolve("⬅")?.remove(); }
+    if (!back && this.reactions.cache.has("⬅")) { await this.reactions.cache.get("⬅")?.remove(); }
     if (next && !this.reactions.cache.has("➡")) { await this.react("➡"); }
-    if (!next && this.reactions.cache.has("➡")) { await this.reactions.resolve("➡")?.remove(); }
+    if (!next && this.reactions.cache.has("➡")) { await this.reactions.cache.get("➡")?.remove(); }
 
     const filter = ({ emoji }: MessageReaction, u: User) =>
       ["⬅", "➡"].includes(emoji.name ?? "") && u.id === listenTo;

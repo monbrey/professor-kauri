@@ -1,5 +1,5 @@
 import { CommandInteraction, GuildMember, MessageEmbed, Role, Snowflake } from "discord.js";
-import { KauriInteraction } from "../../lib/commands/KauriInteraction";
+import { KauriSlashCommand } from "../../lib/commands/KauriSlashCommand";
 import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 import { RoleConfig } from "../../models/mongo/roleConfig";
 import { EmbedColors, Roles } from "../../util/constants";
@@ -9,7 +9,7 @@ interface CommandArgs {
   member: GuildMember;
   role: Role;
 }
-export default class extends KauriInteraction {
+export default class extends KauriSlashCommand {
   constructor() {
     super({
       name: "role",

@@ -11,8 +11,8 @@ interface CommandArgs {
 
 interface BattleTimer {
   id: Snowflake;
-  channel_id: string;
-  users: string[];
+  channel_id: Snowflake;
+  users: Snowflake[];
   timeout: NodeJS.Timer;
   remaining: number;
   paused: boolean;
@@ -92,7 +92,7 @@ export default class TimerCommand extends KauriCommand {
     }
   }
 
-  private setTimer(message: Message, duration: number, users: string[]) {
+  private setTimer(message: Message, duration: number, users: Snowflake[]) {
     const id = SnowflakeUtil.generate();
     this.timers.set(id, {
       id,

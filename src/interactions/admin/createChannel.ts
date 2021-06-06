@@ -1,12 +1,12 @@
 import { CommandInteraction, GuildChannel } from "discord.js";
-import { KauriInteraction } from "../../lib/commands/KauriInteraction";
+import { KauriSlashCommand } from "../../lib/commands/KauriSlashCommand";
 import { Roles } from "../../util/constants";
 
 interface CommandArgs {
   category: GuildChannel;
   name: string;
 }
-export default class extends KauriInteraction {
+export default class extends KauriSlashCommand {
   constructor() {
     super({
       name: "create-channel",

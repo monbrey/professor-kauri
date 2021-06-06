@@ -1,6 +1,7 @@
-import { Client, MessageEmbed } from "discord.js";
+import { Client, MessageEmbed, Snowflake } from "discord.js";
 import { Document, Model, Schema } from "mongoose";
 import { db } from "../../util/db";
+
 
 export interface IWeatherDocument extends Document {
   _id: number;
@@ -8,7 +9,7 @@ export interface IWeatherDocument extends Document {
   shortCode: string;
   desc: string;
   color: string;
-  emoji: string;
+  emoji: Snowflake;
 }
 
 export interface IWeather extends IWeatherDocument {
