@@ -1,4 +1,4 @@
-import { Document, Schema } from "mongoose";
+import { Document, Schema } from 'mongoose';
 
 export interface IPokemonMoveDocument extends Document {
   moveId: number;
@@ -9,11 +9,14 @@ export interface IPokemonMoveDocument extends Document {
   hmNumber?: number;
 }
 
-export const PokemonMove = new Schema({
-  moveId: { type: Number, ref: "Move", required: true },
-  moveName: { type: String, required: true },
-  moveType: { type: String, required: true },
-  displayName: { type: String, required: true },
-  tmNumber: { type: Number },
-  hmNumber: { type: Number }
-}, { _id: false });
+export const PokemonMove = new Schema(
+  {
+    moveId: { type: Number, ref: 'Move', required: true },
+    moveName: { type: String, required: true },
+    moveType: { type: String, required: true },
+    displayName: { type: String, required: true },
+    tmNumber: { type: Number },
+    hmNumber: { type: Number },
+  },
+  { _id: false },
+);

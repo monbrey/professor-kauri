@@ -1,8 +1,8 @@
-const Discord = require("discord.js");
-import { Message, MessageEmbed } from "discord.js";
-import fetch from "node-fetch";
-import { inspect } from "util";
-import { KauriCommand } from "../../lib/commands/KauriCommand";
+import { inspect } from 'util';
+import { Message, MessageAttachment } from 'discord.js';
+import { KauriCommand } from '../../lib/commands/KauriCommand';
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars
+const Discord = require('discord.js');
 
 interface CommandArgs {
   code: string;
@@ -11,29 +11,29 @@ interface CommandArgs {
 
 export default class extends KauriCommand {
   constructor() {
-    super("eval", {
-      aliases: ["eval"],
-      flags: ["-s"],
-      category: "Util",
+    super('eval', {
+      aliases: ['eval'],
+      flags: ['-s'],
+      category: 'Util',
       ownerOnly: true,
-      defaults: { configurable: false }
+      defaults: { configurable: false },
     });
   }
 
   public *args(): any {
     const code = yield {
-      match: "rest"
+      match: 'rest',
     };
 
     const silent = yield {
-      match: "flag",
-      flag: "-s"
+      match: 'flag',
+      flag: '-s',
     };
 
     return { code, silent };
   }
 
-  public async exec(message: Message, { code, silent }: CommandArgs) {
+  public async exec(message: Message, { code, silent }: CommandArgs): Promise<void> {
     try {
       const evaled = await eval(code);
 
@@ -41,80 +41,27 @@ export default class extends KauriCommand {
         return;
       }
 
-      if (evaled === undefined) {
-        message.util!.send(
-          new MessageEmbed({ color: 0xffffff, description: "No return value" })
-        );
-      }
-
       const stringified = inspect(evaled, { compact: false });
 
       if (stringified.length >= 2000) {
-        try {
-          const { id, html_url } = await fetch("https://api.github.com/gists", {
-            method: "POST",
-            body: JSON.stringify({
-              files: {
-                [`eval-${message.id}.txt`]: {
-                  content: stringified
-                }
-              }
-            }),
-            headers: {
-              "Accept": "application/vnd.github.v3+json",
-              "Authorization": `token ${process.env.GIST_TOKEN}`,
-              "Content-Type": "application/json"
-            }
-          }).then(res => res.json());
-
-          message.util!.send(
-            new MessageEmbed({
-              color: 0xffffff,
-              description: `Return value too long: uploaded to [Gist](${html_url})`
-            })
-          );
-
-          this.client.setTimeout(this.deleteGist.bind(null, id), 300000);
-        } catch (e) {
-          await message.util!.send(
-            new MessageEmbed({
-              color: 0xffffff,
-              description:
-                "Response too long, and Github Gists appear to be down. Unable to post return value."
-            })
-          );
-        }
+        await message.util?.send({ files: [new MessageAttachment(Buffer.from(stringified), `${message.id}.txt`)] });
       } else {
-        await message.channel.send(this.clean(stringified), {
-          code: "xl"
-        });
+        await message.util?.send({ content: this.clean(stringified), code: 'xl' });
       }
     } catch (e) {
       console.error(e);
-      message.util!.send(
-        new MessageEmbed({
-          color: 0xff0000,
-          description: `Fatal execution error in ${this.constructor.name}\n\`\`\`${inspect(e)}\`\`\``
-        })
-      );
+      message.util?.send({
+        content: `Fatal execution error in ${this.constructor.name}\n\`\`\`${inspect(e)}\`\`\``,
+        code: 'xl',
+      });
     }
   }
 
-  private clean(text: any) {
-    if (typeof text === "string") {
-      return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
+  private clean(text: any): string {
+    if (typeof text === 'string') {
+      return text.replace(/`/g, `\`${String.fromCharCode(8203)}`).replace(/@/g, `@${String.fromCharCode(8203)}`);
     } else {
       return text;
     }
-  }
-
-  private async deleteGist(id: string) {
-    await fetch(`https://api.github.com/gists/${id}`, {
-      headers: {
-        "Accept": "application/vnd.github.v3+json",
-        "Authorization": `token ${process.env.GIST_TOKEN}`
-      },
-      method: "DELETE"
-    });
   }
 }

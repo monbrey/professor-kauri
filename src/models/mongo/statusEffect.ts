@@ -1,7 +1,6 @@
-import { MessageEmbed } from "discord.js";
-import { connection, Document, Model, Schema } from "mongoose";
-import { autoIncrement } from "mongoose-plugin-autoinc";
-import { db } from "../../util/db";
+import { MessageEmbed } from 'discord.js';
+import { Document, Model, Schema } from 'mongoose';
+import { db } from '../../util/db';
 
 export interface IStatusEffectDocument extends Document {
   _id: number;
@@ -15,19 +14,20 @@ export interface IStatusEffect extends IStatusEffectDocument {
   info(): MessageEmbed;
 }
 
-export interface IStatusEffectModel extends Model<IStatusEffect> {
+export interface IStatusEffectModel extends Model<IStatusEffect> {}
 
-}
+const StatusEffectSchema = new Schema<IStatusEffect, IStatusEffectModel>(
+  {
+    _id: { type: Number, required: true },
+    statusName: { type: String, required: true },
+    shortCode: { type: String, required: true },
+    desc: { type: String, required: true },
+    color: { type: String, required: true },
+  },
+  { collection: 'statuseffects' },
+);
 
-const StatusEffectSchema = new Schema<IStatusEffect, IStatusEffectModel>({
-  _id: { type: Number, required: true },
-  statusName: { type: String, required: true },
-  shortCode: { type: String, required: true },
-  desc: { type: String, required: true },
-  color: { type: String, required: true }
-}, { collection: "statuseffects" });
-
-StatusEffectSchema.methods.info = async function() {
+StatusEffectSchema.methods.info = function info(): MessageEmbed {
   const embed = new MessageEmbed()
     .setTitle(`${this.statusName} (${this.shortCode})`)
     .setDescription(this.desc)
@@ -36,4 +36,4 @@ StatusEffectSchema.methods.info = async function() {
   return embed;
 };
 
-export const StatusEffect: IStatusEffectModel = db.model("StatusEffect", StatusEffectSchema);
+export const StatusEffect: IStatusEffectModel = db.model('StatusEffect', StatusEffectSchema);

@@ -1,20 +1,17 @@
-import { Document, model, Model, Schema } from "mongoose";
-import { autoIncrement } from "mongoose-plugin-autoinc";
+import { Document, model, Model, Schema } from 'mongoose';
 
 export interface IThingDocument extends Document {
-  // properties
+  // Properties
 }
 
 export interface IThing extends IThingDocument {
-  // instance methods
+  // Instance methods
 }
 
 export interface IThingModel extends Model<IThing> {
-  // static methods
+  // Static methods
 }
 
-const ModelSchema = new Schema({
+const ModelSchema = new Schema({});
 
-});
-
-export const Thing: IThingModel =  model<IThing, IThingModel>("Model", ModelSchema);
+export const Thing: IThingModel = model<IThing, IThingModel>('Model', ModelSchema);

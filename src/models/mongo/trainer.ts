@@ -1,10 +1,8 @@
-
-import { Snowflake } from "discord.js";
-import { connection, Document, Model, Schema } from "mongoose";
-import timestamp from "mongoose-timestamp";
-
-import { BattleRecord, IBattleRecordDocument } from "../schemas/battleRecord";
-import { instanceDB } from "../../util/db";
+import { Snowflake } from 'discord.js';
+import { Document, Model, Schema } from 'mongoose';
+import timestamp from 'mongoose-timestamp';
+import { instanceDB } from '../../util/db';
+import { BattleRecord, IBattleRecordDocument } from '../schemas/battleRecord';
 
 export interface ITrainerDocument extends Document {
   _id: Snowflake;
@@ -19,27 +17,26 @@ export interface ITrainer extends ITrainerDocument {
   pay(amount: number): Promise<ITrainer>;
 }
 
-export interface ITrainerModel extends Model<ITrainer> {
-
-}
+export interface ITrainerModel extends Model<ITrainer> {}
 
 const TrainerSchema = new Schema<ITrainer, ITrainerModel>({
   _id: { type: String, required: true },
   cash: { type: Number, required: true, default: 0 },
   battleRecord: { type: BattleRecord, default: {} },
   stats: { type: String },
-  migrated: { type: Boolean, default: false }
+  migrated: { type: Boolean, default: false },
 });
 
 TrainerSchema.plugin(timestamp);
 
-TrainerSchema.methods.canAfford = function(amount: number) {
+TrainerSchema.methods.canAfford = function canAfford(amount: number): boolean {
   return amount < this.cash;
 };
 
-TrainerSchema.methods.pay = async function(amount: number) {
+TrainerSchema.methods.pay = async function pay(amount: number): Promise<ITrainer> {
   this.cash += amount;
-  return this.save();
+  await this.save();
+  return this;
 };
 
 // TrainerSchema.methods.populatePokemon = async function() {
@@ -93,4 +90,4 @@ TrainerSchema.methods.pay = async function(amount: number) {
 //     return this.save();
 // };
 
-export const Trainer: ITrainerModel = instanceDB.model<ITrainer, ITrainerModel>("Trainer", TrainerSchema);
+export const Trainer: ITrainerModel = instanceDB.model<ITrainer, ITrainerModel>('Trainer', TrainerSchema);

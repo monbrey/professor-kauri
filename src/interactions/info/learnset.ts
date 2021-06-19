@@ -1,26 +1,25 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
-import { KauriClient } from "../../lib/KauriClient";
-import { KauriSlashCommand } from "../../lib/commands/KauriSlashCommand";
-import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
-import { Pokemon } from "../../models/Pokemon";
-import { EmbedColors } from "../../util/constants";
+import { CommandInteraction } from 'discord.js';
+import { KauriSlashCommand } from '../../lib/commands/KauriSlashCommand';
+import { CommandExecutionError } from '../../lib/misc/CommandExecutionError';
+import { Pokemon } from '../../models/Pokemon';
 
 export default class extends KauriSlashCommand {
   constructor() {
     super({
-      name: "learnset",
-      description: "Get the movelist for a Pokemon",
-      options: [{
-        name: "species",
-        description: "Name of the Pokemon to search for",
-        type: "STRING",
-        required: true
-      }]
+      name: 'learnset',
+      description: 'Get the movelist for a Pokemon',
+      options: [
+        {
+          name: 'species',
+          description: 'Name of the Pokemon to search for',
+          type: 'STRING',
+          required: true,
+        },
+      ],
     });
   }
 
-
-  public async exec(interaction: CommandInteraction, { species }: Record<string, string>) {
+  public async exec(interaction: CommandInteraction, { species }: Record<string, string>): Promise<void> {
     if (!species) throw new CommandExecutionError("Command parameter 'species' not found");
 
     const arg = await this.client.urpg.species.fetchClosest(species);
@@ -31,9 +30,9 @@ export default class extends KauriSlashCommand {
     this.client.logger.info({
       key: interaction.commandName,
       query: species,
-      result: pokemon.name
+      result: pokemon.name,
     });
 
-    return interaction.reply(await pokemon.learnset(species, arg.rating));
+    return interaction.reply({ embeds: [await pokemon.learnset(species, arg.rating)] });
   }
 }

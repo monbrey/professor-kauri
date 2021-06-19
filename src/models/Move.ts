@@ -1,7 +1,7 @@
-import { stripIndents } from "common-tags";
-import { MessageEmbed } from "discord.js";
-import { Attack, AttackTarget, ContestMoveType, PokemonType } from "urpg.js";
-import { Color } from "./mongo/color";
+import { stripIndents } from 'common-tags';
+import { MessageEmbed } from 'discord.js';
+import { Attack, AttackTarget, ContestMoveType, PokemonType } from 'urpg.js';
+import { Color } from './mongo/color';
 
 export class Move implements Partial<Attack> {
   name: string;
@@ -48,15 +48,15 @@ export class Move implements Partial<Attack> {
 
   public async info(): Promise<MessageEmbed> {
     const type = `Type: ${this.type.toTitleCase()}`;
-    const power = `Power: ${this.power ? this.power : "-"}`;
-    const acc = `Accuracy: ${this.accuracy ? this.accuracy : "-"}`;
+    const power = `Power: ${this.power ? this.power : '-'}`;
+    const acc = `Accuracy: ${this.accuracy ? this.accuracy : '-'}`;
     const pp = `PP: ${this.pp}`;
     const cat = `Category: ${this.category}`;
-    const contact = this.contact ? "Makes contact. " : "";
-    const sf = this.sheerForce ? "Boosted by Sheer Force. " : "";
-    const sub = this.substitute ? "Bypasses Substitute. " : "";
-    const snatch = this.snatch ? "Can be Snatched. " : "";
-    const mc = this.magicCoat ? "Can be reflected by Magic Coat. " : "";
+    const contact = this.contact ? 'Makes contact. ' : '';
+    const sf = this.sheerForce ? 'Boosted by Sheer Force. ' : '';
+    const sub = this.substitute ? 'Bypasses Substitute. ' : '';
+    const snatch = this.snatch ? 'Can be Snatched. ' : '';
+    const mc = this.magicCoat ? 'Can be reflected by Magic Coat. ' : '';
 
     const propString = stripIndents`| ${type} | ${power} | ${acc} | ${pp} | ${cat} |
 

@@ -1,8 +1,8 @@
-import { stripIndents } from "common-tags";
-import { Message, MessageEmbed } from "discord.js";
-import { KauriCommand } from "../../../lib/commands/KauriCommand";
-import { Pokemon } from "../../../models/Pokemon";
-import { SPRITE_BASE } from "../../../util/constants";
+import { stripIndents } from 'common-tags';
+import { Message, MessageEmbed } from 'discord.js';
+import { KauriCommand } from '../../../lib/commands/KauriCommand';
+import { Pokemon } from '../../../models/Pokemon';
+import { SPRITE_BASE } from '../../../util/constants';
 
 interface CommandArgs {
   control: string;
@@ -14,9 +14,9 @@ export default class extends KauriCommand {
   private speciesList?: string[];
 
   constructor() {
-    super("stats-trivia", {
-      aliases: ["stats-trivia"],
-      category: "Game",
+    super('stats-trivia', {
+      aliases: ['stats-trivia'],
+      category: 'Game',
       editable: false,
       description: "Trigger a guessing game using a random Pokemon's stats",
     });
@@ -26,7 +26,7 @@ export default class extends KauriCommand {
 
   public *args(): any {
     const control = yield {
-      type: ["start", "stop"],
+      type: ['start', 'stop'],
     };
 
     return { control };
@@ -40,36 +40,40 @@ export default class extends KauriCommand {
 
     const random = new Pokemon(await urpg.species.fetch(species));
 
-    await message.channel.send(new MessageEmbed().setTitle("Who's that Pokemon?").setDescription(stripIndents`\`\`\`
-    HP:  ${random.hp}
-    Atk: ${random.attack}
-    Def: ${random.defense}
-    SpA: ${random.specialAttack}
-    SpD: ${random.specialDefense}
-    Spe: ${random.speed}\`\`\``));
+    const guess = new MessageEmbed().setTitle("Who's that Pokemon?").setDescription(stripIndents`\`\`\`
+      HP:  ${random.hp}
+      Atk: ${random.attack}
+      Def: ${random.defense}
+      SpA: ${random.specialAttack}
+      SpD: ${random.specialDefense}
+      Spe: ${random.speed}\`\`\``);
+
+    await message.channel.send({ embeds: [guess] });
 
     const filter = (m: Message) => m.content.toLowerCase() === species.toLowerCase();
     const collector = message.channel.createMessageCollector(filter, { max: 1 });
 
-    collector.on("end", collected => {
+    collector.on('end', collected => {
       const winner = collected.first();
       if (!winner) return;
-      message.channel.send(`${winner.author} guessed it correctly with: ${species}!`, { files: [`${SPRITE_BASE}${random.dexno}${random.suffix}.gif`]});
+      message.channel.send({
+        content: `${winner.author} guessed it correctly with: ${species}!`,
+        files: [`${SPRITE_BASE}${random.dexno}${random.suffix}.gif`],
+      });
 
-      if(this.running)
-        this.next = setTimeout(() => this.trivia(message), 10000);
+      if (this.running) this.next = setTimeout(() => this.trivia(message), 10000);
     });
   }
 
   public async exec(message: Message, { control }: CommandArgs) {
-    if (control === "start") {
-      message.channel.send("Starting base-stat trivia mode");
+    if (control === 'start') {
+      message.channel.send('Starting base-stat trivia mode');
       this.running = true;
       this.next = setTimeout(() => this.trivia(message), 10000);
-    } else if (control === "stop") {
-      message.channel.send("Stopping base-stat trivia mode after this round");
+    } else if (control === 'stop') {
+      message.channel.send('Stopping base-stat trivia mode after this round');
       this.running = false;
-      if(this.next) clearTimeout(this.next);
+      if (this.next) clearTimeout(this.next);
     }
   }
 }

@@ -5,5 +5,5 @@
         "target": "es6",
         "outDir": "../dist",
         "lib": ["esnext.array"]
-    }
+    },
 }

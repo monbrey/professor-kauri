@@ -1,6 +1,6 @@
-import { Command, CommandOptions, PrefixSupplier } from "discord-akairo";
-import { Message, MessageEmbed, WebhookMessageOptions } from "discord.js";
-import { Roles } from "../../util/constants";
+import { Command, CommandOptions, PrefixSupplier } from 'discord-akairo';
+import { Message, MessageEmbed } from 'discord.js';
+import { Roles } from '../../util/constants';
 
 interface IKauriCommand {
   defaults: {
@@ -12,8 +12,8 @@ interface IKauriCommand {
   requiresDatabase: boolean;
 }
 
-declare module "discord-akairo" {
-  interface Command extends IKauriCommand { }
+declare module 'discord-akairo' {
+  interface Command extends IKauriCommand {}
 }
 
 interface KauriCommandOptions extends CommandOptions {
@@ -28,10 +28,10 @@ interface KauriCommandOptions extends CommandOptions {
 
 const COMMAND_DEFAULTS = {
   disabled: false,
-  configurable: true
+  configurable: true,
 };
 
-export class KauriCommand extends Command {
+export abstract class KauriCommand extends Command {
   constructor(id: string, options?: KauriCommandOptions) {
     super(id, options);
 
@@ -42,20 +42,20 @@ export class KauriCommand extends Command {
   }
 
   public afterCancel?(): any;
-  public onBlocked?(message: Message): any { }
-  public interact?(interaction: any, args?: any): any { }
+  public onBlocked?(message: Message): any;
+  public interact?(interaction: any, args?: any): any;
 
-  public async help(message: Message) {
+  public help(message: Message): MessageEmbed {
     const prefix = (this.handler.prefix as PrefixSupplier)(message);
 
     const embed = new MessageEmbed()
       .setTitle(this.id)
       .setDescription(`Command prefix: \`${prefix}\`\nArguments: \`<required>\` | \`[optional]\``)
-      .addFields({ name: "**Aliases**", value: this.aliases.map(a => `\`${a}\``).join(", ") });
+      .addFields({ name: '**Aliases**', value: this.aliases.map(a => `\`${a}\``).join(', ') });
 
     if (this.usage) {
-      if (typeof this.usage === "string") embed.addFields({ name: "**Usage**", value: `\`${prefix}${this.usage}\`` });
-      else embed.addFields({ name: "**Usage**", value: this.usage.map(u => `\`${prefix}${u}\``).join("\n") });
+      if (typeof this.usage === 'string') embed.addFields({ name: '**Usage**', value: `\`${prefix}${this.usage}\`` });
+      else embed.addFields({ name: '**Usage**', value: this.usage.map(u => `\`${prefix}${u}\``).join('\n') });
     }
 
     return embed;

@@ -1,5 +1,5 @@
-import { Snowflake } from "discord.js";
-import { Document, Schema } from "mongoose";
+import { Snowflake } from 'discord.js';
+import { Document, Schema } from 'mongoose';
 
 export interface IStarboardConfigDocument extends Document {
   channel: Snowflake;
@@ -7,8 +7,11 @@ export interface IStarboardConfigDocument extends Document {
   minReacts?: number;
 }
 
-export const StarboardConfig = new Schema({
-  channel: { type: String, required: true },
-  emoji: String,
-  minReacts: Number
-}, { _id: false });
+export const StarboardConfig = new Schema(
+  {
+    channel: { type: String, required: true },
+    emoji: String,
+    minReacts: Number,
+  },
+  { _id: false },
+);

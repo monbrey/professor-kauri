@@ -1,4 +1,4 @@
-// import { stripIndents } from "common-tags";
+// Import { stripIndents } from "common-tags";
 // import { Argument, Flag } from "discord-akairo";
 // import { GuildMember, Message, MessageEmbed } from "discord.js";
 // import { KauriCommand } from "../../../lib/commands/KauriCommand";

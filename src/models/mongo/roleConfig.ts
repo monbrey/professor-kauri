@@ -1,6 +1,6 @@
-import { Snowflake } from "discord.js";
-import { Document, Model, Schema } from "mongoose";
-import { db } from "../../util/db";
+import { Snowflake } from 'discord.js';
+import { Document, Model, Schema } from 'mongoose';
+import { db } from '../../util/db';
 
 export interface IRoleConfigDocument extends Document {
   role_id: Snowflake;
@@ -10,16 +10,19 @@ export interface IRoleConfigDocument extends Document {
   self?: boolean;
 }
 
-export interface IRoleConfig extends IRoleConfigDocument { }
+export interface IRoleConfig extends IRoleConfigDocument {}
 
-export interface IRoleConfigModel extends Model<IRoleConfig> { }
+export interface IRoleConfigModel extends Model<IRoleConfig> {}
 
-const RoleConfigSchema = new Schema<IRoleConfig, IRoleConfigModel>({
-  role_id: { type: String, required: true, index: true },
-  name: { type: String, required: true },
-  children: [String],
-  parents: [String],
-  self: Boolean
-}, { collection: "roles" });
+const RoleConfigSchema = new Schema<IRoleConfig, IRoleConfigModel>(
+  {
+    role_id: { type: String, required: true, index: true },
+    name: { type: String, required: true },
+    children: [String],
+    parents: [String],
+    self: Boolean,
+  },
+  { collection: 'roles' },
+);
 
-export const RoleConfig: IRoleConfigModel = db.model<IRoleConfig, IRoleConfigModel>("RoleConfig", RoleConfigSchema);
+export const RoleConfig: IRoleConfigModel = db.model<IRoleConfig, IRoleConfigModel>('RoleConfig', RoleConfigSchema);

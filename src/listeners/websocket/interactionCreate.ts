@@ -1,27 +1,31 @@
-// import { Listener } from "discord-akairo";
-// import { DMChannel } from "discord.js";
-// import { KauriClient } from "../../lib/client/KauriClient";
-// import { KauriCommand } from "../../lib/commands/KauriCommand";
-// import { KauriMessage } from "../../lib/structures/KauriMessage";
-// import { argMapper } from "../../util/argMapper";
-
+// import { Listener } from 'discord-akairo';
+// import { DMChannel } from 'discord.js';
+// import { KauriClient } from '../../lib/KauriClient';
+// import { KauriCommand } from '../../lib/commands/KauriCommand';
+// import { KauriMessage } from '../../lib/structures/KauriMessage';
 // export default class extends Listener {
 //   constructor() {
-//     super("interactionCreate", {
-//       emitter: "websocket",
-//       event: "INTERACTION_CREATE"
+//     super('interactionCreate', {
+//       emitter: 'websocket',
+//       event: 'INTERACTION_CREATE'
 //     });
 //   }
 
-//   public async exec(interaction: any) {
+//   public async exec(interaction: any): Promise<void> {
 //     const name = interaction.data.name;
 //     const command = this.client.commandHandler.findCommand(name) as KauriCommand;
 
 //     if (command?.interact) {
-//       const channel = this.client.channels.cache.get(interaction.channel_id) || new DMChannel(this.client, { id: interaction.channel_id });
-//       if(!channel?.isText()) return;
+//       const channel =
+//         this.client.channels.cache.get(interaction.channel_id) ||
+//         new DMChannel(this.client, { id: interaction.channel_id });
+//       if (!channel?.isText()) return;
 
-//       const message = new KauriMessage(this.client as KauriClient, { ...interaction, author: interaction.member?.user || interaction.user }, channel);
+//       const message = new KauriMessage(
+//         this.client as KauriClient,
+//         { ...interaction, author: interaction.member?.user || interaction.user },
+//         channel,
+//       );
 
 //       const args = argMapper(interaction.data.options ?? []);
 

@@ -1,4 +1,4 @@
-// import { Collection, CommandInteraction, MessageEmbed } from "discord.js";
+// Import { Collection, CommandInteraction, MessageEmbed } from "discord.js";
 // import { InteractionCommand } from "../../lib/commands/InteractionCommand";
 // import { CommandExecutionError } from "../../lib/misc/CommandExecutionError";
 
@@ -15,7 +15,6 @@
 //       }],
 //     });
 //   }
-
 
 //   public async exec(interaction: CommandInteraction) {
 //     const query = interaction.options.find(o => o.name === "move")?.value as string;
@@ -36,6 +35,6 @@
 //       .setTitle(value.name)
 //       .addField(`| Attribute: ${attribute} | Score: ${score > 0 ? `+${score}` : `${score}`} |`, description);
 
-//     return interaction.reply(embed);
+//     return interaction.reply{ embeds: [embed] };
 //   }
 // }

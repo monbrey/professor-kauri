@@ -1,4 +1,4 @@
-// import { stripIndents } from "common-tags";
+// Import { stripIndents } from "common-tags";
 // import { MessageEmbed } from "discord.js";
 // import { Document, Model, Schema } from "mongoose";
 // import { autoIncrement } from "mongoose-plugin-autoinc";

@@ -9,7 +9,6 @@
 // import { Color } from "./color";
 // import { Mega } from "./mega";
 
-
 // export interface IPokemonDocument extends Document {
 //   dexNumber: number;
 //   speciesName: string;
@@ -180,7 +179,8 @@
 //   const dexString = this.dexNumber.toString().padStart(3, "0");
 //   const title = `URPG Ultradex - ${this.displayName} (#${dexString})`;
 //   const types = `${this.type1}${this.type2 ? ` | ${this.type2}` : ""}`;
-//   const abilities = this.abilities.map((a: IPokemonAbilityDocument) => (a.hidden ? `${a.abilityName} (HA)` : a.abilityName));
+//   const abilities = this.abilities.map((a: IPokemonAbilityDocument) =>
+//        (a.hidden ? `${a.abilityName} (HA)` : a.abilityName));
 //   const genders = Object.keys(this.gender.toObject())
 //     .filter(k => this.gender[k])
 //     .map(k => `${k.charAt(0).toUpperCase()}${k.slice(1)}`);
@@ -230,7 +230,8 @@
 // };
 
 // PokemonSchema.methods.learnset = async function (query?: string) {
-//   const moveTypes: IPokemonMoveDocument[][] = (Object.values(this.moves.toObject()) as IPokemonMoveDocument[][]).slice(1);
+//   const moveTypes: IPokemonMoveDocument[][] = (Object.values(this.moves.toObject()) as IPokemonMoveDocument[][])
+//    .slice(1);
 //   const moveCount = moveTypes.reduce((acc, obj) => acc + (obj ? obj.length : 0), 0);
 //   const color = await Color.getColorForType(this.type1.toLowerCase());
 

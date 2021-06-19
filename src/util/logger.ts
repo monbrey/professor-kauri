@@ -1,32 +1,40 @@
-import { Guild, GuildAuditLogsEntry, GuildChannel, GuildMember, Message, MessageEmbed, MessageReaction, TextChannel, User, Util } from "discord.js";
-import { createLogger, format, Logger, transports } from "winston";
-import { KauriClient } from "../lib/KauriClient";
-import { KauriCommand } from "../lib/commands/KauriCommand";
+import {
+  Guild,
+  GuildAuditLogsEntry,
+  GuildChannel,
+  GuildMember,
+  Message,
+  MessageEmbed,
+  MessageReaction,
+  Snowflake,
+  TextChannel,
+  User,
+  Util,
+} from 'discord.js';
+import { createLogger, format, Logger, transports } from 'winston';
+import { KauriClient } from '../lib/KauriClient';
+import { KauriCommand } from '../lib/commands/KauriCommand';
 
 const logFormat = format.combine(
-  format(info => {
-    return info.level !== "error" ? info : false;
-  })(),
+  format(info => (info.level !== 'error' ? info : false))(),
   format.label({ label: process.env.NODE_ENV }),
   format.timestamp(),
   format.json(),
   format.printf((info: any) => {
     const message = info instanceof Object ? JSON.stringify(info) : info.message;
     return `[${info.timestamp}] ${message}`;
-  })
+  }),
 );
 
 const errorFormat = format.combine(
   format.label({ label: process.env.NODE_ENV }),
   format.timestamp(),
   format.json(),
-  format.printf(info => `[${info.timestamp}] ${info.level}: ${info.stack || info.message}`)
+  format.printf(info => `[${info.timestamp}] ${info.level}: ${info.stack || info.message}`),
 );
 
 const consoleLogFormat = format.combine(
-  format(info => {
-    return info.level !== "error" ? info : false;
-  })(),
+  format(info => (info.level !== 'error' ? info : false))(),
   format.label({ label: process.env.NODE_ENV }),
   format.timestamp(),
   format.colorize(),
@@ -34,7 +42,7 @@ const consoleLogFormat = format.combine(
   format.printf(info => {
     const message = (info.message as any) instanceof Object ? JSON.stringify(info.message) : info.message;
     return `[${info.timestamp}] ${info.level}: ${message}`;
-  })
+  }),
 );
 
 const consoleErrorFormat = format.combine(
@@ -42,32 +50,43 @@ const consoleErrorFormat = format.combine(
   format.timestamp(),
   format.colorize(),
   format.json(),
-  format.printf(info => `[${info.timestamp}]: ${info.stack || info.message}`)
+  format.printf(info => `[${info.timestamp}]: ${info.stack || info.message}`),
 );
 
 const outs: any[] = [
   new transports.Console({
     format: consoleLogFormat,
-    level: "debug"
+    level: 'debug',
   }),
   new transports.Console({
     format: consoleErrorFormat,
-    level: "error"
-  })
+    level: 'error',
+  }),
 ];
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === 'development') {
   outs.push(
     new transports.File({
       format: logFormat,
-      filename: "./logs/professor-kauri.log"
+      filename: './logs/professor-kauri.log',
     }),
     new transports.File({
       format: errorFormat,
-      filename: "./logs/professor-kauri-error.log",
-      level: "error"
-    })
+      filename: './logs/professor-kauri-error.log',
+      level: 'error',
+    }),
   );
+}
+
+interface Location {
+  server?: {
+    id: Snowflake;
+    name: string;
+  };
+  channel: {
+    id: Snowflake;
+    name: string;
+  };
 }
 
 class CustomLogger {
@@ -76,455 +95,448 @@ class CustomLogger {
 
   constructor(client: KauriClient) {
     this.winston = createLogger({
-      level: "info",
-      transports: outs
+      level: 'info',
+      transports: outs,
     });
 
     this.client = client;
   }
 
   private getLogChannel(guild: Guild | null): TextChannel | undefined {
-    if (guild === null) return;
-
-    const logChannelID = this.client.settings?.get(guild.id)?.logs;
-    if (!logChannelID) return;
-
-    const logChannel = guild.channels.cache.get(logChannelID);
-    if (!logChannel || !(logChannel instanceof TextChannel)) { return; }
-
+    let logChannel;
+    if (guild) {
+      const logChannelID = this.client.settings?.get(guild.id)?.logs;
+      if (logChannelID) {
+        const tryLogChannel = guild.channels.cache.get(logChannelID);
+        if (tryLogChannel instanceof TextChannel) {
+          logChannel = tryLogChannel;
+        }
+      }
+    }
     return logChannel;
   }
 
-  /**
-     * Builds a real stack for API Errors and parses it into a standard format for the logger
-     * @param {Error} error
-     * @param {string} key
-     */
-  public async parseError(error: Error) {
+  public parseError(error: Error): void {
     const errorType = error.constructor.name;
     error = { ...Util.makePlainError(error) };
 
-    if (errorType === "DiscordAPIError") {
+    if (errorType === 'DiscordAPIError') {
       Error.captureStackTrace(error);
-      error.stack = `${errorType}: ${error.message}\n${error.stack!
-        .split("\n")
-        .slice(2, -1)
-        .join("\n")}`;
+      error.stack = `${errorType}: ${error.message}\n${error.stack?.split('\n').slice(2, -1).join('\n')}`;
     }
 
     this.winston.error(Object.assign({ ...error }, { stack: error.stack }));
   }
 
   // #region PASSTHROUGH
-  public async info(data: any) {
-    return this.winston.info(data);
+  public info(data: any): void {
+    this.winston.info(data);
   }
 
-  public async debug(data: any) {
-    return this.winston.debug(data);
+  public debug(data: any): void {
+    this.winston.debug(data);
   }
 
-  public async warn(data: any) {
-    return this.winston.warn(data);
+  public warn(data: any): void {
+    this.winston.warn(data);
   }
 
-  public async error(data: any) {
-    return this.winston.error(data);
+  public error(data: any): void {
+    this.winston.error(data);
   }
 
-  /**
-     * Returns an object representing the location of an event
-     * @param {Message} input
-     */
-  public location(input: Message) {
+  public location(input: Message): Location {
     if (!input.guild) {
       return { channel: { id: input.channel.id, name: `${input.author.username} (DM)` } };
     }
 
     return {
       server: { id: input.guild.id, name: input.guild.name },
-      channel: { id: input.channel.id, name: (input.channel as GuildChannel).name }
+      channel: { id: input.channel.id, name: (input.channel as GuildChannel).name },
     };
   }
   // #endregion
 
   // #region GENERIC DISCORD LOGGERS
-  public async dlog(guild: Guild, title: string, description: string) {
+  public async dlog(guild: Guild, title: string, description: string): Promise<void> {
     const embed = new MessageEmbed({ title, description, color: 0xfefefe }).setTimestamp();
-    return this.getLogChannel(guild)?.send(embed);
+    await this.getLogChannel(guild)?.send({ embeds: [embed] });
   }
 
-  public async minor(guild: Guild, title: string, description: string) {
+  public async minor(guild: Guild, title: string, description: string): Promise<void> {
     const embed = new MessageEmbed({ title, description, color: 0xffc107 }).setTimestamp();
-    return this.getLogChannel(guild)?.send(embed);
+    await this.getLogChannel(guild)?.send({ embeds: [embed] });
   }
 
-  public async major(guild: Guild, title: string, description: string) {
+  public async major(guild: Guild, title: string, description: string): Promise<void> {
     const embed = new MessageEmbed({ title, description, color: 0xe50000 }).setTimestamp();
-    return this.getLogChannel(guild)?.send(embed);
+    await this.getLogChannel(guild)?.send({ embeds: [embed] });
   }
 
   // #region EVENTS
-  public async guildMemberAdd(member: GuildMember) {
+  public async guildMemberAdd(member: GuildMember): Promise<void> {
     this.winston.info({
-      message: "New member joined",
+      message: 'New member joined',
       member: member.id,
       server: { name: member.guild.name, id: member.guild.id },
-      key: "guildMemberAdd"
+      key: 'guildMemberAdd',
     });
-
 
     const embed = new MessageEmbed()
       .setAuthor(`${member.user.tag} (${member.id})`, member.user.displayAvatarURL())
-      .setFooter("New member joined")
+      .setFooter('New member joined')
       .setTimestamp();
 
-    return this.getLogChannel(member.guild)?.send(embed);
+    await this.getLogChannel(member.guild)?.send({ embeds: [embed] });
   }
 
-  public async guildMemberRemove(member: GuildMember, auditLog?: GuildAuditLogsEntry) {
-    const embed = new MessageEmbed()
-      .setAuthor(`${member.user.tag} (${member.id})`, member.user.displayAvatarURL());
+  public async guildMemberRemove(member: GuildMember, auditLog?: GuildAuditLogsEntry): Promise<void> {
+    const embed = new MessageEmbed().setAuthor(`${member.user.tag} (${member.id})`, member.user.displayAvatarURL());
 
     if (!auditLog) {
       this.winston.info({
-        message: "Member left",
+        message: 'Member left',
         member: member.id,
         server: { name: member.guild.name, id: member.guild.id },
-        key: "guildMemberRemove"
+        key: 'guildMemberRemove',
       });
 
-      embed.setFooter("Member left").setTimestamp();
+      embed.setFooter('Member left').setTimestamp();
     } else {
-      const action = auditLog.action === "MEMBER_BAN_ADD" ? "Ban" : "Kick";
+      const action = auditLog.action === 'MEMBER_BAN_ADD' ? 'Ban' : 'Kick';
       this.winston.info({
-        message: "Member removed",
+        message: 'Member removed',
         member: member.id,
         executor: auditLog.executor?.id,
         action,
-        reason: auditLog.reason ? auditLog.reason : "No reason provided",
+        reason: auditLog.reason ? auditLog.reason : 'No reason provided',
         server: { name: member.guild.name, id: member.guild.id },
-        key: "guildMemberRemove"
+        key: 'guildMemberRemove',
       });
 
       embed
-        .setDescription(`${action} by ${auditLog.executor}: ${auditLog.reason ? auditLog.reason : "No reason provided"}`)
+        .setDescription(
+          `${action} by ${auditLog.executor}: ${auditLog.reason ? auditLog.reason : 'No reason provided'}`,
+        )
         .setFooter(`Member removed (${action})`);
     }
 
-    return this.getLogChannel(member.guild)?.send(embed);
+    await this.getLogChannel(member.guild)?.send({ embeds: [embed] });
   }
 
-  public async guildMemberUpdate(oldMember: GuildMember, newMember: GuildMember) {
+  public guildMemberUpdate(oldMember: GuildMember, newMember: GuildMember): void {
     this.winston.info({
-      message: "Member updated",
+      message: 'Member updated',
       member: newMember.id,
       server: { name: newMember.guild.name, id: newMember.guild.id },
-      key: "guildMemberUpdate"
+      key: 'guildMemberUpdate',
     });
   }
 
-  public async message(message: Message) {
+  public message(message: Message): void {
     this.winston.info({
-      message: "Message processed",
+      message: 'Message processed',
       content: message.content,
-      author: message.author!.id,
+      author: message.author?.id,
       ...this.location(message),
-      key: "message"
+      key: 'message',
     });
   }
 
-  public async migrate(message: Message, cash: number, cc: number) {
+  public async migrate(message: Message, cash: number, cc: number): Promise<void> {
     this.winston.info({
-      message: "Wallet migrated",
-      member: message.author!.id,
+      message: 'Wallet migrated',
+      member: message.author?.id,
       values: { cash, cc },
       ...this.location(message),
-      key: "migrate"
+      key: 'migrate',
     });
 
     const embed = new MessageEmbed()
-      .setAuthor(
-        `${message.author!.tag} (${message.author!.id})`,
-        message.author!.displayAvatarURL()
-      )
-      .setFooter("Wallet Migrated")
+      .setAuthor(`${message.author?.tag} (${message.author?.id})`, message.author?.displayAvatarURL())
+      .setFooter('Wallet Migrated')
       .addFields([
-        { name: "**Cash**", value: `$${cash.toLocaleString()}`, inline: true },
-        { name: "**Contest Credit**", value: `${cc.toLocaleString()} CC`, inline: true }
+        { name: '**Cash**', value: `$${cash.toLocaleString()}`, inline: true },
+        { name: '**Contest Credit**', value: `${cc.toLocaleString()} CC`, inline: true },
       ])
       .setTimestamp();
 
-    return this.getLogChannel(message.guild)?.send(embed);
+    await this.getLogChannel(message.guild)?.send({ embeds: [embed] });
   }
 
-  public async messageDelete(message: Message) { }
+  // Public async messageDelete(message: Message) { }
 
-  public async messageReactionAdd(reaction: MessageReaction, user: User) {
+  public messageReactionAdd(reaction: MessageReaction, user: User): void {
     this.winston.info({
-      message: "Message reaction added",
+      message: 'Message reaction added',
       target: reaction.message.id,
       ...this.location(reaction.message as Message),
       reactor: user.id,
       count: reaction.count,
-      key: "messageReactionAdd"
+      key: 'messageReactionAdd',
     });
   }
 
-  public async messageReactionRemove(reaction: MessageReaction, user: User) {
+  public messageReactionRemove(reaction: MessageReaction, user: User): void {
     this.winston.info({
-      message: "Message reaction removed",
+      message: 'Message reaction removed',
       target: reaction.message.id,
       ...this.location(reaction.message as Message),
       reactor: user.id,
       count: reaction.count,
-      key: "messageReactionRemove"
+      key: 'messageReactionRemove',
     });
   }
 
-  public async raw(data: any) {
+  public raw(data: any): void {
     this.winston.info({
-      message: "Raw event processed",
+      message: 'Raw event processed',
       name: data.t,
-      key: "raw"
+      key: 'raw',
     });
   }
 
-  public async ready() {
+  public ready(): void {
     this.winston.info({
-      message: "Client ready",
-      key: "ready"
+      message: 'Client ready',
+      key: 'ready',
     });
   }
-
-  public async roleCreate() { }
-
-  public async roleDelete() { }
-
-  public async roleUpdate() { }
 
   // #endregion
 
   // #region COMMANDS
-  public async ability(message: Message, query: string, result: string) {
+  public ability(message: Message, query: string, result: string): void {
     this.winston.info({
-      message: "Abilities searched",
+      message: 'Abilities searched',
       query,
       result,
       ...this.location(message),
-      key: "ability"
+      key: 'ability',
     });
   }
-  public async deduct(message: Message, log: Message) {
+  public async deduct(message: Message, log: Message): Promise<void> {
     this.winston.info({
-      message: "Deduction logged",
-      author: message.author!.id,
+      message: 'Deduction logged',
+      author: message.author?.id,
       ...this.location(message),
       log: log.url,
-      key: "deduct"
+      key: 'deduct',
     });
 
     const embed = new MessageEmbed()
-      .setFooter("deduct")
-      .setDescription(`${message.member!.displayName} made a deduction in [${(log.channel as GuildChannel).name}](${log.url})`)
+      .setFooter('deduct')
+      .setDescription(
+        `${message.member?.displayName} made a deduction in [${(log.channel as GuildChannel).name}](${log.url})`,
+      )
       .setTimestamp();
 
-    return this.getLogChannel(message.guild)?.send(embed);
+    await this.getLogChannel(message.guild)?.send({ embeds: [embed] });
   }
 
-  public async dice(message: Message, response: string, result: string) {
+  public dice(message: Message, response: string, result: string): void {
     this.winston.info({
-      message: "Dice rolled",
+      message: 'Dice rolled',
       result,
       ...this.location(message),
-      verification: response
+      verification: response,
     });
   }
 
-  public async elo(message: Message, winner: GuildMember, loser: GuildMember) {
+  public async elo(message: Message, winner: GuildMember, loser: GuildMember): Promise<void> {
     this.winston.info({
-      message: "ELO updated",
+      message: 'ELO updated',
       winner: winner.id,
       loser: loser.id,
       referee: message.author,
       ...this.location(message),
-      key: "elo"
+      key: 'elo',
     });
 
     const embed = new MessageEmbed()
-      .setFooter("elo")
+      .setFooter('elo')
       .setColor(0x1f8b4c)
       .setDescription(`${message.member} updated the ELOs of ${winner} and ${loser}`)
       .setTimestamp();
 
-    return this.getLogChannel(message.guild)?.send(embed);
+    await this.getLogChannel(message.guild)?.send({ embeds: [embed] });
   }
 
-  public async item(message: Message, query: string, result: string) {
+  public item(message: Message, query: string, result: string): void {
     this.winston.info({
-      message: "Items searched",
+      message: 'Items searched',
       query,
       result,
       ...this.location(message),
-      key: "item"
+      key: 'item',
     });
   }
 
-  public async judgelog(message: Message, log: Message) {
+  public async judgelog(message: Message, log: Message): Promise<void> {
     this.winston.info({
-      message: "Contest logged",
-      author: message.author!.id,
+      message: 'Contest logged',
+      author: message.author?.id,
       ...this.location(message),
       log: log.url,
-      key: "judgelog"
+      key: 'judgelog',
     });
 
     const embed = new MessageEmbed()
-      .setFooter("judgelog")
+      .setFooter('judgelog')
       .setColor(0x9b59b6)
-      .setDescription(`${message.member!.displayName} logged a contest in [${(log.channel as GuildChannel).name}](${log.url})`)
+      .setDescription(
+        `${message.member?.displayName} logged a contest in [${(log.channel as GuildChannel).name}](${log.url})`,
+      )
       .setTimestamp();
 
-    return this.getLogChannel(message.guild)?.send(embed);
+    await this.getLogChannel(message.guild)?.send({ embeds: [embed] });
   }
 
-  public async logs(message: Message, target: GuildChannel) {
+  public async logs(message: Message, target: GuildChannel): Promise<void> {
     this.winston.info({
-      message: "Log channel set",
+      message: 'Log channel set',
       ...this.location(message),
       target: { id: target.id, name: target.name },
-      executor: message.author!.id,
-      key: "logs"
+      executor: message.author?.id,
+      key: 'logs',
     });
 
     const embed = new MessageEmbed()
-      .setFooter("logs")
-      .setDescription(`${message.member!.displayName} set the logging channel to ${target}`)
+      .setFooter('logs')
+      .setDescription(`${message.member?.displayName} set the logging channel to ${target}`)
       .setTimestamp();
 
-    return this.getLogChannel(message.guild)?.send(embed);
+    await this.getLogChannel(message.guild)?.send({ embeds: [embed] });
   }
 
-  public async move(message: Message, query: string, result: string) {
+  public move(message: Message, query: string, result: string): void {
     this.winston.info({
-      message: "Moves searched",
+      message: 'Moves searched',
       query,
       result,
       ...this.location(message),
-      key: "move"
+      key: 'move',
     });
   }
 
-  public async pay(message: Message, log: Message) {
+  public async pay(message: Message, log: Message): Promise<void> {
     this.winston.info({
-      message: "Payment logged",
-      author: message.author!.id,
+      message: 'Payment logged',
+      author: message.author?.id,
       ...this.location(message),
       log: log.url,
-      key: "pay"
+      key: 'pay',
     });
 
     const embed = new MessageEmbed()
-      .setFooter("pay")
-      .setDescription(`${message.member!.displayName} made a payment in [${(log.channel as GuildChannel).name}](${log.url})`)
+      .setFooter('pay')
+      .setDescription(
+        `${message.member?.displayName} made a payment in [${(log.channel as GuildChannel).name}](${log.url})`,
+      )
       .setTimestamp();
 
-    return this.getLogChannel(message.guild)?.send(embed);
+    await this.getLogChannel(message.guild)?.send({ embeds: [embed] });
   }
 
-  public async purge(message: Message, numDeleted: number | string) {
+  public async purge(message: Message, numDeleted: number | string): Promise<void> {
     this.winston.info({
-      message: "Messages pruned",
+      message: 'Messages pruned',
       ...this.location(message),
       deleted: numDeleted,
-      key: "prune"
+      key: 'prune',
     });
 
     const embed = new MessageEmbed()
-      .setFooter("prune")
-      .setDescription(`${message.member!.displayName} deleted ${numDeleted} messages from ${(message.channel as GuildChannel).name}`)
+      .setFooter('prune')
+      .setDescription(
+        `${message.member?.displayName} deleted ${numDeleted} messages from ${(message.channel as GuildChannel).name}`,
+      )
       .setTimestamp();
 
-    return this.getLogChannel(message.guild)?.send(embed);
+    await this.getLogChannel(message.guild)?.send({ embeds: [embed] });
   }
 
-  public async reload(message: Message, command: KauriCommand) {
+  public reload(message: Message, command: KauriCommand): void {
     this.winston.info({
       message: `${command.constructor.name} reloaded`,
       ...this.location(message),
-      key: "reload"
+      key: 'reload',
     });
   }
 
-  public async reflog(message: Message, log: Message) {
+  public async reflog(message: Message, log: Message): Promise<void> {
     this.winston.info({
-      message: "Battle logged",
-      author: message.author!.id,
+      message: 'Battle logged',
+      author: message.author?.id,
       ...this.location(message),
       log: log.url,
-      key: "reflog"
+      key: 'reflog',
     });
 
     const embed = new MessageEmbed()
-      .setFooter("Battle")
+      .setFooter('Battle')
       .setColor(0x1f8b4c)
-      .setDescription(`${message.member!.displayName} logged a battle in [**#${(log.channel as GuildChannel).name}**](${log.url})`)
+      .setDescription(
+        `${message.member?.displayName} logged a battle in [**#${(log.channel as GuildChannel).name}**](${log.url})`,
+      )
       .setTimestamp();
 
-    return this.getLogChannel(message.guild)?.send(embed);
+    await this.getLogChannel(message.guild)?.send({ embeds: [embed] });
   }
 
-  public async rank(message: Message, query: string, result: string | number) {
+  public rank(message: Message, query: string, result: string | number): void {
     this.winston.info({
-      message: "Ranks searched",
+      message: 'Ranks searched',
       query,
-      result: (typeof result === "string") ? result : `${result} results`,
+      result: typeof result === 'string' ? result : `${result} results`,
       ...this.location(message),
-      key: "rank"
+      key: 'rank',
     });
   }
 
-  public async starboard(message: Message, target: GuildChannel | string, param = null) {
+  public async starboard(message: Message, target: GuildChannel | string, param = null): Promise<void> {
     this.winston.info({
-      message: "Starboard config updated",
-      config: param ? param : "channel",
+      message: 'Starboard config updated',
+      config: param ? param : 'channel',
       param: param ? target : (target as GuildChannel).id,
       ...this.location(message),
-      key: "starboard"
+      key: 'starboard',
     });
 
     const embed = new MessageEmbed()
-      .setFooter("starboard")
-      .setDescription(`${message.member!.displayName} set the starboard-${param ? param : "channel"} to ${target}`)
+      .setFooter('starboard')
+      .setDescription(`${message.member?.displayName} set the starboard-${param ? param : 'channel'} to ${target}`)
       .setTimestamp();
 
-    return this.getLogChannel(message.guild)?.send(embed);
+    await this.getLogChannel(message.guild)?.send({ embeds: [embed] });
   }
 
-  public async start(message: Message, trainer: User, starter: any) {
+  public async start(message: Message, trainer: User, starter: any): Promise<void> {
     this.winston.info({
-      message: "New trainer started",
+      message: 'New trainer started',
       ...this.location(message),
       trainer: { id: trainer.id, username: trainer.username },
       starter: starter.uniqueName,
-      key: "start"
+      key: 'start',
     });
 
     const embed = new MessageEmbed()
-      .setFooter("start")
+      .setFooter('start')
       .setTimestamp()
-      .setDescription(`New trainer ${trainer.username} (${message.member} : ${message.member!.id}) started with ${starter.uniqueName}`);
+      .setDescription(
+        `Trainer ${trainer.username} (${message.member} : ${message.member?.id}) started with ${starter.uniqueName}`,
+      );
 
-    return this.getLogChannel(message.guild)?.send(embed);
+    await this.getLogChannel(message.guild)?.send({ embeds: [embed] });
   }
 
-  public async statusEffect(message: Message, query: string, result: string) {
+  public statusEffect(message: Message, query: string, result: string): void {
     this.winston.info({
-      message: "Status Effects searched",
+      message: 'Status Effects searched',
       query,
       result,
       ...this.location(message),
-      key: "move"
+      key: 'move',
     });
   }
 
@@ -543,7 +555,7 @@ class CustomLogger {
             .setTimestamp()
             .setDescription(`${customer} made a purchase in [${log.channel}](${log.url}`)
 
-        return message.guild.logChannel(embed)
+        return message.guild.logChannel{ embeds: [embed] }
     }
 
     async newStarter(message, trainer, starter) {
@@ -558,7 +570,7 @@ class CustomLogger {
             .setTimestamp()
             .setDescription(`New trainer ${trainer.username} (${message.member}) started with ${starter.uniqueName}`)
 
-        return message.guild.logChannel.send(embed)
+        return message.guild.logChannel.send({ embeds: [embed] })
     }
 
     /*
@@ -574,7 +586,7 @@ class CustomLogger {
             .setFooter("User joined")
             .setTimestamp()
 
-        return member.guild.logChannel.send(embed)
+        return member.guild.logChannel.send({ embeds: [embed] })
     }
 
     async guildMemberRemove(member, auditLog) {
@@ -598,7 +610,7 @@ class CustomLogger {
             embed.setFooter("User left")
         }
 
-        if (member.guild.logChannel) return member.guild.logChannel.send(embed)
+        if (member.guild.logChannel) return member.guild.logChannel.send({ embeds: [embed] })
     }*/
   // #endregion
 }

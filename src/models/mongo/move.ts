@@ -1,10 +1,8 @@
-import { stripIndents } from "common-tags";
-import { MessageEmbed } from "discord.js";
-import { Document, Model, Schema } from "mongoose";
-import { autoIncrement } from "mongoose-plugin-autoinc";
-import { db } from "../../util/db";
-import { Color } from "./color";
-
+import { stripIndents } from 'common-tags';
+import { MessageEmbed } from 'discord.js';
+import { Document, Model, Schema } from 'mongoose';
+import { Color } from './color';
+import { db } from '../../util/db';
 
 export interface IMoveDocument extends Document {
   _id: number;
@@ -44,53 +42,56 @@ export interface IMoveModel extends Model<IMove> {
   metronome(): Promise<IMove>;
 }
 
-const MoveSchema = new Schema<IMove, IMoveModel>({
-  _id: { type: Number, required: true },
-  moveName: { type: String, required: true },
-  moveType: { type: String, reuqired: true },
-  desc: { type: String },
-  power: { type: Number },
-  accuracy: { type: Number },
-  pp: { type: Number, required: true },
-  category: { type: String, required: true },
-  contact: { type: Boolean },
-  sheerForce: { type: Boolean },
-  substitute: { type: Boolean },
-  snatch: { type: Boolean },
-  magicCoat: { type: Boolean },
-  list: { type: Array },
-  additional: { type: String },
-  note: { type: String },
-  zmove: { type: String },
-  maxmove: { type: String },
-  metronome: { type: Boolean, default: true },
-  tm: {
-    number: { type: Number },
-    price: { type: Number },
+const MoveSchema = new Schema<IMove, IMoveModel>(
+  {
+    _id: { type: Number, required: true },
+    moveName: { type: String, required: true },
+    moveType: { type: String, reuqired: true },
+    desc: { type: String },
+    power: { type: Number },
+    accuracy: { type: Number },
+    pp: { type: Number, required: true },
+    category: { type: String, required: true },
+    contact: { type: Boolean },
+    sheerForce: { type: Boolean },
+    substitute: { type: Boolean },
+    snatch: { type: Boolean },
+    magicCoat: { type: Boolean },
+    list: { type: Array },
+    additional: { type: String },
+    note: { type: String },
+    zmove: { type: String },
+    maxmove: { type: String },
+    metronome: { type: Boolean, default: true },
+    tm: {
+      number: { type: Number },
+      price: { type: Number },
+    },
+    hm: {
+      number: { type: Number },
+      price: { type: Number },
+    },
   },
-  hm: {
-    number: { type: Number },
-    price: { type: Number },
-  }
-}, { collection: "moves" });
+  { collection: 'moves' },
+);
 
-MoveSchema.statics.metronome = async function () {
+MoveSchema.statics.metronome = async function metronome(): Promise<IMove> {
   const move = await this.aggregate([{ $match: { metronome: true } }, { $sample: { size: 1 } }]);
 
   return new this(move[0]);
 };
 
-MoveSchema.methods.info = async function () {
+MoveSchema.methods.info = async function info(): Promise<MessageEmbed> {
   const type = `Type: ${this.moveType}`;
-  const power = `Power: ${this.power ? this.power : "-"}`;
-  const acc = `Accuracy: ${this.accuracy ? this.accuracy : "-"}`;
+  const power = `Power: ${this.power ? this.power : '-'}`;
+  const acc = `Accuracy: ${this.accuracy ? this.accuracy : '-'}`;
   const pp = `PP: ${this.pp}`;
   const cat = `Category: ${this.category}`;
-  const contact = this.contact ? "Makes contact. " : "";
-  const sf = this.sheerForce ? "Boosted by Sheer Force. " : "";
-  const sub = this.substitute ? "Bypasses Substitute. " : "";
-  const snatch = this.snatch ? "Can be Snatched. " : "";
-  const mc = this.magicCoat ? "Can be reflected by Magic Coat. " : "";
+  const contact = this.contact ? 'Makes contact. ' : '';
+  const sf = this.sheerForce ? 'Boosted by Sheer Force. ' : '';
+  const sub = this.substitute ? 'Bypasses Substitute. ' : '';
+  const snatch = this.snatch ? 'Can be Snatched. ' : '';
+  const mc = this.magicCoat ? 'Can be reflected by Magic Coat. ' : '';
 
   const propString = stripIndents`| ${type} | ${power} | ${acc} | ${pp} | ${cat} |
 
@@ -103,24 +104,24 @@ MoveSchema.methods.info = async function () {
     .setDescription(propString)
     .setColor(await Color.getColorForType(this.moveType.toLowerCase()));
 
-  if (this.note) embed.addField("**Note**", this.note);
-  if (this.additional) embed.addField("**Additional note**", this.additional);
-  if (this.list && this.list.length !== 0) embed.addField("**Helpful data**", this.list.join("\n"));
+  if (this.note) embed.addField('**Note**', this.note);
+  if (this.additional) embed.addField('**Additional note**', this.additional);
+  if (this.list && this.list.length !== 0) embed.addField('**Helpful data**', this.list.join('\n'));
   if (this.tm?.number) {
-    const tmNum = this.tm.number.toString().padStart(2, "0");
+    const tmNum = this.tm.number.toString().padStart(2, '0');
     const tmPrice = this.tm.price.toLocaleString();
-    embed.addField("**TM**", `Taught by TM${tmNum} ($${tmPrice})`);
+    embed.addField('**TM**', `Taught by TM${tmNum} ($${tmPrice})`);
   }
   if (this.hm?.number) {
-    const tmNum = this.hm.number.toString().padStart(2, "0");
+    const tmNum = this.hm.number.toString().padStart(2, '0');
     const tmPrice = this.hm.price.toLocaleString();
-    embed.addField("**HM**", `Taught by HM${tmNum} ($${tmPrice})`);
+    embed.addField('**HM**', `Taught by HM${tmNum} ($${tmPrice})`);
   }
 
-  if (this.zmove) embed.addField("**Z-Move**", this.zmove);
-  if (this.maxmove) embed.addField("**Dynamax Move**", this.maxmove);
+  if (this.zmove) embed.addField('**Z-Move**', this.zmove);
+  if (this.maxmove) embed.addField('**Dynamax Move**', this.maxmove);
 
   return embed;
 };
 
-export const Move: IMoveModel = db.model<IMove, IMoveModel>("Move", MoveSchema);
+export const Move: IMoveModel = db.model<IMove, IMoveModel>('Move', MoveSchema);

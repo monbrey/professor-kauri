@@ -1,18 +1,18 @@
-import { oneLine, stripIndents } from "common-tags";
-import { CommandInteraction, MessageEmbed } from "discord.js";
-import { KauriSlashCommand } from "../../lib/commands/KauriSlashCommand";
+import { oneLine, stripIndents } from 'common-tags';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { KauriSlashCommand } from '../../lib/commands/KauriSlashCommand';
 
 export default class extends KauriSlashCommand {
   constructor() {
     super({
-      name: "veto",
-      description: "Provides Veto Tier informaion from the Refpedia",
+      name: 'veto',
+      description: 'Provides Veto Tier informaion from the Refpedia',
     });
   }
 
-  public async exec(interaction: CommandInteraction) {
-    const embed = new MessageEmbed().setTitle("Veto Tiers")
-      .setDescription(stripIndents`${oneLine`When multiple effects act on the same Pokemon to prevent the execution of a move,
+  public exec(interaction: CommandInteraction): Awaited<void> {
+    const embed = new MessageEmbed().setTitle('Veto Tiers').setDescription(stripIndents`${oneLine`
+      When multiple effects act on the same Pokemon to prevent the execution of a move,
             the referee will first check one effect, then the next, and so on.
             This is the order that is checked.
             When a move is vetoed from being executed, no other checks are performed.`}
@@ -28,6 +28,6 @@ export default class extends KauriSlashCommand {
             10. Attract
             11. Paralysis\`\`\``);
 
-    return interaction.reply(embed);
+    return interaction.reply({ embeds: [embed] });
   }
-};
+}

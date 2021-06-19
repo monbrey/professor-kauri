@@ -1,4 +1,4 @@
-// import { Argument } from "discord-akairo";
+// Import { Argument } from "discord-akairo";
 // import { Message } from "discord.js";
 // import { KauriCommand } from "../../../lib/commands/KauriCommand";
 // import { IPokemon } from "../../../models/mongo/pokemon";

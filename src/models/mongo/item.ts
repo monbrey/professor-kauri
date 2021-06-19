@@ -1,8 +1,8 @@
-import { MessageEmbed } from "discord.js";
-import { Document, Model, model, Schema } from "mongoose";
-import { autoIncrement } from "mongoose-plugin-autoinc";
+import { oneLine } from 'common-tags';
+import { MessageEmbed } from 'discord.js';
+import { Document, Model, model, Schema } from 'mongoose';
 
-// import { paginate } from "./plugins/paginator";
+// Import { paginate } from "./plugins/paginator";
 
 export interface IItemDocument extends Document {
   _id: number;
@@ -25,49 +25,63 @@ export interface IItemModel extends Model<IItem> {
   findPartial(itemName: string): IItemDocument[];
 }
 
-const ItemSchema = new Schema<IItem, IItemModel>({
-  _id: { type: Number, required: true },
-  itemName: { type: String, required: true },
-  desc: { type: String },
-  category: [{ type: String }],
-  martPrice: {
-    pokemart: { type: Number },
-    berryStore: { type: Number }
-  }
-}, { collection: "items" });
+const ItemSchema = new Schema<IItem, IItemModel>(
+  {
+    _id: { type: Number, required: true },
+    itemName: { type: String, required: true },
+    desc: { type: String },
+    category: [{ type: String }],
+    martPrice: {
+      pokemart: { type: Number },
+      berryStore: { type: Number },
+    },
+  },
+  { collection: 'items' },
+);
 
-ItemSchema.virtual("priceString").get(function(this: IItemDocument) {
-  if (!this.martPrice) { return ""; }
-  if (this.martPrice.pokemart && this.martPrice.berryStore) {
-    return `Pokemart: ${this.martPrice.pokemart.toLocaleString()} | Berry Store: ${this.martPrice.berryStore.toLocaleString()} CC`;
+function getPriceString(doc: IItemDocument): string {
+  if (doc.martPrice?.pokemart && doc.martPrice.berryStore) {
+    return oneLine`
+    Pokemart: ${doc.martPrice.pokemart.toLocaleString()} | 
+    Berry Store: ${doc.martPrice.berryStore.toLocaleString()} CC`;
   }
-  if (this.martPrice.pokemart) { return `Pokemart: ${this.martPrice.pokemart.to$()}`; }
-  if (this.martPrice.berryStore) { return `Berry Store: ${this.martPrice.berryStore.to$()}`; }
-});
+  if (doc.martPrice?.pokemart) {
+    return `Pokemart: ${doc.martPrice.pokemart.to$()}`;
+  }
+  if (doc.martPrice?.berryStore) {
+    return `Berry Store: ${doc.martPrice.berryStore.to$()}`;
+  }
 
-ItemSchema.statics.findExact = function(itemNames: string[], query: any = {}) {
-  const itemRes = itemNames.map(name => new RegExp(`^${name}$`, "i"));
-  return this.find(
+  return '';
+}
+
+ItemSchema.virtual('priceString').get(getPriceString);
+
+ItemSchema.statics.findExact = async function findExact(itemNames: string[], query: any = {}): Promise<IItem[] | null> {
+  const itemRes = itemNames.map(name => new RegExp(`^${name}$`, 'i'));
+  const item = await this.find(
     Object.assign(query, {
       itemName: {
-        $in: itemRes
-      }
-    })
+        $in: itemRes,
+      },
+    }),
   );
+  return item;
 };
 
-ItemSchema.statics.findPartial = function(itemName: string) {
-  return this.find({
-    itemName: new RegExp(itemName, "i")
+ItemSchema.statics.findPartial = async function findPartial(itemName: string): Promise<IItem[] | null> {
+  const item = await this.find({
+    itemName: new RegExp(itemName, 'i'),
   });
+  return item;
 };
 
-ItemSchema.methods.info = function() {
-  const embed = new MessageEmbed().setTitle(this.itemName).setDescription(this.desc ?? "");
+ItemSchema.methods.info = function info(): MessageEmbed {
+  const embed = new MessageEmbed().setTitle(this.itemName).setDescription(this.desc ?? '');
 
-  if (this.priceString) embed.addFields({ name: "**Mart Price**", value: this.priceString });
+  if (this.priceString) embed.addFields({ name: '**Mart Price**', value: this.priceString });
 
   return embed;
 };
 
-export const Item: IItemModel = model<IItem, IItemModel>("Item", ItemSchema);
+export const Item: IItemModel = model<IItem, IItemModel>('Item', ItemSchema);

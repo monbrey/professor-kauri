@@ -1,4 +1,4 @@
-import { Document, Schema } from "mongoose";
+import { Document, Schema } from 'mongoose';
 
 export interface IPokemonAbilityDocument extends Document {
   abilityId: number;
@@ -6,8 +6,11 @@ export interface IPokemonAbilityDocument extends Document {
   hidden?: boolean;
 }
 
-export const PokemonAbility = new Schema({
-  abilityId: { type: Number, ref: "Ability", required: true },
-  abilityName: { type: String, required: true },
-  hidden: Boolean
-}, { _id: false });
+export const PokemonAbility = new Schema(
+  {
+    abilityId: { type: Number, ref: 'Ability', required: true },
+    abilityName: { type: String, required: true },
+    hidden: Boolean,
+  },
+  { _id: false },
+);

@@ -1,14 +1,14 @@
-import { Inhibitor } from "discord-akairo";
-import { Message } from "discord.js";
-import { KauriCommand } from "../../lib/commands/KauriCommand";
-import { InhibitorReasons } from "../../util/constants";
+import { Inhibitor } from 'discord-akairo';
+import { Message } from 'discord.js';
+import { KauriCommand } from '../../lib/commands/KauriCommand';
+import { InhibitorReasons } from '../../util/constants';
 
 export default class DatabaseConfigInhibitor extends Inhibitor {
   constructor() {
-    super("requiresDatabaseInhibitor", {
+    super('requiresDatabaseInhibitor', {
       reason: InhibitorReasons.NO_DATABASE,
-      type: "post",
-      priority: 1
+      type: 'post',
+      priority: 1,
     });
   }
 

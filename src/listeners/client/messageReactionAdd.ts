@@ -1,7 +1,7 @@
-import { Listener } from "discord-akairo";
-import { Collection, Message, MessageEmbed, MessageReaction, Snowflake, TextChannel, User } from "discord.js";
+import { Listener } from 'discord-akairo';
+import { Collection, Message, MessageEmbed, MessageReaction, Snowflake, TextChannel, User } from 'discord.js';
 
-const getImage = (message: Message) => {
+const getImage = (message: Message): string | null => {
   const imgRe = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png|webp)/gi;
   if (message.attachments.size > 0) {
     if (imgRe.test(message.attachments.array()[0].url)) {
@@ -9,7 +9,7 @@ const getImage = (message: Message) => {
     }
   }
   if (message.embeds.length > 0) {
-    if (message.embeds[0].type === "image" && imgRe.test(message.embeds[0].url || "")) {
+    if (message.embeds[0].type === 'image' && imgRe.test(message.embeds[0].url || '')) {
       return message.embeds[0].url;
     }
   }
@@ -21,15 +21,15 @@ export default class MessageReactionAddListener extends Listener {
   private messageCache: Collection<Snowflake, number>;
 
   constructor() {
-    super("messageReactionAdd", {
-      emitter: "client",
-      event: "messageReactionAdd"
+    super('messageReactionAdd', {
+      emitter: 'client',
+      event: 'messageReactionAdd',
     });
 
     this.messageCache = new Collection<Snowflake, number>();
   }
 
-  public async exec(reaction: MessageReaction, user: User) {
+  public async exec(reaction: MessageReaction, user: User): Promise<void> {
     // Fetch partial messages
     if (reaction.partial) await reaction.fetch();
 
@@ -37,22 +37,30 @@ export default class MessageReactionAddListener extends Listener {
     const message: Message = await reaction.message.fetch();
 
     // Ignore messages that arent in a guild
-    if (!message.guild) { return; }
+    if (!message.guild) {
+      return;
+    }
 
     // Fetch the starboard settings
     const starboard = this.client.settings?.get(message.guild.id)?.starboard;
 
     // Check that the starChannel is set
-    if (!starboard || !starboard.channel) { return; }
+    if (!starboard || !starboard.channel) {
+      return;
+    }
 
     // Assign the starboard data
     const starChannel = message.guild.channels.cache.get(starboard.channel);
-    if (!(starChannel instanceof TextChannel)) { return; }
-    const starEmoji = starboard.emoji || "⭐";
+    if (!(starChannel instanceof TextChannel)) {
+      return;
+    }
+    const starEmoji = starboard.emoji || '⭐';
     const minReacts = starboard.minReacts || 1;
 
     // If this isnt a starboard reaction, we dont need to process it here
-    if (emoji.toString() !== starEmoji) { return; }
+    if (emoji.toString() !== starEmoji) {
+      return;
+    }
 
     // Clear out any messages which were cached over a minute ago
     this.messageCache = this.messageCache.filter(m => m < Date.now() - 60000);
@@ -66,72 +74,81 @@ export default class MessageReactionAddListener extends Listener {
 
     // Check that the starboard still exists
     if (!starChannel) {
-      return hideErrors
-        ? null
-        : message.channel.send("The configured Starboard channel could not be found.");
+      hideErrors ? null : message.channel.send('The configured Starboard channel could not be found.');
+      return;
     }
 
     // And that you're not trying to star a message in the starboard
-    if (message.channel.id === starChannel.id) { return; }
+    if (message.channel.id === starChannel.id) {
+      return;
+    }
 
     // Check they arent a narcissist
     if (message.author && message.author.id === user.id) {
-      return hideErrors
-        ? null
-        : message.channel.send(`You cannot ${starEmoji} your own messages`);
+      hideErrors ? null : message.channel.send(`You cannot ${starEmoji} your own messages`);
+      return;
     }
 
     const stars = users.cache.has(message.author.id) && count ? count - 1 : count || 0;
 
     // Check that the minimum number of reactions has been reached
-    if (stars < minReacts) { return; }
+    if (stars < minReacts) {
+      return;
+    }
 
     // If we've passed ALL the checks, we can add this to the queue
-    this.client.reactionQueue.add(async () => {
-      // Get the messages from the channel
-      const fetch = await starChannel.messages.fetch({
-        limit: 100
-      });
-      // Check if it was previously starred
-      const previous = fetch.find(
-        ({ embeds: [e] }: Message) => {
-          if (!e || !e.footer || !e.footer.text) { return false; }
-          return e.footer.text.startsWith("⭐") && e.footer.text.endsWith(message.id);
-        }
-      );
-
-      // We use the this.extension function to see if there is anything attached to the message.
-      const image = getImage(message);
-      // If the message is empty, we don't allow the user to star the message.
-      if (image === null && message.cleanContent.length < 1 && message.embeds.length < 1) {
-        return message.channel.send("You cannot star an empty message.");
-      }
-
-      const embed = new MessageEmbed()
-        .setColor(previous ? previous.embeds[0].color || 15844367 : 15844367)
-        .setAuthor(message.author!.tag, message.author!.displayAvatarURL())
-        .setTimestamp()
-        .addFields([
-          { name: `**Votes ${starEmoji}**`, value: `${stars}`, inline: true },
-          { name: "**Link**", value: `[Jump to message](${message.url})`, inline: true }
-        ])
-        .setFooter(`⭐ | ${message.id}`)
-        .setImage(image || "");
-
-      if (previous && previous.embeds[0].description) {
-        embed.setDescription(previous.embeds[0].description);
-      } else if (message.cleanContent) { embed.setDescription(message.cleanContent); }
-
-      if (previous) {
-        // We fetch the ID of the message already on the starboard.
-        const starMsg = await starChannel.messages.fetch(previous.id);
-        // And now we edit the message with the new embed!
-        return await starMsg.edit({
-          embed
+    this.client.reactionQueue.add(
+      async (): Promise<void> => {
+        // Get the messages from the channel
+        const fetch = await starChannel.messages.fetch({
+          limit: 100,
         });
-      } else { return await starChannel.send(embed); }
-    }, { priority: 1 });
+        // Check if it was previously starred
+        const previous = fetch.find(({ embeds: [e] }: Message) => {
+          if (!e || !e.footer || !e.footer.text) {
+            return false;
+          }
+          return e.footer.text.startsWith('⭐') && e.footer.text.endsWith(message.id);
+        });
 
-    return this.client.logger.messageReactionAdd(reaction, user);
+        // We use the this.extension function to see if there is anything attached to the message.
+        const image = getImage(message);
+        // If the message is empty, we don't allow the user to star the message.
+        if (image === null && message.cleanContent.length < 1 && message.embeds.length < 1) {
+          await message.channel.send('You cannot star an empty message.');
+        }
+
+        const embed = new MessageEmbed()
+          .setColor(previous ? previous.embeds[0].color || 15844367 : 15844367)
+          .setAuthor(message.author?.tag, message.author?.displayAvatarURL())
+          .setTimestamp()
+          .addFields([
+            { name: `**Votes ${starEmoji}**`, value: `${stars}`, inline: true },
+            { name: '**Link**', value: `[Jump to message](${message.url})`, inline: true },
+          ])
+          .setFooter(`⭐ | ${message.id}`)
+          .setImage(image || '');
+
+        if (previous && previous.embeds[0].description) {
+          embed.setDescription(previous.embeds[0].description);
+        } else if (message.cleanContent) {
+          embed.setDescription(message.cleanContent);
+        }
+
+        if (previous) {
+          // We fetch the ID of the message already on the starboard.
+          const starMsg = await starChannel.messages.fetch(previous.id);
+          // And now we edit the message with the new embed!
+          await starMsg.edit({
+            embeds: [embed],
+          });
+        } else {
+          await starChannel.send({ embeds: [embed] });
+        }
+      },
+      { priority: 1 },
+    );
+
+    await this.client.logger.messageReactionAdd(reaction, user);
   }
 }
