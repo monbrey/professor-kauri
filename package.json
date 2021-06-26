@@ -1,63 +1,19 @@
 {
-  "name": "professor-kauri-v2",
-  "version": "3.1.0",
-  "description": "Typescript rewrite of Professor Kauri built on the Akairo framework",
-  "main": "dist/index.js",
+  "name": "professor-kauri",
+  "version": "4.0.0-alpha",
+  "description": "Monorepo for the Professor Kauri framework, bot and related utilities",
   "scripts": {
-    "start": "node -r source-map-support/register dist/index.js",
-    "monitor": "nodemon -r source-map-support/register dist/index.js",
-    "build": "rimraf dist/ && tsc -p src/tsconfig.json",
-    "watch": "tsc -p src/tsconfig.json --watch",
-    "lint": "npx eslint src/**/*.ts --fix",
-    "prettier": "prettier --write src/**/*.ts",
     "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/monbrey/professor-kauri-v2.git"
+    "url": "git+https://github.com/monbrey/professor-kauri.git"
   },
   "author": "monbrey",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/monbrey/professor-kauri-v2/issues"
+    "url": "https://github.com/monbrey/professor-kauri/issues"
   },
   "typings": "index.d.ts",
-  "homepage": "https://github.com/monbrey/professor-kauri-v2#readme",
-  "devDependencies": {
-    "@types/common-tags": "^1.8.0",
-    "@types/dotenv": "^6.1.1",
-    "@types/node": "^12.20.7",
-    "@types/node-emoji": "^1.8.1",
-    "@types/node-fetch": "^2.5.10",
-    "@types/string-similarity": "^3.0.0",
-    "@types/ws": "^6.0.4",
-    "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^2.34.0",
-    "discord-api-types": "^0.18.1",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-prettier": "^3.4.0",
-    "prettier": "^2.3.1",
-    "rimraf": "^3.0.2",
-    "typescript": "^4.2.4",
-    "typescript-eslint": "0.0.1-alpha.0"
-  },
-  "dependencies": {
-    "common-tags": "^1.8.0",
-    "discord-akairo": "github:discord-akairo/discord-akairo",
-    "discord.js": "^13.0.0-dev.807ea2d3c197c7c6556bd1c894114932f6657d49",
-    "dotenv": "^8.1.0",
-    "dotenv-expand": "^5.1.0",
-    "mongoose": "^5.12.3",
-    "mongoose-plugin-autoinc": "^1.1.9",
-    "mongoose-timestamp": "^0.6.0",
-    "node-emoji": "^1.10.0",
-    "node-fetch": "^2.6.1",
-    "p-queue": "^6.6.2",
-    "source-map-support": "^0.5.19",
-    "string-similarity": "^3.0.0",
-    "urpg.js": "github:Monbrey/urpg.js#ec2ac32e67f1102e054c9c0a62278f9e31c61d74",
-    "winston": "^3.3.3"
-  }
+  "homepage": "https://github.com/monbrey/professor-kauri#readme"
 }

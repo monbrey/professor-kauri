@@ -1,0 +1,8 @@
+{
+  "packages": [
+    "packages/framework",
+    "packages/bot"
+  ],
+  "version": "independent",
+  "useWorkspaces": true
+}
