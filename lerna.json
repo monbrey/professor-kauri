@@ -1,5 +1,6 @@
 {
   "packages": [
+    "packages/database",
     "packages/framework",
     "packages/bot"
   ],

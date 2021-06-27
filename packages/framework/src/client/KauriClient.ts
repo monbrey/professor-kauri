@@ -1,10 +1,8 @@
-import { resolve } from "path";
+import { Database } from "@professor-kauri/database";
 import { Client as DiscordClient, ClientOptions } from "discord.js";
 import type { Db } from "mongodb";
 import { CommandHandler } from "../structures/commands/CommandHandler";
 import { EventHandler } from "../structures/events/EventHandler";
-import { DatabaseUtil } from "../util/Database";
-
 declare module "discord.js" {
   interface Client {
     commands: CommandHandler;
@@ -39,7 +37,7 @@ export class KauriClient extends DiscordClient {
   }
 
   public async start(options?: KauriStartOptions): Promise<void> {
-    this.db = await DatabaseUtil.connect(options?.mongoUri);
+    this.db = await Database.connect(options?.mongoUri);
     this.commands.loadAll();
     this.events.loadAll();
     await this.login(options?.token);

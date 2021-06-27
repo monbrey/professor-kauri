@@ -7,4 +7,3 @@ export * from "./structures/CommandInteraction";
 export * from "./structures/KauriHandler";
 export * from "./structures/KauriModule";
 export * from "./errors/CommandExecutionError";
-export * from "./util/Database";

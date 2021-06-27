@@ -28,9 +28,6 @@
   "homepage": "https://github.com/monbrey/professor-kauri#readme",
   "eslintConfig": {
     "extends": "marine/prettier/node",
-    "parserOptions": {
-      "project": "./tsconfig.eslint.json"
-    },
     "ignorePatterns": [
       "**/dist/*"
     ],

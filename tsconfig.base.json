@@ -25,6 +25,7 @@
     "importsNotUsedAsValues": "error",
     "baseUrl": ".",
     "paths": {
+      "@professor-kauri/database": ["packages/database/src"],
       "@professor-kauri/framework": ["packages/framework/src"],
       "@professor-kauri/bot": ["packages/bot/src"]
     }
