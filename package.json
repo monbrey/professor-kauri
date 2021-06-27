@@ -2,8 +2,19 @@
   "name": "professor-kauri",
   "version": "4.0.0-alpha",
   "description": "Monorepo for the Professor Kauri framework, bot and related utilities",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "postversion": "git push && git push --tags"
+    "prebuild": "npm run clean",
+    "build": "lerna run build",
+    "watch": "lerna run watch",
+    "clean": "npx rimraf packages/*/dist",
+    "lint": "eslint packages --ext .ts",
+    "lint:fix": "eslint packages --ext .ts --fix",
+    "postversion": "git push && git push --tags",
+    "start": "node packages/bot/dist/bot/src/index.js",
+    "start:dev": "nodemon -r source-map-support/register packages/bot/dist/bot/src/index.js"
   },
   "repository": {
     "type": "git",
@@ -14,6 +25,36 @@
   "bugs": {
     "url": "https://github.com/monbrey/professor-kauri/issues"
   },
-  "typings": "index.d.ts",
-  "homepage": "https://github.com/monbrey/professor-kauri#readme"
+  "homepage": "https://github.com/monbrey/professor-kauri#readme",
+  "eslintConfig": {
+    "extends": "marine/prettier/node",
+    "parserOptions": {
+      "project": "./tsconfig.eslint.json"
+    },
+    "ignorePatterns": [
+      "**/dist/*"
+    ],
+    "rules": {
+      "@typescript-eslint/naming-convention": 0,
+      "quotes": [
+        "error",
+        "double",
+        {
+          "avoidEscape": true,
+          "allowTemplateLiterals": true
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.4",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "eslint": "^7.29.0",
+    "eslint-config-marine": "^9.0.6",
+    "eslint-plugin-import": "^2.23.4",
+    "lerna": "^4.0.0",
+    "source-map-support": "^0.5.19",
+    "typescript": "^4.3.4"
+  }
 }

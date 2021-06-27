@@ -1,0 +1,21 @@
+{
+  "name": "@professor-kauri/bot",
+  "version": "0.0.1",
+  "description": "Professor Kauri, Discord bot for the Pokemon URPG",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/monbrey/professor-kauri.git"
+  },
+  "author": "monbrey",
+  "dependencies": {
+    "@professor-kauri/framework": "^0.0.1",
+    "discord.js": "^13.0.0-dev.4714a961b87746b0f85214c756614d276666f285",
+    "dotenv": "^10.0.0",
+    "dotenv-expand": "^5.1.0"
+  }
+}

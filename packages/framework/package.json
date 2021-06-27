@@ -1,0 +1,24 @@
+{
+  "name": "@professor-kauri/framework",
+  "version": "0.0.1",
+  "description": "discord.js extensions and utilities for Professor Kauri",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/monbrey/professor-kauri.git"
+  },
+  "author": "monbrey",
+  "devDependencies": {
+    "@types/mongodb": "^3.6.18",
+    "@types/node": "^15.12.4"
+  },
+  "types": "./src/typings.d.ts",
+  "peerDependencies": {
+    "discord.js": "^13.0.0-dev.4714a961b87746b0f85214c756614d276666f285",
+    "mongodb": "^3.6.9"
+  }
+}

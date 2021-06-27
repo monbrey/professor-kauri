@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es2020",
+    "lib": [
+      "esnext",
+      "esnext.array",
+      "esnext.asynciterable",
+      "esnext.intl",
+      "esnext.symbol"
+    ],
+    "sourceMap": true,
+    "removeComments": false,
+    "alwaysStrict": true,
+    "pretty": true,
+    "incremental": true,
+    "noEmitHelpers": true,
+    "importHelpers": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "preserveConstEnums": true,
+    "resolveJsonModule": true,
+    "importsNotUsedAsValues": "error",
+    "baseUrl": ".",
+    "paths": {
+      "@professor-kauri/framework": ["packages/framework/src"],
+      "@professor-kauri/bot": ["packages/bot/src"]
+    }
+  }
+}
