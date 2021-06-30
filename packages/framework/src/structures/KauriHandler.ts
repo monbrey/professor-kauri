@@ -3,7 +3,7 @@ import path from "path";
 import { Collection } from "discord.js";
 import { KauriModule } from "./KauriModule";
 import type { KauriClient } from "../client/KauriClient";
-import type { Constructor } from "../typings";
+import type { Module } from "../typings";
 
 export interface KauriHandlerOptions {
   classToLoad?: Function;
@@ -42,20 +42,28 @@ export abstract class KauriHandler<T extends KauriModule = KauriModule> {
     this.modules.delete(mod.name);
   }
 
-  public load(mod: string | Constructor<T>): T | void {
-    if (typeof mod === "string" && !this.extensions.has(path.extname(mod))) return undefined;
+  public load(mod: string | Module<T>): T | void {
+    let _module;
+    if (typeof mod === "string") {
+      if (!this.extensions.has(path.extname(mod))) return undefined;
 
-    const _module = typeof mod === "string"
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      ? this.findExport(require(mod))
-      : mod;
+      _module = require(mod);
+    } else {
+      _module = mod;
+    }
 
-    if (!_module || !this.isModuleType(_module.prototype)) {
+    if (!_module.default || !_module.data || !this.isModuleType(_module.default.prototype)) {
       if (typeof mod === "string") delete require.cache[require.resolve(mod)];
       return undefined;
     }
 
-    const module = new _module(this); // eslint-disable-line new-cap
+    const module = new _module.default({
+      client: this.client,
+      handler: this,
+      ..._module.data,
+    });
+
     if (this.modules.has(module.name)) throw new Error("ALREADY_LOADED");
     this.register(module);
     return module;
@@ -109,11 +117,11 @@ export abstract class KauriHandler<T extends KauriModule = KauriModule> {
     return this;
   }
 
-  private findExport(m: any): Constructor<T> | null {
-    if (!m) return null;
-    if (this.isModuleType(m.prototype)) return m;
-    return m.default ? this.findExport(m.default) : null;
-  }
+  // private findExport(m: any): Constructor<T> | null {
+  //   if (!m) return null;
+  //   if (this.isModuleType(m.prototype)) return m;
+  //   return m.default ? this.findExport(m.default) : null;
+  // }
 
   private isModuleType(item: T): boolean {
     return item && (item instanceof this.classToLoad);

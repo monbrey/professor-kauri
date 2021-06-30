@@ -1,21 +1,21 @@
 import { KauriModule, KauriModuleOptions } from "../KauriModule";
 
 export interface EventData {
-  emitter: string;
   name: string;
+  emitter: string;
   type?: string;
 }
 
+export type EventOptions = EventData & KauriModuleOptions;
+
 export abstract class Event extends KauriModule {
   public emitter: string;
-  public name: string;
   public type: string;
 
-  public constructor(base: KauriModuleOptions, options: EventData) {
-    super(base);
+  public constructor(options: EventOptions) {
+    super(options);
 
     this.emitter = options.emitter;
-    this.name = options.name;
     this.type = options.type ?? "on";
   }
 

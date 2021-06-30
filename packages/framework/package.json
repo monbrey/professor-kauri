@@ -13,14 +13,15 @@
   },
   "author": "monbrey",
   "dependencies": {
-    "@professor-kauri/database": "^0.0.1"
+    "title-case": "^3.0.3",
+    "urpg.js": "github:Monbrey/urpg.js#ec2ac32e67f1102e054c9c0a62278f9e31c61d74"
   },
   "devDependencies": {
     "@types/mongodb": "^3.6.18",
     "@types/node": "^15.12.4"
   },
   "peerDependencies": {
-    "discord.js": "^13.0.0-dev.4714a961b87746b0f85214c756614d276666f285",
+    "discord.js": "^13.0.0-dev.5842e35.1625011425",
     "mongodb": "^3.6.9"
   },
   "types": "./src/typings.d.ts"

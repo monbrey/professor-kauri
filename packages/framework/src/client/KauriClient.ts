@@ -1,11 +1,13 @@
-import { Database } from "@professor-kauri/database";
+import type { GuildEmoji } from "discord.js";
 import { Client as DiscordClient, ClientOptions } from "discord.js";
 import type { Db } from "mongodb";
 import { CommandHandler } from "../structures/commands/CommandHandler";
 import { EventHandler } from "../structures/events/EventHandler";
+import { Database } from "../util/Database";
 declare module "discord.js" {
   interface Client {
     commands: CommandHandler;
+    events: EventHandler;
   }
 }
 
@@ -22,7 +24,6 @@ export interface KauriStartOptions {
 export class KauriClient extends DiscordClient {
   public commands: CommandHandler;
   public events: EventHandler;
-  public db: Db | null = null;
 
   constructor(options: KauriOptions) {
     super(options);
@@ -36,10 +37,19 @@ export class KauriClient extends DiscordClient {
     });
   }
 
+  public getDatabase(): Promise<Db> {
+    return Database.getDb();
+  }
+
   public async start(options?: KauriStartOptions): Promise<void> {
-    this.db = await Database.connect(options?.mongoUri);
+    await Database.connect(options?.mongoUri);
     this.commands.loadAll();
     this.events.loadAll();
     await this.login(options?.token);
+  }
+
+  public getTypeEmoji(type?: string, reverse = false): GuildEmoji | null {
+    if (!type) return null;
+    return this.emojis.cache.find(x => x.name === `type_${type.toLowerCase()}${reverse ? "_rev" : ""}`) ?? null;
   }
 }

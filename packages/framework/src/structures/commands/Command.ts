@@ -1,31 +1,45 @@
-import type { ApplicationCommandData, ApplicationCommandOptionData, CommandInteraction, Snowflake } from "discord.js";
+import type { KauriClient, KauriHandler, Models } from "@professor-kauri/framework";
+import type { ApplicationCommandData, ApplicationCommandOptionData, CommandInteraction } from "discord.js";
 import { KauriModule, KauriModuleOptions } from "../KauriModule";
 
 export interface CommandData extends ApplicationCommandData {
   name: string;
   guild?: boolean;
-  guilds?: Snowflake[];
+  options?: CommandOptionData[];
+}
+
+export type CommandOptions = CommandData & KauriModuleOptions;
+
+export interface CommandOptionData extends ApplicationCommandOptionData {
+  augmentTo?: keyof typeof Models;
 }
 
 export abstract class Command extends KauriModule {
+  public client!: KauriClient;
+  public handler!: KauriHandler;
+
   public name: string;
   public description: string;
   public guild: boolean;
-  public guilds: Snowflake[];
   public defaultPermission: boolean;
-  public options?: ApplicationCommandOptionData[];
+  public options: CommandOptionData[];
 
-  public constructor(base: KauriModuleOptions, options: CommandData) {
-    super(base);
+  public constructor(options: CommandOptions) {
+    super(options);
 
     this.name = options.name;
     this.description = options.description;
     this.defaultPermission = options.defaultPermission ?? true;
-    this.options = options.options;
-
-    this.guild = options.guild ?? Boolean(options.guilds?.length) ?? false;
-    this.guilds = options.guilds ?? [];
+    this.options = options.options ?? [];
+    this.guild = options.guild ?? false;
   }
 
-  abstract exec(interaction: CommandInteraction): Awaited<void>;
+  reload(): void | KauriModule {
+    throw new Error("Method not implemented.");
+  }
+  remove(): void | KauriModule {
+    throw new Error("Method not implemented.");
+  }
+
+  abstract exec(interaction: CommandInteraction, args?: unknown): Awaited<void>;
 }
