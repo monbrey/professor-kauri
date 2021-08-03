@@ -21,5 +21,9 @@ export default class MessageUpdateListener extends Listener {
       m => m.author.id === newMessage.author.id && m.createdTimestamp > Date.now() - 2000,
     ).size;
     if (count > 5) newMessage.member.ban({ days: 1, reason: 'Message spam from non-member' });
+    if(newMessage.channel.isThread() && newMessage.channel.parent.parentID === "872237702391689249") {
+        const pins = await newMessage.channel.messages.fetchPinned();
+        if (pins.last().id === newMessage.id) { newMessage.channel.send(newMessage.content); }
+    }
   }
 }
