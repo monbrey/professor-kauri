@@ -57,7 +57,7 @@
     "p-queue": "^6.6.2",
     "source-map-support": "^0.5.19",
     "string-similarity": "^3.0.0",
-    "urpg.js": "github:Monbrey/urpg.js#ec2ac32e67f1102e054c9c0a62278f9e31c61d74",
+    "urpg.js": "github:Pokemon-URPG/urpg.js#ec2ac32e67f1102e054c9c0a62278f9e31c61d74",
     "winston": "^3.3.3"
   }
 }
