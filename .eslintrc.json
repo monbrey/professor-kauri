@@ -29,7 +29,7 @@
 		"@typescript-eslint/consistent-type-assertions": "error",
 		"@typescript-eslint/indent": [
 			"error",
-			2
+			"tab"
 		],
 		"@typescript-eslint/interface-name-prefix": "off",
 		"@typescript-eslint/member-delimiter-style": [
@@ -57,7 +57,9 @@
 		"@typescript-eslint/no-misused-new": "error",
 		"@typescript-eslint/no-namespace": "error",
 		"@typescript-eslint/no-parameter-properties": "off",
-    "@typescript-eslint/no-shadow": ["error"],
+		"@typescript-eslint/no-shadow": [
+			"error"
+		],
 		"@typescript-eslint/no-use-before-declare": "off",
 		"@typescript-eslint/prefer-for-of": "error",
 		"@typescript-eslint/prefer-function-type": "error",
@@ -84,7 +86,7 @@
 				}
 			}
 		],
-    "import/no-duplicates": "error",
+		"import/no-duplicates": "error",
 		"strict": [
 			"error",
 			"global"

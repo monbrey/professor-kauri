@@ -8,12 +8,14 @@
   "scripts": {
     "prebuild": "npm run clean",
     "build": "lerna run build",
-    "watch": "lerna run watch",
+    "watch:framework": "npm run watch -w packages/framework",
+    "watch:bot": "npm run watch -w packages/bot",
     "clean": "npx rimraf packages/*/dist",
     "lint": "eslint packages --ext .ts",
-    "lint:fix": "eslint packages --ext .ts --fix",
+    "lint:fix": "eslint packages/**/src/**/*.ts --fix",
     "postversion": "git push && git push --tags",
     "start": "node packages/bot/dist/bot/src/index.js",
+    "deploy": "node packages/bot/dist/bot/src/index.js --deploy",
     "start:dev": "nodemon -r source-map-support/register packages/bot/dist/bot/src/index.js"
   },
   "repository": {
@@ -45,6 +47,7 @@
   },
   "devDependencies": {
     "@types/node": "^15.12.4",
+    "@types/string-similarity": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
     "eslint": "^7.29.0",
@@ -52,6 +55,6 @@
     "eslint-plugin-import": "^2.23.4",
     "lerna": "^4.0.0",
     "source-map-support": "^0.5.19",
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.5"
   }
 }

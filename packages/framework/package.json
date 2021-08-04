@@ -12,17 +12,18 @@
     "url": "git+https://github.com/monbrey/professor-kauri.git"
   },
   "author": "monbrey",
-  "dependencies": {
-    "title-case": "^3.0.3",
-    "urpg.js": "github:Monbrey/urpg.js#ec2ac32e67f1102e054c9c0a62278f9e31c61d74"
-  },
   "devDependencies": {
     "@types/mongodb": "^3.6.18",
     "@types/node": "^15.12.4"
   },
   "peerDependencies": {
-    "discord.js": "^13.0.0-dev.5842e35.1625011425",
-    "mongodb": "^3.6.9"
+    "discord.js": "^13.0.0-dev.t1627776267.00c2bf8",
+    "mongodb": "^3.6.9",
+    "urpg.js": "github:Monbrey/urpg.js#ec2ac32e67f1102e054c9c0a62278f9e31c61d74"
   },
-  "types": "./src/typings.d.ts"
+  "types": "./src/typings.d.ts",
+  "dependencies": {
+    "change-case": "^4.1.2",
+    "string-similarity": "^3.0.0"
+  }
 }
