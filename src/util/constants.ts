@@ -25,6 +25,7 @@ export enum Roles {
   AdvCoordinator = '806290347479007304',
   MasterTechnician = '419692326638845952',
   StaffAlumni = '244600394733322242',
+	Archives = '872213460086308874'
 }
 
 export enum Categories {
