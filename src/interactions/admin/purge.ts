@@ -1,4 +1,4 @@
-import { CommandInteraction, DMChannel, GuildMember } from 'discord.js';
+import { CommandInteraction, DMChannel, GuildMember, NewsChannel, TextChannel, ThreadChannel } from 'discord.js';
 import { KauriSlashCommand } from '../../lib/commands/KauriSlashCommand';
 
 interface CommandArgs {
@@ -40,21 +40,19 @@ export default class extends KauriSlashCommand {
       return interaction.reply({ content: 'No channel detected to delete messages from', ephemeral: true });
     }
 
-    if (interaction.channel instanceof DMChannel) {
-      return interaction.reply({ content: 'This command cannot be used in DMs', ephemeral: true });
-    }
+		const channel = interaction.channel as TextChannel | NewsChannel;
 
     try {
       if (reset) {
-        await interaction.channel.clone();
-        await interaction.channel.delete();
+        await channel.clone();
+        await channel.delete();
         return undefined;
       } else {
-        const deleted = await interaction.channel.bulkDelete(amount, true);
+        const deleted = await channel.bulkDelete(amount, true);
         return this.client.logger.info({
           message: 'Messages pruned',
           server: { id: interaction.guild.id, name: interaction.guild.name },
-          channel: { id: interaction.channel.id, name: interaction.channel.name },
+          channel: { id: interaction.channel.id, name: channel.name },
           deleted: deleted.size,
           key: 'prune',
         });

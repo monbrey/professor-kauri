@@ -39,7 +39,7 @@ DiceLogSchema.statics.log = async function log(id: Snowflake, message: Message, 
   const res = await this.create({
     message_id: id,
     channel_id: message.guild ? message.channel.id : undefined,
-    channel: message.channel.type !== 'dm' ? message.channel.name : undefined,
+    channel: 'name' in message.channel ? message.channel.name : undefined,
     guild_id: message.guild?.id,
     guild: message.guild?.name,
     user_id: message.author.id,

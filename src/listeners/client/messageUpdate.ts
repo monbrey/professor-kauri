@@ -9,7 +9,7 @@ export default class MessageUpdateListener extends Listener {
     });
   }
 
-  public exec(oldMessage: Message, newMessage: Message): Awaited<void> {
+  public async exec(oldMessage: Message, newMessage: Message): Promise<void> {
     if (!newMessage.member) return;
     if (newMessage.member.roles.cache.size > 1) return;
 
@@ -21,9 +21,9 @@ export default class MessageUpdateListener extends Listener {
       m => m.author.id === newMessage.author.id && m.createdTimestamp > Date.now() - 2000,
     ).size;
     if (count > 5) newMessage.member.ban({ days: 1, reason: 'Message spam from non-member' });
-    if(newMessage.channel.isThread() && newMessage.channel.parent.parentID === "872237702391689249") {
+    if(newMessage.channel.isThread() && newMessage.channel.parent?.parentId === "872237702391689249") {
         const pins = await newMessage.channel.messages.fetchPinned();
-        if (pins.last().id === newMessage.id) { newMessage.channel.send(newMessage.content); }
+        if (pins.last()?.id === newMessage.id) { newMessage.channel.send(newMessage.content); }
     }
   }
 }

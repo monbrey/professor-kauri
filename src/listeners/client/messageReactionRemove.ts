@@ -4,8 +4,8 @@ import { Collection, Message, MessageEmbed, MessageReaction, Snowflake, TextChan
 const getImage = (message: Message): string | null => {
   const imgRe = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png|webp)/gi;
   if (message.attachments.size > 0) {
-    if (imgRe.test(message.attachments.array()[0].url)) {
-      return message.attachments.array()[0].url;
+    if (imgRe.test(message.attachments.first()!.url)) {
+      return message.attachments.first()!.url;
     }
   }
   if (message.embeds.length > 0) {

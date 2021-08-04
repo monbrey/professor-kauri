@@ -1,16 +1,17 @@
+import { HexColorString } from 'discord.js';
 import { Document, Model, Schema } from 'mongoose';
 import { db } from '../../util/db';
 
 export interface IColorDocument extends Document {
   _id: number;
   key: string;
-  color: string;
+  color: HexColorString;
 }
 
 export interface IColor extends IColorDocument {}
 
 export interface IColorModel extends Model<IColorDocument> {
-  getColorForType(type: string): Promise<string>;
+  getColorForType(type: string): Promise<HexColorString>;
 }
 
 const ColorSchema = new Schema<IColor, IColorModel>(

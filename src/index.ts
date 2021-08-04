@@ -21,7 +21,17 @@ import './util/db';
 const client = new KauriClient({
   allowedMentions: { parse: ['users', 'roles'] },
   partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER', 'GUILD_MEMBER'],
-  intents: [new Intents(Intents.NON_PRIVILEGED).add(Intents.FLAGS.GUILD_MEMBERS).toArray()],
+  intents: [
+		Intents.FLAGS.GUILDS,
+		Intents.FLAGS.GUILD_MEMBERS,
+		Intents.FLAGS.GUILD_BANS,
+		Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+		Intents.FLAGS.GUILD_WEBHOOKS,
+		Intents.FLAGS.GUILD_INVITES,
+		Intents.FLAGS.GUILD_MESSAGES,
+		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+		Intents.FLAGS.DIRECT_MESSAGES
+	],
   restTimeOffset: 100,
 });
 

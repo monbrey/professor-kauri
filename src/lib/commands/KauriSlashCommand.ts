@@ -98,7 +98,7 @@ export abstract class KauriSlashCommand extends AkairoModule implements Applicat
       throw new CommandExecutionError(`[KauriInteraction] Command '${this.name}' does not exist, create it first`);
     }
 
-    return this.command.setPermissions(this.permissions ?? []);
+    return this.command.permissions.set({ permissions: this.permissions ?? [] });
   }
 }
 

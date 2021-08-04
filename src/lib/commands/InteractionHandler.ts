@@ -43,25 +43,25 @@ export class InteractionHandler extends AkairoHandler {
     });
   }
 
-  private argMapper(options: Collection<string, CommandInteractionOption>): Record<string, unknown> {
+  private argMapper(options: readonly CommandInteractionOption[]): Record<string, unknown> {
     const args: Record<string, unknown> = {};
-    for (const [key, value] of options) {
+    for (const value of options) {
       switch (value.type) {
         case 'SUB_COMMAND':
         case 'SUB_COMMAND_GROUP':
-          args.subcommand = { name: key, options: value.options ? this.argMapper(value.options) : {} };
+          args.subcommand = { name: value.name, options: value.options ? this.argMapper(value.options) : {} };
           break;
         case 'USER':
-          args[key] = value.member ?? value.user ?? value.value;
+          args[value.name] = value.member ?? value.user ?? value.value;
           break;
         case 'CHANNEL':
-          args[key] = value.channel ?? value.value;
+          args[value.name] = value.channel ?? value.value;
           break;
         case 'ROLE':
-          args[key] = value.role ?? value.value;
+          args[value.name] = value.role ?? value.value;
           break;
         default:
-          args[key] = value.value ?? (value.type === 'BOOLEAN' ? false : null);
+          args[value.name] = value.value ?? (value.type === 'BOOLEAN' ? false : null);
       }
     }
 
@@ -79,17 +79,17 @@ export class InteractionHandler extends AkairoHandler {
     //   return interaction.reply(`\`${interaction.commandName}\` usage is restricted`, { ephemeral: true });
 
     try {
-      const args = this.argMapper(interaction.options ?? []);
+      const args = this.argMapper(interaction.options.data ?? []);
       return await command.exec(interaction, args);
     } catch (err) {
       console.log(err);
       this.client.logger.error(err);
       const method: keyof typeof interaction = interaction.replied ? 'reply' : 'editReply';
-      return interaction[method]({
+      await interaction[method]({
         content: `[${interaction.commandName}] ${err.message}`,
-        ephemeral: true,
-        code: true,
+        ephemeral: true
       });
+			return;
     }
   }
 
@@ -158,7 +158,7 @@ export class InteractionHandler extends AkairoHandler {
     const [_globals, _guilds] = this.modules.partition((m: KauriSlashCommand) => !m.guild);
 
     if (global && this.client.application) {
-      const globals = await this.client.application.commands.set(_globals.array());
+      const globals = await this.client.application.commands.set([..._globals.values()]);
       for (const [, command] of globals) {
         const interaction = _globals.find(g => g.name === command.name);
         if (interaction) interaction.command = command;
@@ -169,7 +169,7 @@ export class InteractionHandler extends AkairoHandler {
       const kauriGuild = this.client.guilds.resolve(process.env.KAURI_GUILD as Snowflake);
       if (!kauriGuild) throw new CommandExecutionError('[KauriInteractionHandler]: Unable to resolve configured guild');
 
-      const guilds = await kauriGuild.commands.set(_guilds.array());
+      const guilds = await kauriGuild.commands.set([..._guilds.values()]);
       for (const [, command] of guilds) {
         const interaction = _guilds.find(g => g.name === command.name);
         if (interaction) interaction.command = command;

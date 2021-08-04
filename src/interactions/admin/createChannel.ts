@@ -42,7 +42,7 @@ export default class extends KauriSlashCommand {
       return interaction.reply({ content: 'This command can only be run in the server', ephemeral: true });
     }
 
-    const parent = category.type === 'category' ? category.id : category.parentID;
+    const parent = category.type === 'GUILD_CATEGORY' ? category.id : category.parentId;
 
     if (!parent) {
       return interaction.reply({
@@ -51,7 +51,7 @@ export default class extends KauriSlashCommand {
       });
     }
 
-    const channel = await interaction.guild.channels.create(name, { type: 'text', parent });
+    const channel = await interaction.guild.channels.create(name, { type: 'GUILD_TEXT', parent });
 
     return interaction.reply({ content: `New channel ${channel} created`, ephemeral: true });
   }

@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { HexColorString, MessageEmbed } from 'discord.js';
 import { Document, Model, Schema } from 'mongoose';
 import { db } from '../../util/db';
 
@@ -7,7 +7,7 @@ export interface IStatusEffectDocument extends Document {
   statusName: string;
   shortCode: string;
   desc: string;
-  color: string;
+  color: HexColorString;
 }
 
 export interface IStatusEffect extends IStatusEffectDocument {

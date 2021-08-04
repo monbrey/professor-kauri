@@ -51,7 +51,7 @@ export default class extends KauriCommand {
     await message.channel.send({ embeds: [guess] });
 
     const filter = (m: Message) => m.content.toLowerCase() === species.toLowerCase();
-    const collector = message.channel.createMessageCollector(filter, { max: 1 });
+    const collector = message.channel.createMessageCollector({ filter, max: 1 });
 
     collector.on('end', collected => {
       const winner = collected.first();

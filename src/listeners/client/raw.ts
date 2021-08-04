@@ -1,4 +1,5 @@
 import { Listener } from 'discord-akairo';
+import { Awaited } from 'discord.js';
 
 export default class RawListener extends Listener {
   [index: string]: any;

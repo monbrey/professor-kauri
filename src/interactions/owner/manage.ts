@@ -141,12 +141,14 @@ export default class ManageInteraction extends KauriSlashCommand {
     if (!interaction.guild) {
       return interaction.reply({ content: 'This command is not available in DMs', ephemeral: true });
     }
-    if (!channel && !interaction.guild.logChannel) {
+
+		const logChannel = this.client.settings?.get(this.id)?.logs ?? null;
+    if (!channel && !logChannel) {
       return interaction.reply({ content: 'No logging channel configured', ephemeral: true });
     }
     if (!channel) {
       return interaction.reply({
-        content: `Logs are currently being output to <#${interaction.guild.logChannel}>`,
+        content: `Logs are currently being output to <#${logChannel}>`,
         ephemeral: true,
       });
     }
@@ -162,11 +164,13 @@ export default class ManageInteraction extends KauriSlashCommand {
     if (!interaction.guild) {
       return interaction.reply({ content: 'This command is not available in DMs', ephemeral: true });
     }
-    if (!interaction.guild.starboard) {
+
+		const starboard = this.client.settings?.get(this.id)?.starboard ?? null;
+    if (!starboard) {
       return interaction.reply({ content: 'No starboard channel configured', ephemeral: true });
     }
 
-    const { channel: setChannel, emoji: setEmoji, minReacts: setThreshold } = interaction.guild.starboard;
+    const { channel: setChannel, emoji: setEmoji, minReacts: setThreshold } = starboard;
     if (!channel && !emoji && !threshold) {
       // eslint-disable-next-line no-shadow
       const _emoji = interaction.guild.emojis.cache.get(setEmoji as Snowflake) ?? setEmoji ?? '⭐';
@@ -177,12 +181,12 @@ export default class ManageInteraction extends KauriSlashCommand {
     }
 
     const newSettings = {
-      channel: channel?.id ?? interaction.guild.starboard.channel,
+      channel: channel?.id ?? starboard.channel,
       emoji:
         emoji ??
-        interaction.guild.emojis.cache.get(interaction.guild.starboard.emoji as Snowflake)?.id ??
-        interaction.guild.starboard.emoji,
-      minReacts: threshold ?? interaction.guild.starboard.minReacts ?? 3,
+        interaction.guild.emojis.cache.get(starboard.emoji as Snowflake)?.id ??
+        starboard.emoji,
+      minReacts: threshold ?? starboard.minReacts ?? 3,
     };
     await this.client.settings?.get(interaction.guild.id)?.updateProperty('starboard', newSettings);
 
