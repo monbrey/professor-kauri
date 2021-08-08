@@ -18,12 +18,12 @@
   },
   "peerDependencies": {
     "discord.js": "^13.0.0",
-    "mongodb": "^3.6.9",
-    "urpg.js": "github:Pokemon-URPG/urpg.js#ec2ac32e67f1102e054c9c0a62278f9e31c61d74"
+    "mongodb": "^3.6.9"
   },
   "types": "./src/typings.d.ts",
   "dependencies": {
     "change-case": "^4.1.2",
-    "string-similarity": "^3.0.0"
+    "string-similarity": "^3.0.0",
+    "urpg.js": "^2.2.0"
   }
 }
