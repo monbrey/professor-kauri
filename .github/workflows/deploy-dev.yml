@@ -34,7 +34,7 @@ jobs:
         USERNAME: ${{ secrets.OVH_USER }}
         PASSPHRASE: ${{ secrets.OVH_PASSPHRASE }}
       with:
-        source: "**/dist/*"
+        source: "packages/bot/dist/*"
         target: "bots/professor-kauri-dev"
         strip_components: 1
 
