@@ -1,6 +1,9 @@
-name: Manual Deploy
+name: Deploy Dev
 
 on:
+  push:
+    branches:
+      - 'v4'
   workflow_dispatch:
 
 jobs:
@@ -11,10 +14,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
 
-    - name: Use Node v12
+    - name: Use Node v16
       uses: actions/setup-node@v2.1.4
       with:
-        node-version: 12
+        node-version: 16
 
     - name: Build Project
       run:
@@ -24,15 +27,16 @@ jobs:
       run: ls
 
     - name: Deploy bot code
-      uses: burnett01/rsync-deployments@4.1
+      uses: appleboy/scp-action@master
       env:
-        RSYNC_PASSWORD: ${{ secrets.OVH_PASSPHRASE }}
+        KEY: ${{ secrets.OVH_PRIVATE_KEY }}
+        HOST: ${{ secrets.OVH_HOST }}
+        USERNAME: ${{ secrets.OVH_USER }}
+        PASSPHRASE: ${{ secrets.OVH_PASSPHRASE }}
       with:
-        path: "dist/"
-        remote_path: "bots/professor-kauri-dev"
-        remote_host: ${{ secrets.OVH_HOST }}
-        remote_user: ${{ secrets.OVH_USER }}
-        remote_key: ${{ secrets.OVH_PRIVATE_KEY }}
+        source: "dist/*"
+        target: "bots/professor-kauri-dev"
+        strip_components: 1
 
     - name: Deploy package.json
       uses: appleboy/scp-action@master
@@ -52,7 +56,7 @@ jobs:
         host: ${{ secrets.OVH_HOST }}
         username: ${{ secrets.OVH_USER }}
         passphrase: ${{ secrets.OVH_PASSPHRASE }}
-        script: cd bots/professor-kauri-dev && npm install
+        script: cd bots/professor-kauri && npm install --production=true
 
     - name: Restart the bot
       uses: appleboy/ssh-action@master
@@ -61,4 +65,4 @@ jobs:
         host: ${{ secrets.OVH_HOST }}
         username: ${{ secrets.OVH_USER }}
         passphrase: ${{ secrets.OVH_PASSPHRASE }}
-        script: pm2 restart ecosystem.config.js --only professor-kauri --env=production
+        script: pm2 restart ecosystem.config.js --only professor-kauri-dev --env=development
