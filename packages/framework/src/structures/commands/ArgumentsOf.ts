@@ -44,12 +44,12 @@ type TypeIdToType<T, O, C, A> = T extends CommandOptionTypes.Subcommand
 	: T extends CommandOptionTypes.SubcommandGroup
 		? ArgumentsOfRaw<O>
 		: T extends CommandOptionTypes.String
-			? C extends ReadonlyArray<{ value: string }>
-				? C[number]["value"]
-				: A extends ModelKey
-					? (typeof Models)[A] extends new (...args: any[]) => infer R
-						? R
-						: never
+			? A extends ModelKey
+				? (typeof Models)[A] extends new (...args: any[]) => infer R
+					? R
+					: never
+				: C extends ReadonlyArray<{ value: string }>
+					? C[number]["value"]
 					: string
 			: T extends CommandOptionTypes.Integer | CommandOptionTypes.Number
 				? C extends ReadonlyArray<{ value: number }>

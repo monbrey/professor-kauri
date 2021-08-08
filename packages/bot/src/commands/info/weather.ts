@@ -1,51 +1,44 @@
-// import { Command, KauriModuleOptions } from "@professor-kauri/framework";
-// import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ArgumentsOf, AugmentationTypes, Command, CommandOptionTypes } from "@professor-kauri/framework";
+import type { CommandInteraction } from "discord.js";
 
-// export default class WeatherCommand extends Command {
-//   constructor(base: KauriModuleOptions) {
-//     super(base, {
-//       name: "weather",
-//       description: "Retrieve weather effect information",
-//       options: [
-//         {
-//           name: "weather",
-//           description: "Weather effect to look-up",
-//           type: "INTEGER",
-//           choices: [
-//             { value: 1, name: "Rain" },
-//             { value: 2, name: "Harsh Sunlight" },
-//             { value: 3, name: "Sandstorm" },
-//             { value: 4, name: "Hail" },
-//             { value: 5, name: "Fog" },
-//             { value: 6, name: "Extremely Harsh Sunlight" },
-//             { value: 7, name: "Heavy Rain" },
-//             { value: 8, name: "Mysterious Air Current" },
-//           ],
-//         },
-//       ],
-//     });
-//   }
+export const data = {
+	name: "weather",
+	description: "Retrieve weather effect information",
+	options: [{
 
-//   public async exec(interaction: CommandInteraction): Promise<void> {
-//     const weather = interaction.options.get("weather");
-//     if (!weather) {
-//       const weathers: IWeather[] = await Weather.find({});
-//       const list = weathers.map(w => `${this.client.emojis.cache.get(w.emoji) ?? w.emoji} ${w.weatherName}`);
+		name: "effect",
+		description: "Weather effect to look-up",
+		type: CommandOptionTypes.String,
+		augmentTo: AugmentationTypes.Weather,
+		choices: [
+			{ value: "rain", name: "Rain" },
+			{ value: "sun", name: "Harsh Sunlight" },
+			{ value: "sand", name: "Sandstorm" },
+			{ value: "hail", name: "Hail" },
+			{ value: "fog", name: "Fog" },
+			{ value: "ex-sun", name: "Extremely Harsh Sunlight" },
+			{ value: "h-rain", name: "Heavy Rain" },
+			{ value: "mac", name: "Mysterious Air Current" },
+		],
+	}],
+} as const;
 
-//       const embed = new MessageEmbed()
-//         .setTitle("Weather Conditions")
-//         .setColor(0xffffff)
-//         .setDescription(`${list.join("\n")}\n\nFor more information on any weather condition, use \`/weather [name]\``);
+export default class WeatherCommand extends Command {
+	public async exec(interaction: CommandInteraction, { effect }: ArgumentsOf<typeof data>): Promise<void> {
+		if (!effect) {
+			const db = await this.client.getDatabase();
+			const weathers = await db.collection("weather").find().toArray();
+			const list = weathers.map(w => `${this.client.emojis.cache.get(w.emoji) ?? w.emoji} ${w.weatherName}`);
 
-//       return interaction.reply({ embeds: [embed] });
-//     }
-
-//     try {
-//       const thisWeather = await Weather.findById(weather);
-//       if (!thisWeather) return interaction.reply({ content: "No results found", ephemeral: true });
-//       return interaction.reply({ embeds: [thisWeather.info(this.client)] });
-//     } catch (e) {
-//       return this.client.logger.parseError(e);
-//     }
-//   }
-// }
+			return interaction.reply({
+				embeds: [{
+					title: "Weather Conditions",
+					color: 0xffffff,
+					description: `${list.join("\n")}\n\nFor more information on any weather condition, use \`/weather [name]\``,
+				}],
+			});
+		} else {
+			return interaction.reply({ embeds: [effect.info(this.client)] });
+		}
+	}
+}

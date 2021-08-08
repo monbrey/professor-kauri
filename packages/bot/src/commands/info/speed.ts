@@ -6,7 +6,7 @@ export const data = {
 	description: "Provides information on speed-based moves between two Pokemon / speeds",
 	options: [{
 		name: "by-species",
-		description: "Calculated based on species name(s)",
+		description: "Calculate based on species name(s)",
 		type: CommandOptionTypes.Subcommand,
 		options: [{
 			name: "attacker",
@@ -23,7 +23,7 @@ export const data = {
 		}],
 	}, {
 		name: "by-number",
-		description: "Calculated based on speed value(s)",
+		description: "Calculate based on speed value(s)",
 		type: CommandOptionTypes.Subcommand,
 		options: [{
 			name: "attacker",

@@ -7,6 +7,7 @@ export const enum AugmentationTypes {
 	EOT = "EOT",
 	Item = "Item",
 	Pokemon = "Pokemon",
+	Weather = "Weather",
 }
 
 export const enum CommandOptionTypes {
