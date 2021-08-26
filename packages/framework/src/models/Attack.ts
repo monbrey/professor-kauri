@@ -79,12 +79,13 @@ export class Attack {
 		return data ? new this(data) : null;
 	}
 
-	public static async metronome(): Promise<Attack | null> {
+	public static async metronome(): Promise<Attack> {
 		const database = await Database.getDb();
 		const data = await database.collection("attack").aggregate([
 			{ $match: { metronome: true } }, { $sample: { size: 1 } },
 		]).toArray();
-		return data ? new this(data[0]) : null;
+		if (!data) throw new Error("DB_READ_FAILED");
+		return new this(data[0]);
 	}
 
 	public info(): MessageEmbed {

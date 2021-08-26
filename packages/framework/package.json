@@ -17,7 +17,7 @@
     "@types/node": "^15.12.4"
   },
   "peerDependencies": {
-    "discord.js": "^13.0.0",
+    "discord.js": "^13.1.0",
     "mongodb": "^3.6.9"
   },
   "types": "./src/typings.d.ts",

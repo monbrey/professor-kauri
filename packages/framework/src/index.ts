@@ -10,4 +10,6 @@ export * from "./errors/CommandExecutionError";
 export * from "./typings";
 export * from "./util/Database";
 
+export * as Constants from "./util/Constants";
 export * as Models from "./models";
+

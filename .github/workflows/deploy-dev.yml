@@ -34,7 +34,7 @@ jobs:
         USERNAME: ${{ secrets.OVH_USER }}
         PASSPHRASE: ${{ secrets.OVH_PASSPHRASE }}
       with:
-        source: "packages/bot/dist/*"
+        source: "packages/bot/dist/*,packages/framework/dist/*"
         target: "bots/professor-kauri-dev"
         strip_components: 1
 
@@ -56,7 +56,7 @@ jobs:
         host: ${{ secrets.OVH_HOST }}
         username: ${{ secrets.OVH_USER }}
         passphrase: ${{ secrets.OVH_PASSPHRASE }}
-        script: cd bots/professor-kauri && npm install --production=true
+        script: cd bots/professor-kauri-dev && npm install --production=true
 
     - name: Restart the bot
       uses: appleboy/ssh-action@master
