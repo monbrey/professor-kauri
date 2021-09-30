@@ -4,6 +4,7 @@ import {
 	Command,
 	CommandExecutionError,
 	CommandOptionTypes,
+	Models,
 } from "@professor-kauri/framework";
 import { CommandInteraction, MessageEmbed } from "discord.js";
 
@@ -25,10 +26,9 @@ export default class EotCommand extends Command {
 	public async exec(interaction: CommandInteraction, { effect }: ArgumentsOf<typeof data>): Promise<void> {
 		if (!effect) throw new CommandExecutionError("Command parameter 'effect' not found");
 
-		console.log(effect);
 		const surrounding = await effect.getSurrounding(this.client);
 
-		const grouped = [];
+		const grouped: Models.EOT[] = [];
 		for (const e of surrounding) {
 			const same = grouped.find(g => g.order === e.order);
 			if (same) {

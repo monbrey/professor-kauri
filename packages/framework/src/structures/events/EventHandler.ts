@@ -4,14 +4,16 @@ import type { Event } from "./Event";
 import type { KauriClient } from "../../client/KauriClient";
 import { KauriHandler, KauriHandlerOptions } from "../KauriHandler";
 
+export type KauriEventEmitters = "client" | "websocket";
 export class EventHandler extends KauriHandler<Event> {
-	public emitters: Collection<String, EventEmitter>;
+	public emitters: Collection<KauriEventEmitters, EventEmitter>;
 
 	constructor(client: KauriClient, options: KauriHandlerOptions) {
 		super(client, options);
 
-		this.emitters = new Collection<string, EventEmitter>();
+		this.emitters = new Collection<KauriEventEmitters, EventEmitter>();
 		this.emitters.set("client", this.client);
+		this.emitters.set("websocket", this.client.ws);
 	}
 
 	protected register(event: Event): Event {
@@ -24,15 +26,6 @@ export class EventHandler extends KauriHandler<Event> {
 	protected deregister(event: Event): void {
 		this.removeFromEmitter(event.name);
 		super.deregister(event);
-	}
-
-	public setEmitters(emitters: { [key: string]: EventEmitter }): this {
-		for (const [key, value] of Object.entries(emitters)) {
-			if (!EventHandler.isEventEmitter(value)) throw new Error("INVALID_TYPE");
-			this.emitters.set(key, value);
-		}
-
-		return this;
 	}
 
 	private addToEmitter(name: string): Event {

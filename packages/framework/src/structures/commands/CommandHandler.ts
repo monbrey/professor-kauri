@@ -1,5 +1,5 @@
 import { Models } from "@professor-kauri/framework";
-import type { CommandInteraction, CommandInteractionOption, Message, Snowflake } from "discord.js";
+import type { CommandInteraction, CommandInteractionOption, Snowflake } from "discord.js";
 import type { Command } from "./Command";
 import type { KauriClient } from "../../client/KauriClient";
 import type { ModelInstance } from "../../typings";
@@ -18,30 +18,59 @@ export class CommandHandler extends KauriHandler<Command> {
 
 			this.client.on("interactionCreate", i => {
 				if (i.isCommand()) {
-					this.handle(i);
+					this.handleCommand(i);
 				}
+				// } else if (i.isAutocomplete()) {
+				// 	this.handleAutocomplete(i);
+				// }
+			});
+
+			this.client.ws.on("INTERACTION_CREATE", i => {
+				if (i.type === 4) this.handleAutocomplete(i);
 			});
 		});
 	}
 
-	private async handle(interaction: CommandInteraction): Promise<void | Message | unknown> {
+	private async handleCommand(interaction: CommandInteraction): Promise<void> {
 		const module = this.modules.get(interaction.commandName);
 		if (!module) {
-			return interaction.reply({ content: `\`${interaction.commandName}\` is not yet implemented!`, ephemeral: true });
+			interaction.reply({ content: `\`${interaction.commandName}\` is not yet implemented!`, ephemeral: true });
+			return;
 		}
 
 		const args = await this.parseOptions(module, interaction.options.data);
 
 		try {
-			return await module.exec(interaction, args);
+			await module.exec(interaction, args);
 		} catch (err) {
 			console.error(err);
-			// this.client.logger.error(err);
-			const method: keyof typeof interaction = interaction.replied ? "editReply" : "reply";
-			return interaction[method]({
-				content: `[${interaction.commandName}] ${err.message}`,
-				ephemeral: true,
-			});
+			if (err instanceof Error) {
+				// this.client.logger.error(err);
+				if (interaction.deferred || interaction.replied) {
+					interaction.editReply(`[${interaction.commandName}] ${err.message}`);
+				} else {
+					interaction.reply({
+						content: `[${interaction.commandName}] ${err.message}`,
+						ephemeral: true,
+					});
+				}
+			}
+		}
+	}
+
+	private async handleAutocomplete(interaction: any): Promise<void> {
+		if (interaction.type !== 4) return;
+
+		const module = this.modules.get(interaction.data.name);
+		if (!module) {
+			interaction.reply({ content: `\`${interaction.commandName}\` is not yet implemented!`, ephemeral: true });
+			return;
+		}
+
+		try {
+			await module.autocomplete(interaction, interaction.data.options.find((o: any) => o.focused));
+		} catch (err) {
+			console.error(err);
 		}
 	}
 
@@ -66,7 +95,6 @@ export class CommandHandler extends KauriHandler<Command> {
 		const args: { [key: string]: unknown } = {};
 
 		for (const option of options) {
-			console.log(option);
 			switch (option.type) {
 				case "SUB_COMMAND":
 					args[option.name] = await this.parseOptions(module, option.options, { ...sub, command: option.name });
@@ -88,6 +116,7 @@ export class CommandHandler extends KauriHandler<Command> {
 					break;
 				case "INTEGER":
 				case "BOOLEAN":
+				case "NUMBER":
 				default:
 					args[option.name] = option.value;
 					break;

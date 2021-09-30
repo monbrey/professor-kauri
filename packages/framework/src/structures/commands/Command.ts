@@ -1,19 +1,30 @@
 import type { KauriClient, KauriHandler } from "@professor-kauri/framework";
-import type { ApplicationCommandData, ApplicationCommandOptionData, Awaited, CommandInteraction } from "discord.js";
+import type {
+	APIApplicationCommandInteraction,
+	ApplicationCommandInteractionDataOptionString,
+} from "discord-api-types/v9";
+import type {
+	ChatInputApplicationCommandData,
+	ApplicationCommandOption,
+	Awaited,
+	CommandInteraction,
+} from "discord.js";
 import type { ModelKey } from "../../typings";
 import { KauriModule, KauriModuleOptions } from "../KauriModule";
 
-export interface CommandData extends ApplicationCommandData {
+export type CommandData = ChatInputApplicationCommandData & {
 	name: string;
 	global?: boolean;
 	options?: CommandOptionData[];
-}
+};
 
 export type CommandOptions = CommandData & KauriModuleOptions;
 
-export interface CommandOptionData extends ApplicationCommandOptionData {
+export type CommandOptionData = ApplicationCommandOption & {
 	augmentTo?: ModelKey;
-}
+	autocomplete?: boolean;
+	options?: CommandOptionData[];
+};
 
 export class Command extends KauriModule {
 	public client!: KauriClient;
@@ -40,6 +51,15 @@ export class Command extends KauriModule {
 	}
 	remove(): void | KauriModule {
 		throw new Error("Method not implemented.");
+	}
+
+	autocomplete(
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		interaction: APIApplicationCommandInteraction,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		option: ApplicationCommandInteractionDataOptionString
+	): Awaited<void> {
+		throw new Error("This method must be implemented in subclasses");
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
