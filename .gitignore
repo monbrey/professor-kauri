@@ -42,6 +42,6 @@ Thumbs.db
 ultra-rpg-bot.log
 ultra-rpg-bot-errors.log
 .env
-/logs
-/old
+logs
+old
 **/tsconfig.tsbuildinfo
