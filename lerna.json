@@ -1,9 +1,0 @@
-{
-  "packages": [
-    "packages/database",
-    "packages/framework",
-    "packages/bot"
-  ],
-  "version": "independent",
-  "useWorkspaces": true
-}
