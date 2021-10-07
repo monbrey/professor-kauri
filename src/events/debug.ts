@@ -9,7 +9,7 @@ export const data = {
 export default class DebugEvent extends Event {
 	public exec(debug: unknown): Awaited<void> {
 		if (process.env.NODE_ENV === "development") {
-			console.debug(debug);
+			this.client.logger.debug({ event: "debug", message: debug });
 		}
 	}
 }

@@ -1,10 +1,12 @@
 import type { GuildEmoji } from "discord.js";
 import { Client as DiscordClient, ClientOptions } from "discord.js";
+import type { Logger as log4js } from "log4js";
 import type { Db } from "mongodb";
 import { Client as UrpgClient } from "urpg.js";
 import { CommandHandler } from "./structures/commands/CommandHandler";
 import { EventHandler } from "./structures/events/EventHandler";
 import { Database } from "./util/Database";
+import { Logger } from "./util/Logger";
 
 declare module "discord.js" {
 	interface Client {
@@ -27,6 +29,7 @@ export class KauriClient extends DiscordClient {
 	public commands: CommandHandler;
 	public events: EventHandler;
 	public urpg: UrpgClient;
+	public logger: log4js;
 
 	constructor(options: KauriOptions) {
 		super(options);
@@ -42,6 +45,8 @@ export class KauriClient extends DiscordClient {
 		this.urpg = new UrpgClient({
 			nullHandling: true,
 		});
+
+		this.logger = Logger;
 	}
 
 	public getDatabase(): Promise<Db> {
