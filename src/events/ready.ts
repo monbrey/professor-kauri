@@ -10,10 +10,10 @@ export default class ReadyEvent extends Event {
 		const args = process.argv.slice(2);
 		if (args.includes("--deploy")) {
 			await this.client.commands.deploy();
-			console.log("Commands deployed");
+			this.client.logger.info({ event: "ready", message: "Commands deployed" });
 		}
 
 		await this.client.commands.fetch();
-		console.log("Ready");
+		this.client.logger.info({ event: "ready", message: "Client ready" });
 	}
 }
