@@ -153,8 +153,21 @@ export class CommandHandler extends KauriHandler<Command> {
 
 		if (guild) {
 			const guildId = (process.env.GUILD ?? "135864828240592896") as Snowflake;
-			if (!guildId) throw new Error("No guild");
-			await this.client.guilds.cache.get(guildId)?.commands.set([...guildCommands.values()]);
+			const target = this.client.guilds.cache.get(guildId);
+			if (!target) throw new Error("No guild");
+
+			try {
+				const deployed = await target.commands.set([...guildCommands.values()]);
+				const permUpdates = guildCommands.filter(c => c.permissions.length !== 0).map(c => {
+					const cmd = deployed.find(d => d.name === c.name);
+					if (!cmd) throw new Error("Missing command deployment");
+					return { id: cmd.id, permissions: c.permissions };
+				});
+
+				await target.commands.permissions.set({ fullPermissions: permUpdates });
+			} catch (err) {
+				console.error(err);
+			}
 		}
 
 		return this;
