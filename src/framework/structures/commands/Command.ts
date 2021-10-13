@@ -6,9 +6,11 @@ import type {
 	ChatInputApplicationCommandData,
 	CommandInteraction,
 	ApplicationCommandOptionData,
+	ApplicationCommandPermissionData,
 } from "discord.js";
 import { ModelKey, Awaited } from "../../../typings";
 import { KauriClient } from "../../KauriClient";
+import { DefaultPermissions } from "../../util/Constants";
 import { KauriHandler } from "../KauriHandler";
 import { KauriModule, KauriModuleOptions } from "../KauriModule";
 
@@ -16,6 +18,7 @@ export type CommandData = ChatInputApplicationCommandData & {
 	name: string;
 	global?: boolean;
 	options?: CommandOptionData[];
+	permissions?: ApplicationCommandPermissionData[];
 };
 
 export type CommandOptions = CommandData & KauriModuleOptions;
@@ -35,6 +38,7 @@ export class Command extends KauriModule {
 	public global: boolean;
 	public defaultPermission: boolean;
 	public options: CommandOptionData[];
+	public permissions: ApplicationCommandPermissionData[];
 
 	public constructor(options: CommandOptions) {
 		super(options);
@@ -44,6 +48,7 @@ export class Command extends KauriModule {
 		this.defaultPermission = options.defaultPermission ?? true;
 		this.options = options.options ?? [];
 		this.global = options.global ?? false;
+		this.permissions = [...DefaultPermissions, ...(options.permissions || [])];
 	}
 
 	reload(): void | KauriModule {
