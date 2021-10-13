@@ -158,7 +158,7 @@ export class CommandHandler extends KauriHandler<Command> {
 
 			try {
 				const deployed = await target.commands.set([...guildCommands.values()]);
-				const permUpdates = guildCommands.filter(c => c.permissions.length !== 0).map(c => {
+				const permUpdates = guildCommands.filter(c => c.defaultPermission === false).map(c => {
 					const cmd = deployed.find(d => d.name === c.name);
 					if (!cmd) throw new Error("Missing command deployment");
 					return { id: cmd.id, permissions: c.permissions };

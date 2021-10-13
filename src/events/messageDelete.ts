@@ -5,14 +5,14 @@ import { Event } from "../framework/structures/events/Event";
 export const data = {
 	name: "messageCreate",
 	emitter: "client",
-};
+} as const;
 
 export default class MessageDeleteEvent extends Event {
 	public async exec(message: Message): Promise<void> {
 		const guildId = message.guild?.id;
 		if (!guildId || !message.author) return;
 
-		const config = await LogChannel.fetch(this.client, message.guild.id);
+		const config = await LogChannel.fetch(this.client, guildId);
 		if (!config) return;
 
 		const logChannel = this.client.channels.cache.get(config.channel_id);

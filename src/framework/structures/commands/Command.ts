@@ -10,6 +10,7 @@ import type {
 } from "discord.js";
 import { ModelKey, Awaited } from "../../../typings";
 import { KauriClient } from "../../KauriClient";
+import { DefaultPermissions } from "../../util/Constants";
 import { KauriHandler } from "../KauriHandler";
 import { KauriModule, KauriModuleOptions } from "../KauriModule";
 
@@ -47,7 +48,7 @@ export class Command extends KauriModule {
 		this.defaultPermission = options.defaultPermission ?? true;
 		this.options = options.options ?? [];
 		this.global = options.global ?? false;
-		this.permissions = options.permissions ?? [];
+		this.permissions = [...DefaultPermissions, ...(options.permissions || [])];
 	}
 
 	reload(): void | KauriModule {

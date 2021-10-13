@@ -1,3 +1,4 @@
+import { ApplicationCommandPermissionData } from "discord.js";
 import type { PokemonType } from "urpg.js";
 
 export enum EmbedColor {
@@ -33,6 +34,20 @@ export enum Role {
 	MasterTechnician = "419692326638845952",
 	StaffAlumni = "244600394733322242",
 }
+
+export const DefaultPermissions: ApplicationCommandPermissionData[] = [
+	{
+		id: "122157285790187530",
+		type: "USER",
+		permission: true,
+	},
+	{
+		id: Role.Staff,
+		type: "ROLE",
+		permission: true,
+	},
+];
+
 
 export enum TypeColor {
 	NONE = 0x000000,
