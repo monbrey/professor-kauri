@@ -3,7 +3,7 @@ import path from "path";
 import { Collection } from "discord.js";
 import { KauriModule } from "./KauriModule";
 import { Module } from "../../typings";
-import { KauriClient } from "../KauriClient";
+import { KauriClient } from "./KauriClient";
 
 export interface KauriHandlerOptions {
 	classToLoad?: Function;

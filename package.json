@@ -11,7 +11,7 @@
     "lint:fix": "npx eslint src/**/*.ts --fix",
     "postversion": "git push && git push --tags",
     "start": "node dist/index.js",
-    "deploy": "node dist/deploy.js",
+    "deploy": "node dist/index.js --deploy",
     "start:dev": "nodemon -r source-map-support/register dist/index.js"
   },
   "repository": {
@@ -58,7 +58,7 @@
     "@log4js-node/logstashudp": "^1.2.1",
     "change-case": "^4.1.2",
     "common-tags": "^1.8.0",
-    "discord.js": "^13.2.0",
+    "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
     "dotenv-expand": "^5.1.0",
     "log4js": "^6.3.0",

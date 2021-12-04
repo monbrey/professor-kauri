@@ -9,6 +9,6 @@ export const data = {
 
 export default class GuildMemberAddEvent extends Event {
 	public exec(member: GuildMember): Awaited<void> {
-		console.log(member);
+		this.client.logger.info({ event: "guildMemberAdd", user_id: member.user.id, name: member.user.username });
 	}
 }

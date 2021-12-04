@@ -2,7 +2,7 @@ import { capitalCase } from "change-case";
 import { stripIndents } from "common-tags";
 import { MessageEmbed } from "discord.js";
 import type { PokemonType } from "urpg.js";
-import type { KauriClient } from "../KauriClient";
+import type { KauriClient } from "../structures/KauriClient";
 import { TypeColor } from "../util/Constants";
 import { Database } from "../util/Database";
 

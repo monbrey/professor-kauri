@@ -1,5 +1,5 @@
 import type { KauriHandler } from "./KauriHandler";
-import { KauriClient } from "../KauriClient";
+import { KauriClient } from "./KauriClient";
 
 export interface KauriModuleOptions {
 	name: string;

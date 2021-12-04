@@ -6,8 +6,8 @@ export const data = {
 	emitter: "client",
 };
 
-export default class DebugEvent extends Event {
+export default class ErrorEvent extends Event {
 	public exec(error: Error): Awaited<void> {
-		console.error(error.stack);
+		this.client.logger.error({ event: "error", message: error.stack });
 	}
 }

@@ -15,17 +15,23 @@ export default class GuildMemberRemoveEvent extends Event {
 
 			const lastLog = auditLogs.entries.first();
 			if (!lastLog) {
+				this.client.logger.info({ event: "guildMemberRemove", user_id: member.user.id, name: member.user.username });
 				return;
 			}
 
 			const target = lastLog.target as User;
 			if (target.id === member.id && Date.now() - lastLog.createdTimestamp < 5000) {
-				console.log(member, lastLog);
+				this.client.logger.info({
+					event: "guildMemberRemove",
+					user_id: member.user.id,
+					name: member.user.username,
+					log: { ...lastLog },
+				});
 			} else {
-				console.log(member);
+				this.client.logger.info({ event: "guildMemberRemove", user_id: member.user.id, name: member.user.username });
 			}
 		} catch (e) {
-			console.error(e);
+			this.client.logger.error({ event: "guildMemberRemove", message: e });
 		}
 	}
 }

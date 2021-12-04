@@ -1,5 +1,5 @@
 import type { ObjectId } from "mongodb";
-import type { KauriClient } from "../KauriClient";
+import type { KauriClient } from "../structures/KauriClient";
 
 interface RoleConfigSchema {
 	_id: ObjectId;

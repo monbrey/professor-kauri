@@ -9,6 +9,6 @@ export const data = {
 
 export default class GuildCreateEvent extends Event {
 	public exec(guild: Guild): Awaited<void> {
-		console.log(`Joined ${guild.name} (${guild.id})`);
+		this.client.logger.info({ event: "guildCreate", guild_id: guild.id, name: guild.name });
 	}
 }

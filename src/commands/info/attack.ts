@@ -20,5 +20,6 @@ export const data = {
 export default class AttackCommand extends Command {
 	public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {
 		await interaction.reply({ embeds: [args.attack.info()] });
+		this.client.logger.info({ command: "attack", value: args.attack.name });
 	}
 }

@@ -46,9 +46,7 @@ export default class DiceCommand extends Command {
 
 		if (rolls.length === 0) return;
 
-		await interaction.reply(`\\🎲 ${rolls.join(", ")}`);
-		// const response = await interaction.fetchReply();
-
-		// DiceLog.log(response.id, interaction as unknown as Message, rolls.join(", "));
+		const response = await interaction.reply({ content: `\\🎲 ${rolls.join(", ")}`, fetchReply: true });
+		this.client.logger.info({ command: "dice", id: response.id, value: rolls.join(", ") });
 	}
 }

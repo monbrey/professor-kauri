@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import type { KauriClient } from "../KauriClient";
+import type { KauriClient } from "../structures/KauriClient";
 import { Database } from "../util/Database";
 
 

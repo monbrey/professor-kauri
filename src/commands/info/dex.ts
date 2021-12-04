@@ -61,5 +61,6 @@ export default class DexCommand extends Command {
 		// });
 
 		await interaction.reply({ embeds: [args.species.dex(this.client)] });
+		this.client.logger.info({ command: "dex", value: args.species.name });
 	}
 }

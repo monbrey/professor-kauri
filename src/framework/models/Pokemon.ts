@@ -1,7 +1,7 @@
 import { capitalCase } from "change-case";
 import { MessageEmbed, Util } from "discord.js";
 import type { CreativeRank, Location, PokemonAbility, PokemonAttack, PokemonMega, PokemonType, Species } from "urpg.js";
-import type { KauriClient } from "../KauriClient";
+import type { KauriClient } from "../structures/KauriClient";
 import { TypeColor } from "../util/Constants";
 
 interface PokemonStats {

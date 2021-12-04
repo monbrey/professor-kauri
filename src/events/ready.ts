@@ -11,6 +11,7 @@ export default class ReadyEvent extends Event {
 		if (args.includes("--deploy")) {
 			await this.client.commands.deploy();
 			this.client.logger.info({ event: "ready", message: "Commands deployed" });
+			process.exit();
 		}
 
 		await this.client.commands.fetch();

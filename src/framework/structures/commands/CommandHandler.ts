@@ -2,7 +2,7 @@ import type { CommandInteraction, CommandInteractionOption, Snowflake } from "di
 import type { Command } from "./Command";
 import { Models } from "../..";
 import { ModelInstance } from "../../../typings";
-import { KauriClient } from "../../KauriClient";
+import { KauriClient } from "../KauriClient";
 import { KauriHandler, KauriHandlerOptions } from "../KauriHandler";
 
 export class CommandHandler extends KauriHandler<Command> {

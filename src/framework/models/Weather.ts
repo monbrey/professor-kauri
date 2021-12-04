@@ -1,5 +1,5 @@
 import type { HexColorString, MessageEmbedOptions, Snowflake } from "discord.js";
-import type { KauriClient } from "../KauriClient";
+import type { KauriClient } from "../structures/KauriClient";
 
 export interface WeatherSchema {
 	_id: number;

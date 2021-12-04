@@ -3,10 +3,10 @@ import { Client as DiscordClient, ClientOptions } from "discord.js";
 import type { Logger as log4js } from "log4js";
 import type { Db } from "mongodb";
 import { Client as UrpgClient } from "urpg.js";
-import { CommandHandler } from "./structures/commands/CommandHandler";
-import { EventHandler } from "./structures/events/EventHandler";
-import { Database } from "./util/Database";
-import { Logger } from "./util/Logger";
+import { CommandHandler } from "./commands/CommandHandler";
+import { EventHandler } from "./events/EventHandler";
+import { Database } from "../util/Database";
+import { Logger } from "../util/Logger";
 
 declare module "discord.js" {
 	interface Client {

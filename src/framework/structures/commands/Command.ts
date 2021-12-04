@@ -8,7 +8,7 @@ import type {
 	ApplicationCommandOptionData,
 } from "discord.js";
 import { ModelKey, Awaited } from "../../../typings";
-import { KauriClient } from "../../KauriClient";
+import { KauriClient } from "../KauriClient";
 import { KauriHandler } from "../KauriHandler";
 import { KauriModule, KauriModuleOptions } from "../KauriModule";
 

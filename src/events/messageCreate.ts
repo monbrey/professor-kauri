@@ -16,11 +16,10 @@ export default class MessageEvent extends Event {
 		// Mention spam protection
 		if (message.mentions.users.size > 5) {
 			message.member.ban({ days: 1, reason: "Mention spam from non-member" });
-			console.error(
-				message.guild,
-				"Spam protection",
-				`${message.author.tag} (${message.author.id}) banned for mention spam`,
-			);
+			this.client.logger.info({
+				guild_id: message.guild.id,
+				reason: `${message.author.tag} (${message.author.id}) banned for message spam`,
+			});
 		}
 
 		// Message spam protection
@@ -29,11 +28,10 @@ export default class MessageEvent extends Event {
 		).size;
 		if (count > 5) {
 			message.member.ban({ days: 1, reason: "Message spam from non-member" });
-			console.error(
-				message.guild,
-				"Spam protection",
-				`${message.author.tag} (${message.author.id}) banned for message spam`,
-			);
+			this.client.logger.info({
+				guild_id: message.guild.id,
+				reason: `${message.author.tag} (${message.author.id}) banned for message spam`,
+			});
 		}
 	}
 }

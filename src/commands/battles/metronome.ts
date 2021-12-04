@@ -11,5 +11,7 @@ export default class MetronomeCommand extends Command {
 	public async exec(interaction: CommandInteraction): Promise<void> {
 		const move = await Models.Attack.metronome();
 		interaction.reply({ embeds: [move.info()] });
+
+		this.client.logger.info({ command: "metronome", value: move.name });
 	}
 }

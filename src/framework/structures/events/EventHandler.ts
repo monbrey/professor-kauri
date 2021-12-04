@@ -1,7 +1,7 @@
 import type { EventEmitter } from "events";
 import { Collection } from "discord.js";
 import type { Event } from "./Event";
-import { KauriClient } from "../../KauriClient";
+import { KauriClient } from "../KauriClient";
 import { KauriHandler, KauriHandlerOptions } from "../KauriHandler";
 
 export type KauriEventEmitters = "client" | "websocket";
