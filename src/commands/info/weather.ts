@@ -23,6 +23,7 @@ export const data = {
 			{ value: "mac", name: "Mysterious Air Current" },
 		],
 	}],
+	global: true,
 } as const;
 
 export default class WeatherCommand extends Command {

@@ -161,7 +161,7 @@ export class CommandHandler extends KauriHandler<Command> {
 
 		if (guild) {
 			const guildId = (process.env.GUILD ?? "135864828240592896") as Snowflake;
-			const target = this.client.guilds.cache.get(guildId);
+			const target = await this.client.guilds.fetch(guildId);
 			if (!target) throw new Error("No guild");
 
 			try {

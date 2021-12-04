@@ -17,6 +17,7 @@ export const data = {
 			required: true,
 		},
 	],
+	global: true,
 } as const;
 
 export default class EotCommand extends Command {

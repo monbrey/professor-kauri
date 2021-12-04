@@ -18,6 +18,7 @@ export const data = {
 			autocomplete: true,
 		},
 	],
+	global: true,
 } as const;
 
 export default class DexCommand extends Command {

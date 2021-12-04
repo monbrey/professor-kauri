@@ -37,6 +37,7 @@ export const data = {
 			type: CommandOptionTypes.Number,
 		}],
 	}],
+	global: true,
 } as const;
 
 export default class WeightCommand extends Command {

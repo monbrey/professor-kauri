@@ -6,6 +6,7 @@ import { Awaited } from "../../typings";
 export const data = {
 	name: "veto",
 	description: "Provides Veto Tier informaion from the Refpedia",
+	global: true,
 } as const;
 
 export default class VetoCommand extends Command {

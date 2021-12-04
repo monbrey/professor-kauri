@@ -24,4 +24,6 @@ const client = new KauriClient({
 	restTimeOffset: 100,
 });
 
-client.start();
+client.start({
+	token: process.env.DISCORD_TOKEN,
+});

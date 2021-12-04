@@ -5,6 +5,7 @@ import { Command } from "../../framework/structures/commands/Command";
 export const data = {
 	name: "metronome",
 	description: "Select a random move",
+	global: true,
 } as const;
 
 export default class MetronomeCommand extends Command {

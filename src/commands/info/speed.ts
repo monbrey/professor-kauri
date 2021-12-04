@@ -39,6 +39,7 @@ export const data = {
 			required: true,
 		}],
 	}],
+	global: true,
 } as const;
 
 export default class SpeedCommand extends Command {

@@ -13,6 +13,7 @@ export const data = {
 		augmentTo: AugmentationTypes.Item,
 		required: true,
 	}],
+	global: true,
 } as const;
 
 export default class ItemCommand extends Command {
