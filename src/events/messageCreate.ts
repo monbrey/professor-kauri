@@ -6,7 +6,7 @@ export const data = {
 	name: "messageCreate",
 	emitter: "client",
 };
-export default class MessageEvent extends Event {
+export default class MessageCreateEvent extends Event {
 	public exec(message: Message): Awaited<void> {
 		if (!message.member || !message.guild) return;
 
