@@ -1,14 +1,11 @@
 import type {
-	APIApplicationCommandInteraction,
-	ApplicationCommandInteractionDataOptionString,
-} from "discord-api-types/v9";
-import type {
-	ChatInputApplicationCommandData,
-	CommandInteraction,
 	ApplicationCommandOptionData,
 	ApplicationCommandPermissionData,
+	AutocompleteInteraction, ChatInputApplicationCommandData,
+	CommandInteraction,
+	CommandInteractionOption,
 } from "discord.js";
-import { ModelKey, Awaited } from "../../../typings";
+import { Awaited, ModelKey } from "../../../typings";
 import { DefaultPermissions } from "../../util/Constants";
 import { KauriClient } from "../KauriClient";
 import { KauriHandler } from "../KauriHandler";
@@ -60,15 +57,15 @@ export class Command extends KauriModule {
 
 	autocomplete(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		interaction: APIApplicationCommandInteraction,
+		interaction: AutocompleteInteraction<"cached">,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		option: ApplicationCommandInteractionDataOptionString
+		args: CommandInteractionOption<"cached">
 	): Awaited<void> {
 		throw new Error("This method must be implemented in subclasses");
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	exec(interaction: CommandInteraction, args?: unknown): Awaited<void> {
+	exec(interaction: CommandInteraction<"cached">, args?: unknown): Awaited<void> {
 		throw new Error("This method must be implemented in subclasses");
 	}
 }

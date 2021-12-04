@@ -1,5 +1,5 @@
-import type { EventEmitter } from "events";
 import { Collection } from "discord.js";
+import type { EventEmitter } from "node:events";
 import type { Event } from "./Event";
 import { KauriClient } from "../KauriClient";
 import { KauriHandler, KauriHandlerOptions } from "../KauriHandler";

@@ -1,8 +1,4 @@
-import type {
-	APIApplicationCommandInteraction,
-	ApplicationCommandInteractionDataOptionString,
-} from "discord-api-types/v9";
-import type { CommandInteraction } from "discord.js";
+import { AutocompleteInteraction, CommandInteraction, CommandInteractionOption } from "discord.js";
 import { DateTime } from "luxon";
 import { findBestMatch } from "string-similarity";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
@@ -29,28 +25,24 @@ export default class DexCommand extends Command {
 	private listLastFetched?: DateTime;
 
 	public async autocomplete(
-		interaction: APIApplicationCommandInteraction,
-		option: ApplicationCommandInteractionDataOptionString
+		interaction: AutocompleteInteraction<"cached">,
+		arg: CommandInteractionOption<"cached">
 	): Promise<void> {
+		if (typeof arg.value !== "string") {
+			return;
+		}
+
 		if (!this.list || !this.listLastFetched || this.listLastFetched < DateTime.now().minus({ days: 1 })) {
 			this.list = await this.client.urpg.species.list();
 			this.listLastFetched = DateTime.now();
 		}
 
-		const { ratings } = findBestMatch(option.value, this.list);
+		const { ratings } = findBestMatch(arg.value, this.list);
 		const choices = ratings
 			.sort((a, b) => b.rating - a.rating).slice(0, 10)
 			.map(l => ({ name: l.target, value: l.target }));
 
-		// @ts-expect-error API is privately typed
-		await this.client.api.interactions(interaction.id, interaction.token).callback.post({
-			data: {
-				type: 8,
-				data: {
-					choices,
-				},
-			},
-		});
+		await interaction.respond(choices);
 	}
 
 	public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {
@@ -59,6 +51,8 @@ export default class DexCommand extends Command {
 		//   query: species,
 		//   result: pokemon.name,
 		// });
+
+		console.log(args.species);
 
 		await interaction.reply({ embeds: [args.species.dex(this.client)] });
 		this.client.logger.info({ command: "dex", value: args.species.name });

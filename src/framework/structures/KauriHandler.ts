@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
 import { Collection } from "discord.js";
+import { KauriClient } from "./KauriClient";
 import { KauriModule } from "./KauriModule";
 import { Module } from "../../typings";
-import { KauriClient } from "./KauriClient";
 
 export interface KauriHandlerOptions {
 	classToLoad?: Function;

@@ -1,5 +1,4 @@
-import type { GuildEmoji } from "discord.js";
-import { Client as DiscordClient, ClientOptions } from "discord.js";
+import { Client, ClientOptions, GuildEmoji } from "discord.js";
 import type { Logger as log4js } from "log4js";
 import type { Db } from "mongodb";
 import { Client as UrpgClient } from "urpg.js";
@@ -25,7 +24,7 @@ export interface KauriStartOptions {
 	token?: string;
 }
 
-export class KauriClient extends DiscordClient {
+export class KauriClient extends Client {
 	public commands: CommandHandler;
 	public events: EventHandler;
 	public urpg: UrpgClient;

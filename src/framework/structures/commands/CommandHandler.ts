@@ -1,4 +1,4 @@
-import type { CommandInteraction, CommandInteractionOption, Snowflake } from "discord.js";
+import type { AutocompleteInteraction, CommandInteraction, CommandInteractionOption, Snowflake } from "discord.js";
 import type { Command } from "./Command";
 import { Models } from "../..";
 import { ModelInstance } from "../../../typings";
@@ -17,21 +17,20 @@ export class CommandHandler extends KauriHandler<Command> {
 			await this.fetch();
 
 			this.client.on("interactionCreate", i => {
+				if (!i.inCachedGuild()) {
+					return;
+				}
+
 				if (i.isCommand()) {
 					this.handleCommand(i);
+				} else if (i.isAutocomplete()) {
+					this.handleAutocomplete(i);
 				}
-				// } else if (i.isAutocomplete()) {
-				// 	this.handleAutocomplete(i);
-				// }
-			});
-
-			this.client.ws.on("INTERACTION_CREATE", i => {
-				if (i.type === 4) this.handleAutocomplete(i);
 			});
 		});
 	}
 
-	private async handleCommand(interaction: CommandInteraction): Promise<void> {
+	private async handleCommand(interaction: CommandInteraction<"cached">): Promise<void> {
 		const module = this.modules.get(interaction.commandName);
 		if (!module) {
 			interaction.reply({ content: `\`${interaction.commandName}\` is not yet implemented!`, ephemeral: true });
@@ -58,17 +57,19 @@ export class CommandHandler extends KauriHandler<Command> {
 		}
 	}
 
-	private async handleAutocomplete(interaction: any): Promise<void> {
-		if (interaction.type !== 4) return;
-
-		const module = this.modules.get(interaction.data.name);
+	private async handleAutocomplete(interaction: AutocompleteInteraction<"cached">): Promise<void> {
+		const module = this.modules.get(interaction.commandName);
 		if (!module) {
-			interaction.reply({ content: `\`${interaction.commandName}\` is not yet implemented!`, ephemeral: true });
+			return;
+		}
+
+		const focused = interaction.options.data.find(o => o.focused);
+		if (!focused) {
 			return;
 		}
 
 		try {
-			await module.autocomplete(interaction, interaction.data.options.find((o: any) => o.focused));
+			await module.autocomplete(interaction, focused);
 		} catch (err) {
 			console.error(err);
 		}
@@ -102,28 +103,35 @@ export class CommandHandler extends KauriHandler<Command> {
 				case "SUB_COMMAND_GROUP":
 					args[option.name] = await this.parseOptions(module, option.options, { ...sub, group: option.name });
 					break;
-				case "STRING":
-					args[option.name] = await this.augmentOption(module, option, sub) ?? option.value;
-					break;
-				case "CHANNEL":
-					args[option.name] = option.channel;
-					break;
-				case "USER":
-					args[option.name] = option.member ?? option.user;
-					break;
-				case "ROLE":
-					args[option.name] = option.role;
-					break;
-				case "INTEGER":
-				case "BOOLEAN":
-				case "NUMBER":
 				default:
-					args[option.name] = option.value;
+					args[option.name] = await this.parseOption(module, option, sub);
 					break;
 			}
 		}
 
 		return args;
+	}
+
+	private async parseOption(
+		module: Command,
+		option: CommandInteractionOption,
+		sub?: { group?: string; command?: string }
+	) {
+		switch (option.type) {
+			case "STRING":
+				return await this.augmentOption(module, option, sub) ?? option.value;
+			case "CHANNEL":
+				return option.channel;
+			case "USER":
+				return option.member ?? option.user;
+			case "ROLE":
+				return option.role;
+			case "INTEGER":
+			case "BOOLEAN":
+			case "NUMBER":
+			default:
+				return option.value;
+		}
 	}
 
 	private async augmentOption(module: Command,

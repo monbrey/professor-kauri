@@ -3,7 +3,7 @@ import { LogChannel } from "../framework/models/LogChannel";
 import { Event } from "../framework/structures/events/Event";
 
 export const data = {
-	name: "messageCreate",
+	name: "messageDelete",
 	emitter: "client",
 } as const;
 

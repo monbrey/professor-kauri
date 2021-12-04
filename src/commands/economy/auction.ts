@@ -1,9 +1,7 @@
 import { stripIndents } from "common-tags";
-import { APIApplicationCommandInteraction, ApplicationCommandInteractionDataOptionString } from "discord-api-types/v9";
 import { CommandInteraction, GuildMember, Message, MessageEmbed } from "discord.js";
 import { MessageButtonStyles, MessageComponentTypes } from "discord.js/typings/enums";
 import { DateTime } from "luxon";
-import { findBestMatch } from "string-similarity";
 import { Constants } from "../../framework";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
 import { Command } from "../../framework/structures/commands/Command";
@@ -46,54 +44,54 @@ export default class AuctionCommand extends Command {
 		**Current Bid**: ${bid.member ? bid.member.displayName : "Starting"} at ${value}`;
 	}
 
-	public async autocomplete(
-		interaction: APIApplicationCommandInteraction,
-		option: ApplicationCommandInteractionDataOptionString
-	): Promise<void> {
-		let choices: Array<{ name: string; value: string }> = [];
-		switch (option.name) {
-			case "species": {
-				if (
-					!this.pokemonList ||
-					!this.pokemonListLastFetched ||
-					this.pokemonListLastFetched < DateTime.now().minus({ days: 1 })
-				) {
-					this.pokemonList = await this.client.urpg.species.list();
-					this.pokemonListLastFetched = DateTime.now();
-				}
-				const { ratings } = findBestMatch(option.value, this.pokemonList);
-				choices = ratings
-					.sort((a, b) => b.rating - a.rating).slice(0, 10)
-					.map(l => ({ name: l.target, value: l.target }));
-				break;
-			}
-			case "holding": {
-				if (
-					!this.itemList ||
-					!this.itemListLastFetched ||
-					this.itemListLastFetched < DateTime.now().minus({ days: 1 })
-				) {
-					this.itemList = await this.client.urpg.item.list();
-					this.itemListLastFetched = DateTime.now();
-				}
-				const { ratings } = findBestMatch(option.value, this.itemList);
-				choices = ratings
-					.sort((a, b) => b.rating - a.rating).slice(0, 10)
-					.map(l => ({ name: l.target, value: l.target }));
-				break;
-			}
-		}
+	// public async autocomplete(
+	// 	interaction: AutocompleteInteraction<"cached">,
+	// 	arg: CommandInteractionOption
+	// ): Promise<void> {
+	// 	let choices: Array<{ name: string; value: string }> = [];
+	// 	switch (option.name) {
+	// 		case "species": {
+	// 			if (
+	// 				!this.pokemonList ||
+	// 				!this.pokemonListLastFetched ||
+	// 				this.pokemonListLastFetched < DateTime.now().minus({ days: 1 })
+	// 			) {
+	// 				this.pokemonList = await this.client.urpg.species.list();
+	// 				this.pokemonListLastFetched = DateTime.now();
+	// 			}
+	// 			const { ratings } = findBestMatch(option.value, this.pokemonList);
+	// 			choices = ratings
+	// 				.sort((a, b) => b.rating - a.rating).slice(0, 10)
+	// 				.map(l => ({ name: l.target, value: l.target }));
+	// 			break;
+	// 		}
+	// 		case "holding": {
+	// 			if (
+	// 				!this.itemList ||
+	// 				!this.itemListLastFetched ||
+	// 				this.itemListLastFetched < DateTime.now().minus({ days: 1 })
+	// 			) {
+	// 				this.itemList = await this.client.urpg.item.list();
+	// 				this.itemListLastFetched = DateTime.now();
+	// 			}
+	// 			const { ratings } = findBestMatch(option.value, this.itemList);
+	// 			choices = ratings
+	// 				.sort((a, b) => b.rating - a.rating).slice(0, 10)
+	// 				.map(l => ({ name: l.target, value: l.target }));
+	// 			break;
+	// 		}
+	// 	}
 
-		// @ts-expect-error API is privately typed
-		await this.client.api.interactions(interaction.id, interaction.token).callback.post({
-			data: {
-				type: 8,
-				data: {
-					choices,
-				},
-			},
-		});
-	}
+	// 	// @ts-expect-error API is privately typed
+	// 	await this.client.api.interactions(interaction.id, interaction.token).callback.post({
+	// 		data: {
+	// 			type: 8,
+	// 			data: {
+	// 				choices,
+	// 			},
+	// 		},
+	// 	});
+	// }
 
 	public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {
 		if (!interaction.inCachedGuild() || interaction.channel === null) return;
@@ -152,15 +150,16 @@ export default class AuctionCommand extends Command {
 
 		const collector = interaction.channel.createMessageCollector({ filter, idle: 60000 });
 		const w1 = setTimeout(
-			() =>
-				interaction.followUp(`${this.auctionUpdate(name, bid)}\nGoing once!`),
+			(n, b) =>
+				interaction.followUp(`${this.auctionUpdate(n, b)}\nGoing once!`),
 			20000,
 			name,
 			bid,
 		);
+
 		const w2 = setTimeout(
-			() =>
-				interaction.followUp(`${this.auctionUpdate(name, bid)}\nGoing twice!`),
+			(n, b) =>
+				interaction.followUp(`${this.auctionUpdate(n, b)}\nGoing twice!`),
 			40000,
 			name,
 			bid,

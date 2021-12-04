@@ -12,7 +12,6 @@ interface PokemonStats {
 	specialDefense: number;
 	speed: number;
 }
-
 export class Pokemon {
 	name: string;
 	displayName: string;
@@ -83,11 +82,18 @@ export class Pokemon {
 		// This.matchRating = apiData.rating;
 	}
 
-	public static async fetch(client: KauriClient, value: string): Promise<Pokemon> {
-		const data = await client.urpg.species.fetchClosest(value);
+	public static async search(client: KauriClient, value: string): Promise<string[]> {
+		const data = await client.urpg.species.listClosest(value, 20);
 
 		if (!data) throw new Error("Not found");
-		return new this(data.value);
+		return data.sort((a, b) => a.rating - b.rating).map(d => d.target);
+	}
+
+	public static async fetch(client: KauriClient, value: string): Promise<Pokemon> {
+		const data = await client.urpg.species.fetch(value);
+
+		if (!data) throw new Error("Not found");
+		return new this(data);
 	}
 
 	public get genders(): string[] {

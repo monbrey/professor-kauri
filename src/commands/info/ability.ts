@@ -1,8 +1,7 @@
 import type { CommandInteraction } from "discord.js";
-import { Ability } from "../../framework/models";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
 import { Command } from "../../framework/structures/commands/Command";
-import { CommandOptionTypes, AugmentationTypes } from "../../typings";
+import { AugmentationTypes, CommandOptionTypes } from "../../typings";
 
 export const data = {
 	name: "ability",
