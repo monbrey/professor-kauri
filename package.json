@@ -10,9 +10,10 @@
     "lint": "npx eslint src/**/*.ts",
     "lint:fix": "npx eslint src/**/*.ts --fix",
     "postversion": "git push && git push --tags",
-    "start": "node dist/index.js",
-    "deploy": "node dist/index.js --deploy",
-    "start:dev": "nodemon -r source-map-support/register dist/index.js"
+    "start": "node --enable-source-maps index.js",
+		"deploy": "node --enable-source-maps index.js --deploy",
+		"start:dev": "nodemon --enable-source-maps dist/index.js",
+    "deploy:dev": "node --enable-source-maps dist/index.js --deploy"
   },
   "repository": {
     "type": "git",

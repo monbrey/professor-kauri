@@ -1,7 +1,8 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
 import { Command } from "../../framework/structures/commands/Command";
-import { CommandOptionTypes, AugmentationTypes } from "../../typings";
+import { AugmentationTypes } from "../../typings";
 
 export const data = {
 	name: "speed",
@@ -9,33 +10,33 @@ export const data = {
 	options: [{
 		name: "by-species",
 		description: "Calculate based on species name(s)",
-		type: CommandOptionTypes.Subcommand,
+		type: ApplicationCommandOptionTypes.SUB_COMMAND,
 		options: [{
 			name: "attacker",
 			description: "Pokemon species using the speed-based move",
-			type: CommandOptionTypes.String,
+			type: ApplicationCommandOptionTypes.STRING,
 			augmentTo: AugmentationTypes.Pokemon,
 			required: true,
 		}, {
 			name: "defender",
 			description: "Pokemon species targetted by speed-based move",
-			type: CommandOptionTypes.String,
+			type: ApplicationCommandOptionTypes.STRING,
 			augmentTo: AugmentationTypes.Pokemon,
 			required: true,
 		}],
 	}, {
 		name: "by-number",
 		description: "Calculate based on speed value(s)",
-		type: CommandOptionTypes.Subcommand,
+		type: ApplicationCommandOptionTypes.SUB_COMMAND,
 		options: [{
 			name: "attacker",
 			description: "Speed stat value using the speed-based move",
-			type: CommandOptionTypes.Integer,
+			type: ApplicationCommandOptionTypes.INTEGER,
 			required: true,
 		}, {
 			name: "defender",
 			description: "Speed stat value targetted by speed-based move",
-			type: CommandOptionTypes.Integer,
+			type: ApplicationCommandOptionTypes.INTEGER,
 			required: true,
 		}],
 	}],

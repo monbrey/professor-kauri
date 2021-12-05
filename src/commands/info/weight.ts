@@ -1,7 +1,8 @@
 import type { CommandInteraction, MessageEmbedOptions } from "discord.js";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
 import { Command } from "../../framework/structures/commands/Command";
-import { CommandOptionTypes, AugmentationTypes } from "../../typings";
+import { AugmentationTypes } from "../../typings";
 
 export const data = {
 	name: "weight",
@@ -9,32 +10,32 @@ export const data = {
 	options: [{
 		name: "by-species",
 		description: "Calculate based on species name(s)",
-		type: CommandOptionTypes.Subcommand,
+		type: ApplicationCommandOptionTypes.SUB_COMMAND,
 		options: [{
 			name: "defender",
 			description: "Pokemon species targetted by weight-based move",
-			type: CommandOptionTypes.String,
+			type: ApplicationCommandOptionTypes.STRING,
 			augmentTo: AugmentationTypes.Pokemon,
 			required: true,
 		}, {
 			name: "attacker",
 			description: "Pokemon species using the weight-based move",
-			type: CommandOptionTypes.String,
+			type: ApplicationCommandOptionTypes.STRING,
 			augmentTo: AugmentationTypes.Pokemon,
 		}],
 	}, {
 		name: "by-number",
 		description: "Calculate based on weight value(s)",
-		type: CommandOptionTypes.Subcommand,
+		type: ApplicationCommandOptionTypes.SUB_COMMAND,
 		options: [{
 			name: "defender",
 			description: "Weight stat value targetted by weight-based move",
-			type: CommandOptionTypes.Number,
+			type: ApplicationCommandOptionTypes.NUMBER,
 			required: true,
 		}, {
 			name: "attacker",
 			description: "Weight value using the weight-based move",
-			type: CommandOptionTypes.Number,
+			type: ApplicationCommandOptionTypes.NUMBER,
 		}],
 	}],
 	global: true,
