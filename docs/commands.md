@@ -20,17 +20,17 @@ For this guide, we're going to build a `/dex` command in a few different ways as
 
 ```ts
 export const data = {
-	name: "dex",
-	description: "Get Ultradex data for a Pokemon",
-	global: true,
-	options: [
-		{
-			name: "species",
-			description: "Pokemon species to search for",
-			type: ApplicationCommandOptionTypes.STRING,
-			required: true,
-		}
-	]
+  name: "dex",
+  description: "Get Ultradex data for a Pokemon",
+  global: true,
+  options: [
+    {
+      name: "species",
+      description: "Pokemon species to search for",
+      type: ApplicationCommandOptionTypes.STRING,
+      required: true,
+    }
+  ]
 } as const;
 ```
 
@@ -40,12 +40,12 @@ This cannot include capital letters or spaces.
 - `global` - Global commands are also available in DMs, rather than just the server. \
 Keep in mind that these can take up to an hour to deploy after any changes to the data object.
 - `options` - The options for the command - you can have none if you want. The structure of the option is:
-- - `name` - The name for the option, displayed in the clickable pills. Defines the `name:value` format.
-- - `description` - Tell people what to use this option for.
-- - `type` - The type of option this is, in this case a STRING. \
+  - `name` - The name for the option, displayed in the clickable pills. Defines the `name:value` format.
+  - `description` - Tell people what to use this option for.
+  - `type` - The type of option this is, in this case a STRING. \
 Use the `ApplicationCommandOptionTypes` enum to define this. \
 Other primitive option types include `INTEGER` (whole number), `NUMBER` (decimal), `USER`, `CHANNEL`, `ROLE` and `BOOLEAN`.
-- - `required` - Ensures that this option is provided before the slash command can be used.
+  - `required` - Ensures that this option is provided before the slash command can be used.
 
 The `as const` at the end is always required - it makes this object read-only and enables some fancy parsing later. Don't question it, just do it.
 
@@ -57,9 +57,9 @@ As a minimum, the class must `extend Command` and must have a `public exec` meth
 
 ```ts
 export default class DexCommand extends Command {
-	public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {
-		interaction.reply({ content: args.species });
-	}
+  public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {
+    interaction.reply({ content: args.species });
+  }
 }
 ```
 
@@ -83,18 +83,18 @@ If you want to see this in practice, Kauri's `/dex` command currently utilises t
 
 ```ts
 export const data = {
-	name: "dex",
-	description: "Get Ultradex data for a Pokemon",
-	global: true,
-	options: [
-		{
-			name: "species",
-			description: "Pokemon species to search for",
-			type: ApplicationCommandOptionTypes.STRING,
-			required: true,
-			autocomplete: true, // add this new line
-		}
-	]
+  name: "dex",
+  description: "Get Ultradex data for a Pokemon",
+  global: true,
+  options: [
+    {
+      name: "species",
+      description: "Pokemon species to search for",
+      type: ApplicationCommandOptionTypes.STRING,
+      required: true,
+      autocomplete: true, // add this new line
+    }
+  ]
 } as const;
 ```
 
@@ -102,34 +102,34 @@ With this additional property, Discord will send interactions to the bot as the 
 
 ```ts
 export default class DexCommand extends Command {
-	public async autocomplete(interaction: AutocompleteInteraction, arg: CommandInteractionOption): Promise<void> {
-		// Check that the arg is a string, so TypeScript doesn't complain about being unsure
-		// No fancy automatic parsing for this one
-		if (typeof arg.value !== "string") {
-			return;
-		}
+  public async autocomplete(interaction: AutocompleteInteraction, arg: CommandInteractionOption): Promise<void> {
+    // Check that the arg is a string, so TypeScript doesn't complain about being unsure
+    // No fancy automatic parsing for this one
+    if (typeof arg.value !== "string") {
+      return;
+    }
 
-		// You'd write much smarter logic than hardcoding it like this normally
-		// interaction.respond with an array of name/value pairs, as follows
-		if(arg.value === "Char") {
-			interaction.respond([
-				{ name: "Charmander", value: "Charmander" },
-				{ name: "Charmeleon", value: "Charmeleon" },
-				{ name: "Charizard", value: "Charizard" }, 
-				{ name: "Chimchar", value: "Chimchar" },
-			])
-		} else if(arg.value === "Saur") {
-			interaction.respond([
-				{ name: "Bulbasaur", value: "Bulbasaur" },
-				{ name: "Ivysaur", value: "Ivysaur" },
-				{ name: "Venusaur", value: "Venusaur" }, 
-			])
-		}
-	}
+    // You'd write much smarter logic than hardcoding it like this normally
+    // interaction.respond with an array of name/value pairs, as follows
+    if(arg.value === "Char") {
+      interaction.respond([
+        { name: "Charmander", value: "Charmander" },
+        { name: "Charmeleon", value: "Charmeleon" },
+        { name: "Charizard", value: "Charizard" }, 
+        { name: "Chimchar", value: "Chimchar" },
+      ])
+    } else if(arg.value === "Saur") {
+      interaction.respond([
+        { name: "Bulbasaur", value: "Bulbasaur" },
+        { name: "Ivysaur", value: "Ivysaur" },
+        { name: "Venusaur", value: "Venusaur" }, 
+      ])
+    }
+  }
 
-	public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {
-		interaction.reply({ content: args.species });
-	}
+  public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {
+    interaction.reply({ content: args.species });
+  }
 }
 ```
 
@@ -141,18 +141,18 @@ Kauri's arguments parser also features an advanced augmentation mechanism which 
 
 ```ts
 export const data = {
-	name: "dex",
-	description: "Get Ultradex data for a Pokemon",
-	global: true,
-	options: [
-		{
-			name: "species",
-			description: "Pokemon species to search for",
-			type: ApplicationCommandOptionTypes.STRING,
-			augmentTo: AugmentationTypes.Pokemon, // add this new line
-			required: true,
-		}
-	]
+  name: "dex",
+  description: "Get Ultradex data for a Pokemon",
+  global: true,
+  options: [
+    {
+      name: "species",
+      description: "Pokemon species to search for",
+      type: ApplicationCommandOptionTypes.STRING,
+      augmentTo: AugmentationTypes.Pokemon, // add this new line
+      required: true,
+    }
+  ]
 } as const;
 ```
 
@@ -162,16 +162,16 @@ With this property added, Kauri will automatically look up the string value prov
 
 ```ts
 export default class DexCommand extends Command {
-	public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {
-		// args.species is no longer a string, and is now a Pokemon class object
-		console.log(args.species.displayName);
-		console.log(args.species.dexno);
-		console.log(args.species.type1, args.species.type2);
+  public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {
+    // args.species is no longer a string, and is now a Pokemon class object
+    console.log(args.species.displayName);
+    console.log(args.species.dexno);
+    console.log(args.species.type1, args.species.type2);
 
-		// The Pokemon class also includes a method which generates the dex embed, for ease of use
-		// This method requires the client passed into it for some additional data
-		await interaction.reply({ embeds: [args.species.dex(this.client)] });
-	}
+    // The Pokemon class also includes a method which generates the dex embed, for ease of use
+    // This method requires the client passed into it for some additional data
+    await interaction.reply({ embeds: [args.species.dex(this.client)] });
+  }
 }
 ```
 
