@@ -1,6 +1,6 @@
 {
   "name": "professor-kauri",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Monorepo for the Professor Kauri framework, bot and related utilities",
   "scripts": {
     "prebuild": "npm run clean",
@@ -11,8 +11,8 @@
     "lint:fix": "npx eslint src/**/*.ts --fix",
     "postversion": "git push && git push --tags",
     "start": "node --enable-source-maps index.js",
-		"deploy": "node --enable-source-maps index.js --deploy",
-		"start:dev": "nodemon --enable-source-maps dist/index.js",
+    "deploy": "node --enable-source-maps index.js --deploy",
+    "start:dev": "nodemon --enable-source-maps dist/index.js",
     "deploy:dev": "node --enable-source-maps dist/index.js --deploy"
   },
   "repository": {
