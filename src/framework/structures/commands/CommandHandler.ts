@@ -17,10 +17,6 @@ export class CommandHandler extends KauriHandler<Command> {
 			await this.fetch();
 
 			this.client.on("interactionCreate", i => {
-				if (!i.inCachedGuild()) {
-					return;
-				}
-
 				if (i.isCommand()) {
 					this.handleCommand(i);
 				} else if (i.isAutocomplete()) {
@@ -30,7 +26,7 @@ export class CommandHandler extends KauriHandler<Command> {
 		});
 	}
 
-	private async handleCommand(interaction: CommandInteraction<"cached">): Promise<void> {
+	private async handleCommand(interaction: CommandInteraction): Promise<void> {
 		const module = this.modules.get(interaction.commandName);
 		if (!module) {
 			interaction.reply({ content: `\`${interaction.commandName}\` is not yet implemented!`, ephemeral: true });
@@ -57,7 +53,7 @@ export class CommandHandler extends KauriHandler<Command> {
 		}
 	}
 
-	private async handleAutocomplete(interaction: AutocompleteInteraction<"cached">): Promise<void> {
+	private async handleAutocomplete(interaction: AutocompleteInteraction): Promise<void> {
 		const module = this.modules.get(interaction.commandName);
 		if (!module) {
 			return;

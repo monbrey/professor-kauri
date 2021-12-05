@@ -1,7 +1,7 @@
 import type { CommandInteraction } from "discord.js";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
 import { Command } from "../../framework/structures/commands/Command";
-import { CommandOptionTypes } from "../../typings";
 
 export const data = {
 	name: "dp",
@@ -10,7 +10,7 @@ export const data = {
 		{
 			name: "die",
 			description: "Die or dice to roll",
-			type: CommandOptionTypes.String,
+			type: ApplicationCommandOptionTypes.STRING,
 			required: true,
 		},
 	],

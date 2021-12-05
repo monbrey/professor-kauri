@@ -1,9 +1,10 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { Models } from "../../framework";
 import { CommandExecutionError } from "../../framework/errors/CommandExecutionError";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
 import { Command } from "../../framework/structures/commands/Command";
-import { CommandOptionTypes, AugmentationTypes } from "../../typings";
+import { AugmentationTypes } from "../../typings";
 
 export const data = {
 	name: "eot",
@@ -12,7 +13,7 @@ export const data = {
 		{
 			name: "effect",
 			description: "The name of an End of Turn Effect to lookup",
-			type: CommandOptionTypes.String,
+			type: ApplicationCommandOptionTypes.STRING,
 			augmentTo: AugmentationTypes.EOT,
 			required: true,
 		},

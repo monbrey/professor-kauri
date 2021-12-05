@@ -1,10 +1,10 @@
 import { stripIndents } from "common-tags";
 import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { Constants, Models } from "../../framework";
 import { CommandExecutionError } from "../../framework/errors/CommandExecutionError";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
 import { Command } from "../../framework/structures/commands/Command";
-import { CommandOptionTypes } from "../../typings";
 
 export const data = {
 	name: "role",
@@ -13,7 +13,7 @@ export const data = {
 		{
 			name: "action",
 			description: "Action to take: add | remove",
-			type: CommandOptionTypes.String,
+			type: ApplicationCommandOptionTypes.STRING,
 			choices: [
 				{ name: "add", value: "add" },
 				{ name: "remove", value: "remove" },
@@ -23,13 +23,13 @@ export const data = {
 		{
 			name: "member",
 			description: "Guild member to action",
-			type: CommandOptionTypes.User,
+			type: ApplicationCommandOptionTypes.USER,
 			required: true,
 		},
 		{
 			name: "role",
 			description: "Role to add or remove",
-			type: CommandOptionTypes.Role,
+			type: ApplicationCommandOptionTypes.ROLE,
 			required: true,
 		},
 	],

@@ -1,8 +1,8 @@
 import { CommandInteraction } from "discord.js";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { CommandExecutionError } from "../../framework/errors/CommandExecutionError";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
 import { Command } from "../../framework/structures/commands/Command";
-import { CommandOptionTypes } from "../../typings";
 
 export const data = {
 	name: "logs",
@@ -10,7 +10,7 @@ export const data = {
 	options: [{
 		name: "channel",
 		description: "Channel to output logs to",
-		type: CommandOptionTypes.Channel,
+		type: ApplicationCommandOptionTypes.CHANNEL,
 		required: true,
 	}],
 	defaultPermission: false,

@@ -1,6 +1,7 @@
 import type { Channel, GuildMember, Permissions, Role, User } from "discord.js";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { Models } from "../..";
-import { CommandOptionTypes, ModelKey } from "../../../typings";
+import { ModelKey } from "../../../typings";
 
 type ReadonlyCommand = Readonly<{
 	name: string;
@@ -15,35 +16,35 @@ type ReadonlyOption = Readonly<
 	required?: boolean;
 } & (
 	| {
-		type: CommandOptionTypes.Subcommand | CommandOptionTypes.SubcommandGroup;
+		type: ApplicationCommandOptionTypes.SUB_COMMAND | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP;
 		options?: readonly ReadonlyOption[];
 	}
 	| {
-		type: CommandOptionTypes.String;
+		type: ApplicationCommandOptionTypes.STRING;
 		choices?: ReadonlyArray<Readonly<{ name: string; value: string }>>;
 		augmentTo?: ModelKey;
 	}
 	| {
-		type: CommandOptionTypes.Integer | CommandOptionTypes.Number;
+		type: ApplicationCommandOptionTypes.INTEGER | ApplicationCommandOptionTypes.NUMBER;
 		choices?: ReadonlyArray<Readonly<{ name: string; value: number }>>;
 	}
 	| {
-		type: CommandOptionTypes.Boolean
-		| CommandOptionTypes.User
-		| CommandOptionTypes.Channel
-		| CommandOptionTypes.Role
-		| CommandOptionTypes.Mentionable;
+		type: ApplicationCommandOptionTypes.BOOLEAN
+		| ApplicationCommandOptionTypes.USER
+		| ApplicationCommandOptionTypes.CHANNEL
+		| ApplicationCommandOptionTypes.ROLE
+		| ApplicationCommandOptionTypes.MENTIONABLE;
 	}
 )
 >;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
-type TypeIdToType<T, O, C, A> = T extends CommandOptionTypes.Subcommand
+type TypeIdToType<T, O, C, A> = T extends ApplicationCommandOptionTypes.SUB_COMMAND
 	? ArgumentsOfRaw<O>
-	: T extends CommandOptionTypes.SubcommandGroup
+	: T extends ApplicationCommandOptionTypes.SUB_COMMAND_GROUP
 		? ArgumentsOfRaw<O>
-		: T extends CommandOptionTypes.String
+		: T extends ApplicationCommandOptionTypes.STRING
 			? A extends ModelKey
 				? (typeof Models)[A] extends new (...args: any[]) => infer R
 					? R
@@ -51,17 +52,17 @@ type TypeIdToType<T, O, C, A> = T extends CommandOptionTypes.Subcommand
 				: C extends ReadonlyArray<{ value: string }>
 					? C[number]["value"]
 					: string
-			: T extends CommandOptionTypes.Integer | CommandOptionTypes.Number
+			: T extends ApplicationCommandOptionTypes.INTEGER | ApplicationCommandOptionTypes.NUMBER
 				? C extends ReadonlyArray<{ value: number }>
 					? C[number]["value"]
 					: number
-				: T extends CommandOptionTypes.Boolean
+				: T extends ApplicationCommandOptionTypes.BOOLEAN
 					? boolean
-					: T extends CommandOptionTypes.User
+					: T extends ApplicationCommandOptionTypes.USER
 						? GuildMember & { user: User; permissions: Permissions }
-						: T extends CommandOptionTypes.Channel
+						: T extends ApplicationCommandOptionTypes.CHANNEL
 							? Channel & { permissions: Permissions }
-							: T extends CommandOptionTypes.Role
+							: T extends ApplicationCommandOptionTypes.ROLE
 								? Role
 								: never;
 
@@ -78,7 +79,9 @@ type OptionToObject<O> = O extends {
 	? K extends string
 		? R extends true
 			? { [k in K]: TypeIdToType<T, O, C, A> }
-			: T extends CommandOptionTypes.Subcommand | CommandOptionTypes.SubcommandGroup | CommandOptionTypes.Boolean
+			: T extends ApplicationCommandOptionTypes.SUB_COMMAND
+			| ApplicationCommandOptionTypes.SUB_COMMAND_GROUP
+			| ApplicationCommandOptionTypes.BOOLEAN
 				? { [k in K]: TypeIdToType<T, O, C, A> }
 				: { [k in K]?: TypeIdToType<T, O, C, A> }
 		: never

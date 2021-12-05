@@ -57,15 +57,15 @@ export class Command extends KauriModule {
 
 	autocomplete(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		interaction: AutocompleteInteraction<"cached">,
+		interaction: AutocompleteInteraction,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		args: CommandInteractionOption<"cached">
+		args: CommandInteractionOption
 	): Awaited<void> {
 		throw new Error("This method must be implemented in subclasses");
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	exec(interaction: CommandInteraction<"cached">, args?: unknown): Awaited<void> {
+	exec(interaction: CommandInteraction, args?: unknown): Awaited<void> {
 		throw new Error("This method must be implemented in subclasses");
 	}
 }

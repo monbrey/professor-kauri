@@ -10,19 +10,6 @@ export const enum AugmentationTypes {
 	Weather = "Weather",
 }
 
-export const enum CommandOptionTypes {
-	Subcommand = "SUB_COMMAND",
-	SubcommandGroup = "SUB_COMMAND_GROUP",
-	String = "STRING",
-	Integer = "INTEGER",
-	Boolean = "BOOLEAN",
-	User = "USER",
-	Channel = "CHANNEL",
-	Role = "ROLE",
-	Mentionable = "MENTIONABLE",
-	Number = "NUMBER"
-}
-
 export type Module<T> = {
 	default: new (...args: any[]) => T;
 	data: CommandData;

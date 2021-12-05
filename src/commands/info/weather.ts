@@ -1,7 +1,8 @@
 import type { CommandInteraction } from "discord.js";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
 import { Command } from "../../framework/structures/commands/Command";
-import { CommandOptionTypes, AugmentationTypes } from "../../typings";
+import { AugmentationTypes } from "../../typings";
 
 export const data = {
 	name: "weather",
@@ -10,7 +11,7 @@ export const data = {
 
 		name: "effect",
 		description: "Weather effect to look-up",
-		type: CommandOptionTypes.String,
+		type: ApplicationCommandOptionTypes.STRING,
 		augmentTo: AugmentationTypes.Weather,
 		choices: [
 			{ value: "rain", name: "Rain" },

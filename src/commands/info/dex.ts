@@ -1,9 +1,10 @@
 import { AutocompleteInteraction, CommandInteraction, CommandInteractionOption } from "discord.js";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { DateTime } from "luxon";
 import { findBestMatch } from "string-similarity";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
 import { Command } from "../../framework/structures/commands/Command";
-import { AugmentationTypes, CommandOptionTypes } from "../../typings";
+import { AugmentationTypes } from "../../typings";
 
 export const data = {
 	name: "dex",
@@ -12,7 +13,7 @@ export const data = {
 		{
 			name: "species",
 			description: "Pokemon species to search for",
-			type: CommandOptionTypes.String,
+			type: ApplicationCommandOptionTypes.STRING,
 			augmentTo: AugmentationTypes.Pokemon,
 			required: true,
 			autocomplete: true,
@@ -25,10 +26,7 @@ export default class DexCommand extends Command {
 	private list?: string[];
 	private listLastFetched?: DateTime;
 
-	public async autocomplete(
-		interaction: AutocompleteInteraction<"cached">,
-		arg: CommandInteractionOption<"cached">
-	): Promise<void> {
+	public async autocomplete(interaction: AutocompleteInteraction, arg: CommandInteractionOption): Promise<void> {
 		if (typeof arg.value !== "string") {
 			return;
 		}
