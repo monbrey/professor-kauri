@@ -1,6 +1,6 @@
 {
   "name": "professor-kauri",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Monorepo for the Professor Kauri framework, bot and related utilities",
   "scripts": {
     "prebuild": "npm run clean",
