@@ -19,11 +19,7 @@ export const data = {
 
 export default class ItemCommand extends Command {
 	public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {
-		//     this.client.logger.info({
-		//       key: interaction.commandName,
-		//       query: item,
-		//       result: value.itemName,
-		//     });
 		await interaction.reply({ embeds: [args.item?.info()] });
+		this.client.logger.info({ command: "item", value: args.item.name });
 	}
 }

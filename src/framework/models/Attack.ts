@@ -113,11 +113,16 @@ export class Attack {
 
 		if (this.list && this.list.length !== 0) embed.addField("**Helpful data**", this.list.join("\n"));
 		if (this.price) {
-			const priceString = this.price.toLocaleString("en-US", { style: "currency", currency: "USD" });
+			const priceString = this.price.toLocaleString("en-US", {
+				style: "currency",
+				currency: "USD",
+				minimumFractionDigits: 0,
+				maximumFractionDigits: 0,
+			});
 			if (this.tmNumber) {
-				embed.addField("**TM**", `Taught by TM${this.tmNumber.toString().padStart(2, "0")} ($${priceString})`);
+				embed.addField("**TM**", `Taught by TM${this.tmNumber.toString().padStart(2, "0")} (${priceString})`);
 			} else if (this.hmNumber) {
-				embed.addField("**HM**", `Taught by HM${this.hmNumber.toString().padStart(2, "0")} ($${priceString})`);
+				embed.addField("**HM**", `Taught by HM${this.hmNumber.toString().padStart(2, "0")} (${priceString})`);
 			}
 		}
 
