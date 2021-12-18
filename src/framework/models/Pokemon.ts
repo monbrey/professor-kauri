@@ -1,5 +1,6 @@
 import { capitalCase } from "change-case";
 import { MessageEmbed, Util } from "discord.js";
+import { Rating } from "string-similarity";
 import type { CreativeRank, Location, PokemonAbility, PokemonAttack, PokemonMega, PokemonType, Species } from "urpg.js";
 import type { KauriClient } from "../structures/KauriClient";
 import { TypeColor } from "../util/Constants";
@@ -82,18 +83,18 @@ export class Pokemon {
 		// This.matchRating = apiData.rating;
 	}
 
-	public static async search(client: KauriClient, value: string): Promise<string[]> {
-		const data = await client.urpg.species.listClosest(value, 20);
+	public static async search(client: KauriClient, value: string, number = 20): Promise<Rating[]> {
+		const data = await client.urpg.species.listClosest(value, number);
 
 		if (!data) throw new Error("Not found");
-		return data.sort((a, b) => a.rating - b.rating).map(d => d.target);
+		return data.sort((a, b) => b.rating - a.rating);
 	}
 
 	public static async fetch(client: KauriClient, value: string): Promise<Pokemon> {
-		const data = await client.urpg.species.fetch(value);
+		const data = await client.urpg.species.fetchClosest(value);
 
 		if (!data) throw new Error("Not found");
-		return new this(data);
+		return new this(data.value);
 	}
 
 	public get genders(): string[] {

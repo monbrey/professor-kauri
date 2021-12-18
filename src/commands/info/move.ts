@@ -5,12 +5,12 @@ import { Command } from "../../framework/structures/commands/Command";
 import { AugmentationTypes } from "../../typings";
 
 export const data = {
-	name: "attack",
-	description: "Look-up Pokemon attack data",
+	name: "move",
+	description: "Look-up Pokemon move data",
 	options: [
 		{
-			name: "attack",
-			description: "Name of the attack to search for",
+			name: "move",
+			description: "Name of the move to search for",
 			type: ApplicationCommandOptionTypes.STRING,
 			augmentTo: AugmentationTypes.Attack,
 			required: true,
@@ -21,7 +21,7 @@ export const data = {
 
 export default class AttackCommand extends Command {
 	public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {
-		await interaction.reply({ embeds: [args.attack.info()] });
-		this.client.logger.info({ command: "attack", value: args.attack.name });
+		await interaction.reply({ embeds: [args.move.info()] });
+		this.client.logger.info({ command: "move", value: args.move.name });
 	}
 }

@@ -1,5 +1,6 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { AutocompleteInteraction, CommandInteraction, CommandInteractionOption, MessageEmbed } from "discord.js";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import { Pokemon } from "../../framework/models";
 import { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
 import { Command } from "../../framework/structures/commands/Command";
 import { AugmentationTypes } from "../../typings";
@@ -17,12 +18,14 @@ export const data = {
 			type: ApplicationCommandOptionTypes.STRING,
 			augmentTo: AugmentationTypes.Pokemon,
 			required: true,
+			autocomplete: true,
 		}, {
 			name: "defender",
 			description: "Pokemon species targetted by speed-based move",
 			type: ApplicationCommandOptionTypes.STRING,
 			augmentTo: AugmentationTypes.Pokemon,
 			required: true,
+			autocomplete: true,
 		}],
 	}, {
 		name: "by-number",
@@ -60,6 +63,17 @@ export default class SpeedCommand extends Command {
 		if (attacker === 0) return 1;
 
 		return Math.min(150, Math.floor((25 * defender) / attacker + 1));
+	}
+
+	public async autocomplete(interaction: AutocompleteInteraction, arg: CommandInteractionOption): Promise<void> {
+		if (typeof arg.value !== "string") {
+			return;
+		}
+
+		const list = await Pokemon.search(this.client, arg.value);
+		const choices = list.filter(x => x.rating >= 0.5).map(x => ({ name: x.target, value: x.target }));
+
+		await interaction.respond(choices);
 	}
 
 	public async exec(interaction: CommandInteraction, args: ArgumentsOf<typeof data>): Promise<void> {

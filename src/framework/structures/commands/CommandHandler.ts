@@ -1,4 +1,5 @@
 import type { AutocompleteInteraction, CommandInteraction, CommandInteractionOption, Snowflake } from "discord.js";
+import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import type { Command } from "./Command";
 import { Models } from "../..";
 import { ModelInstance } from "../../../typings";
@@ -59,7 +60,11 @@ export class CommandHandler extends KauriHandler<Command> {
 			return;
 		}
 
-		const focused = interaction.options.data.find(o => o.focused);
+		let focused = interaction.options.data.find(o => o.focused);
+		if (!focused && interaction.options.data[0]?.type === "SUB_COMMAND") {
+			focused = interaction.options.data[0].options?.find(o => o.focused);
+		}
+
 		if (!focused) {
 			return;
 		}
@@ -105,6 +110,7 @@ export class CommandHandler extends KauriHandler<Command> {
 			}
 		}
 
+
 		return args;
 	}
 
@@ -114,8 +120,9 @@ export class CommandHandler extends KauriHandler<Command> {
 		sub?: { group?: string; command?: string }
 	) {
 		switch (option.type) {
-			case "STRING":
+			case "STRING": {
 				return await this.augmentOption(module, option, sub) ?? option.value;
+			}
 			case "CHANNEL":
 				return option.channel;
 			case "USER":
@@ -134,12 +141,19 @@ export class CommandHandler extends KauriHandler<Command> {
 		option: CommandInteractionOption,
 		sub?: { group?: string; command?: string }
 	): Promise<ModelInstance | null> {
+		console.log("Augmenting", option, sub);
 		let base;
 		if (sub?.group) {
-			base = module.options.find(b => b.name === sub.group && b.type === "SUB_COMMAND_GROUP")?.options ?? [];
+			base = module.options.find(b =>
+				b.name === sub.group &&
+				b.type === ApplicationCommandOptionTypes.SUB_COMMAND_GROUP
+			)?.options ?? [];
 		}
 		if (sub?.command) {
-			base = (base ?? module.options).find(b => b.name === sub.command && b.type === "SUB_COMMAND")?.options ?? [];
+			base = (base ?? module.options).find(b =>
+				b.name === sub.command &&
+				b.type === ApplicationCommandOptionTypes.SUB_COMMAND
+			)?.options ?? [];
 		}
 		base = (base ?? module.options).find(b => b.name === option.name);
 
@@ -150,6 +164,31 @@ export class CommandHandler extends KauriHandler<Command> {
 	}
 
 	public async deploy({ global = true, guild = true } = {}): Promise<this> {
+		// If working in dev mode, deploy all commands to the guild
+		if (process.env.NODE_ENV === "development") {
+			this.client.application?.commands.set([]);
+			if (process.env.GUILD) {
+				const target = this.client.guilds.resolve(process.env.GUILD);
+				if (!target) throw new Error("Running in dev mode, but no guild onfigured");
+
+				const commands = this.modules;
+				try {
+					const deployed = await target.commands.set([...commands.values()]);
+					const permUpdates = commands.filter(c => c.defaultPermission === false).map(c => {
+						const cmd = deployed.find(d => d.name === c.name);
+						if (!cmd) throw new Error("Missing command deployment");
+						return { id: cmd.id, permissions: c.permissions };
+					});
+
+					await target.commands.permissions.set({ fullPermissions: permUpdates });
+				} catch (err) {
+					console.error(err);
+				}
+			}
+
+			return this;
+		}
+
 		// eslint-disable-next-line max-len
 		const [globalCommands, guildCommands] = this.modules.partition(m => m.global);
 
@@ -157,7 +196,7 @@ export class CommandHandler extends KauriHandler<Command> {
 
 		if (guild) {
 			const guildId = (process.env.GUILD ?? "135864828240592896") as Snowflake;
-			const target = await this.client.guilds.fetch(guildId);
+			const target = this.client.guilds.resolve(guildId);
 			if (!target) throw new Error("No guild");
 
 			try {

@@ -1,5 +1,4 @@
 import { ApplicationCommandPermissionData } from "discord.js";
-import type { PokemonType } from "urpg.js";
 
 export enum EmbedColor {
 	ERROR = 0xe50000,
