@@ -66,8 +66,8 @@ export default class WeightCommand extends Command {
 	): Promise<void> {
 		let attacker, defender;
 		if (species) {
-			attacker = species.attacker && { name: species.attacker.name, value: species.attacker.speed };
-			defender = { name: species.defender.name, value: species.defender.speed };
+			attacker = species.attacker && { name: species.attacker.name, value: species.attacker.weight };
+			defender = { name: species.defender.name, value: species.defender.weight };
 		} else if (number) {
 			attacker = number.attacker && { name: `${number.attacker}`, value: number.attacker };
 			defender = { name: `${number.defender}`, value: number.defender };
