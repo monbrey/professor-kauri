@@ -34,6 +34,8 @@ export class CommandHandler extends KauriHandler<Command> {
 			return;
 		}
 
+		if (module.defer) await interaction.deferReply();
+
 		const args = await this.parseOptions(module, interaction.options.data);
 
 		try {
@@ -141,7 +143,6 @@ export class CommandHandler extends KauriHandler<Command> {
 		option: CommandInteractionOption,
 		sub?: { group?: string; command?: string }
 	): Promise<ModelInstance | null> {
-		console.log("Augmenting", option, sub);
 		let base;
 		if (sub?.group) {
 			base = module.options.find(b =>

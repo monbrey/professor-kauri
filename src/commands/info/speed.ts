@@ -44,6 +44,7 @@ export const data = {
 		}],
 	}],
 	global: true,
+	defer: true,
 } as const;
 
 export default class SpeedCommand extends Command {
@@ -98,6 +99,6 @@ export default class SpeedCommand extends Command {
 				{ name: "Gyro Ball", value: `${this.calcGyro(attacker.value, defender.value)} BP`, inline: true },
 			]);
 
-		await interaction.reply({ embeds: [embed] });
+		await interaction.editReply({ embeds: [embed] });
 	}
 }

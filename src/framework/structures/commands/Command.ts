@@ -13,6 +13,7 @@ import { KauriModule, KauriModuleOptions } from "../KauriModule";
 
 export type CommandData = ChatInputApplicationCommandData & {
 	name: string;
+	defer?: boolean;
 	global?: boolean;
 	options?: CommandOptionData[];
 	permissions?: ApplicationCommandPermissionData[];
@@ -31,6 +32,7 @@ export class Command extends KauriModule {
 	public handler!: KauriHandler;
 
 	public name: string;
+	public defer: boolean;
 	public description: string;
 	public global: boolean;
 	public defaultPermission: boolean;
@@ -45,6 +47,7 @@ export class Command extends KauriModule {
 		this.defaultPermission = options.defaultPermission ?? true;
 		this.options = options.options ?? [];
 		this.global = options.global ?? false;
+		this.defer = options.defer ?? false;
 		this.permissions = [...DefaultPermissions, ...(options.permissions || [])];
 	}
 
