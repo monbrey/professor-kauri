@@ -1,5 +1,6 @@
 import { MessageEmbed } from "discord.js";
 import type { KauriClient } from "../structures/KauriClient";
+import { Database } from "../util/Database";
 
 export interface AbilitySchema {
 	_id: number;
@@ -24,8 +25,7 @@ export class Ability {
 	}
 
 	public static async fetch(client: KauriClient, value: string): Promise<Ability | null> {
-		const database = await client.getDatabase();
-		const data = await database.collection<AbilitySchema>("ability").findOne({ name: value });
+		const data = await Database.findClosest("ability", "name", value);
 
 		return data ? new this(data) : null;
 	}

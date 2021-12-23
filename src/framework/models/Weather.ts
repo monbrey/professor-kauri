@@ -1,5 +1,6 @@
 import type { HexColorString, MessageEmbedOptions, Snowflake } from "discord.js";
 import type { KauriClient } from "../structures/KauriClient";
+import { Database } from "../util/Database";
 
 export interface WeatherSchema {
 	_id: number;
@@ -26,8 +27,7 @@ export class Weather {
 	}
 
 	public static async fetch(client: KauriClient, value: string): Promise<Weather | null> {
-		const db = await client.getDatabase();
-		const data = await db.collection<WeatherSchema>("weather").findOne({ code: value });
+		const data = await Database.findClosest("weather", "code", value);
 		return data ? new this(data) : null;
 	}
 
