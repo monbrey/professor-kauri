@@ -62,7 +62,7 @@
     "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
     "dotenv-expand": "^5.1.0",
-    "log4js": "^6.3.0",
+    "log4js": "^6.4.0",
     "logstach": "github:log4js-node/logstashudp",
     "luxon": "^2.0.2",
     "mongodb": "^4.1.3",
