@@ -14,7 +14,7 @@
     "lint": "npx eslint src/**/*.ts",
     "lint:fix": "npx eslint src/**/*.ts --fix",
     "postversion": "git push && git push --tags",
-    "start": "node --enable-source-maps dist/index.js",
+    "start": "node --enable-source-maps dist/index.js"
   },
   "repository": {
     "type": "git",
