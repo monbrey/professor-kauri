@@ -7,7 +7,8 @@
   },
   "description": "Monorepo for the Professor Kauri framework, bot and related utilities",
   "scripts": {
-    "prebuild": "npm run clean && npm install",
+    "prebuild": "npm install --only=dev && npm run build && npm prune --production",
+    "postbuild": "npm install",
     "build": "tsc -p src/tsconfig.json",
     "watch": "tsc -p src/tsconfig.json --watch",
     "clean": "npx rimraf dist",
