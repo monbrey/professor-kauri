@@ -107,8 +107,8 @@ export const data = {
 		type: ApplicationCommandOptionType.?,
 		autocomplete: true,
 		required: true,
-		choices: [{ name: '', value: ''}]
-		options: []
+		choices: [{ name: '', value: ''}],
+		options: [],
 		channelTypes: [ChannelType.?],
 		minValue: 0,
 		maxValue: 100,
