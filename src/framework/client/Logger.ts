@@ -1,6 +1,6 @@
 import { captureEvent, captureException, captureMessage, init, Integrations as SentryIntegrations, Severity } from '@sentry/node';
 import { Integrations as TracingIntegrations } from '@sentry/tracing';
-import { Events, CommandInteraction } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import { container } from 'tsyringe';
 
 if (!process.env.SENTRY_URL) {
@@ -33,7 +33,7 @@ export class Logger {
 			});
 	}
 
-	public logEvent(name: keyof typeof Events) {
+	public logEvent(name: string) {
 		captureMessage(`Event fired`,
 			context => {
 				context.setExtras({
