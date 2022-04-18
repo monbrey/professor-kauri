@@ -32,7 +32,8 @@ export class CommandHandler extends BaseHandler<Command> {
 			const module = container.resolve<Command>(interaction.commandName);
 			// if (module.defer) await interaction.deferReply();
 			const args = await this.parseOptions(module, interaction.options.data);
-			module.runCommand(interaction, args);
+			await module.runCommand(interaction, args);
+			this.client.logger.logCommand(interaction);
 		} catch (e: unknown) {
 			this.client.logger.captureException(e);
 			if (e instanceof Error) {

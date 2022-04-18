@@ -1,6 +1,5 @@
 import { resolve } from 'path';
 import { PrismaClient } from '@prisma/client';
-import * as Sentry from '@sentry/node';
 import { ApplicationCommandOptionType, IntentsBitField, Partials } from 'discord.js';
 import 'reflect-metadata';
 import { container } from 'tsyringe';
@@ -8,10 +7,6 @@ import { KauriClient } from './framework/client/KauriClient';
 
 container.register<PrismaClient>('PrismaClient', {
 	useValue: new PrismaClient()
-});
-
-container.register<typeof Sentry>('Sentry', {
-	useValue: Sentry
 });
 
 container.registerInstance('KauriClientOptions', {
@@ -57,4 +52,4 @@ client.on('ready', async () => {
 	});
 });
 
-client.login(process.env.DISCORD_TOKEN).catch(console.error);
+client.login(process.env.DISCORD_TOKEN).catch(client.logger.captureException);

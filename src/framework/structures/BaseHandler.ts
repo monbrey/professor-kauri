@@ -44,15 +44,12 @@ export abstract class BaseHandler<T extends Module = Module> {
 
 	public load(path: string): this {
 		if (!this.extensions.has(extname(path))) {
-			this.client.logger.captureEvent({
-				message: `Invalid extension - found ${extname(path)}, expected one of ${Array.from(this.extensions).toString()}`
-			});
 			return this;
 		}
 
 		import(path).then((module: RawModule) => {
 			this.register(module);
-		}).catch(console.error);
+		}).catch(this.client.logger.captureException);
 
 		return this;
 	}

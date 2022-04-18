@@ -44,6 +44,7 @@
   "dependencies": {
     "@prisma/client": "^3.12.0",
     "@sentry/node": "^6.19.6",
+    "@sentry/tracing": "^6.19.6",
     "common-tags": "^1.8.2",
     "discord.js": "^14.0.0-dev.1649808570-01a423d",
     "pg": "^8.7.3",

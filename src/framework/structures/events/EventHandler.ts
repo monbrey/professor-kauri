@@ -37,7 +37,11 @@ export class EventHandler extends BaseHandler<Event> {
 				return this;
 			}
 
-			emitter.on(event.name, event.runEvent);
+			emitter.on(event.name, (...args) => {
+				this.client.logger.logEvent(event.name);
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+				event.runEvent(...args);
+			});
 
 			return this;
 		} catch (e) {
