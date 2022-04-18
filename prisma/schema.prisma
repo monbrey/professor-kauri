@@ -1,0 +1,223 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ability {
+  dbid                 Int                  @id @default(autoincrement())
+  name                 String               @db.VarChar(32)
+  description          String               @db.VarChar(2048)
+  announcement         String               @db.VarChar(16)
+  ability_announcement ability_announcement @relation(fields: [announcement], references: [announcement], onDelete: SetNull)
+  species_ability      species_ability[]
+}
+
+model ability_announcement {
+  announcement String    @id @db.VarChar(16)
+  ability      ability[]
+}
+
+model attack {
+  dbid              Int              @id @default(autoincrement())
+  name              String           @db.VarChar(32)
+  description       String           @db.VarChar(2048)
+  type              String           @db.VarChar(8)
+  category          String           @db.VarChar(8)
+  power             Int?
+  accuracy          Int?
+  attack_category   attack_category  @relation(fields: [category], references: [category], onDelete: SetNull)
+  type_attackTotype type             @relation(fields: [type], references: [name], onDelete: SetNull)
+  species_attack    species_attack[]
+}
+
+model attack_category {
+  category String   @id @db.VarChar(8)
+  attack   attack[]
+}
+
+model badge {
+  dbid      Int    @id @default(autoincrement())
+  name      String @db.VarChar(32)
+  icon_url  String @db.VarChar(512)
+  image_url String @db.VarChar(512)
+  gym       gym[]
+}
+
+model end_of_turn {
+  dbid   Int    @id @default(autoincrement())
+  effect String @db.VarChar(64)
+  order  Float  @db.Real
+}
+
+model gym {
+  dbid       Int          @id @default(autoincrement())
+  name       String       @db.VarChar(64)
+  badge_id   Int
+  region     String       @db.VarChar(16)
+  badge      badge        @relation(fields: [badge_id], references: [dbid], onDelete: SetNull)
+  gym_leader gym_leader[]
+}
+
+model gym_leader {
+  dbid              Int                 @id @default(autoincrement())
+  gym_id            Int
+  trainer_id        Int
+  leader_from       DateTime            @db.Timestamp(6)
+  leader_to         DateTime?           @db.Timestamp(6)
+  gym               gym                 @relation(fields: [gym_id], references: [dbid], onDelete: SetNull)
+  trainer           trainer             @relation(fields: [trainer_id], references: [dbid], onDelete: SetNull)
+  gym_leader_roster gym_leader_roster[]
+}
+
+model gym_leader_roster {
+  gym_leader_id Int
+  roster_id     Int
+  gym_leader    gym_leader @relation(fields: [gym_leader_id], references: [dbid], onDelete: Cascade)
+  roster        roster     @relation(fields: [roster_id], references: [dbid], onDelete: Cascade)
+
+  @@id([gym_leader_id, roster_id])
+}
+
+model inventory {
+  dbid       Int     @id @default(autoincrement())
+  trainer_id Int
+  item_id    Int
+  item       item    @relation(fields: [item_id], references: [dbid], onDelete: Cascade)
+  trainer    trainer @relation(fields: [trainer_id], references: [dbid], onDelete: Cascade)
+  trade      trade[]
+}
+
+model item {
+  dbid        Int         @id @default(autoincrement())
+  name        String      @db.VarChar(256)
+  description String      @db.VarChar(2048)
+  price       Int?
+  inventory   inventory[]
+}
+
+model roster {
+  dbid                   Int                      @id @default(autoincrement())
+  trainer_id             Int
+  species_id             Int
+  nickname               String?                  @db.VarChar(32)
+  gym_rental             Boolean?
+  caught_on              DateTime                 @db.Timestamp(6)
+  species                species                  @relation(fields: [species_id], references: [dbid], onDelete: NoAction, onUpdate: NoAction)
+  trainer                trainer                  @relation(fields: [trainer_id], references: [dbid], onDelete: NoAction, onUpdate: NoAction)
+  gym_leader_roster      gym_leader_roster[]
+  roster_learned_ability roster_learned_ability[]
+  roster_learned_attack  roster_learned_attack[]
+  trade                  trade[]
+}
+
+model roster_learned_ability {
+  roster_id       Int
+  species_id      Int
+  ability_id      Int
+  roster          roster          @relation(fields: [roster_id], references: [dbid], onDelete: Cascade)
+  species_ability species_ability @relation(fields: [species_id, ability_id], references: [species_id, ability_id], onDelete: Cascade)
+
+  @@id([roster_id, species_id, ability_id])
+}
+
+model roster_learned_attack {
+  roster_id      Int
+  species_id     Int
+  attack_id      Int
+  roster         roster         @relation(fields: [roster_id], references: [dbid], onDelete: Cascade)
+  species_attack species_attack @relation(fields: [species_id, attack_id], references: [species_id, attack_id], onDelete: Cascade)
+
+  @@id([roster_id, species_id, attack_id])
+}
+
+model species {
+  dbid                     Int               @id @default(autoincrement())
+  dex_number               Int
+  name                     String            @db.VarChar(64)
+  type1                    String            @db.VarChar(8)
+  type2                    String?           @db.VarChar(8)
+  hp                       Int
+  attack                   Int
+  defense                  Int
+  special_attack           Int
+  special_defense          Int
+  speed                    Int
+  height                   Int
+  weight                   Int
+  type_species_type1Totype type              @relation("species_type1Totype", fields: [type1], references: [name], onDelete: SetNull)
+  type_species_type2Totype type?             @relation("species_type2Totype", fields: [type2], references: [name])
+  roster                   roster[]
+  species_ability          species_ability[]
+  species_attack           species_attack[]
+}
+
+model species_ability {
+  species_id             Int
+  ability_id             Int
+  hidden                 Boolean
+  ability                ability                  @relation(fields: [ability_id], references: [dbid], onDelete: Cascade)
+  species                species                  @relation(fields: [species_id], references: [dbid], onDelete: Cascade)
+  roster_learned_ability roster_learned_ability[]
+
+  @@id([species_id, ability_id])
+}
+
+model species_attack {
+  species_id            Int
+  attack_id             Int
+  method                String                  @db.VarChar(16)
+  attack                attack                  @relation(fields: [attack_id], references: [dbid], onDelete: Cascade)
+  species               species                 @relation(fields: [species_id], references: [dbid], onDelete: Cascade)
+  roster_learned_attack roster_learned_attack[]
+
+  @@id([species_id, attack_id])
+}
+
+model trade {
+  dbid                                          Int        @id @default(autoincrement())
+  roster_id                                     Int?
+  inventory_id                                  Int?
+  source_trainer_id                             Int
+  destination_trainer_id                        Int
+  value                                         Int?
+  reference_trade_id                            Int?
+  trainer_trade_destination_trainer_idTotrainer trainer    @relation("trade_destination_trainer_idTotrainer", fields: [destination_trainer_id], references: [dbid], onDelete: SetNull)
+  inventory                                     inventory? @relation(fields: [inventory_id], references: [dbid])
+  trade                                         trade?     @relation("tradeTotrade_reference_trade_id", fields: [reference_trade_id], references: [dbid])
+  roster                                        roster?    @relation(fields: [roster_id], references: [dbid])
+  trainer_trade_source_trainer_idTotrainer      trainer    @relation("trade_source_trainer_idTotrainer", fields: [source_trainer_id], references: [dbid], onDelete: SetNull)
+  other_trade                                   trade[]    @relation("tradeTotrade_reference_trade_id")
+}
+
+model trainer {
+  dbid                                        Int          @id @default(autoincrement())
+  discord_id                                  String       @unique @db.VarChar(20)
+  name                                        String       @db.VarChar(32)
+  joined_at                                   DateTime     @db.Timestamp(6)
+  gym_leader                                  gym_leader[]
+  inventory                                   inventory[]
+  roster                                      roster[]
+  trade_trade_destination_trainer_idTotrainer trade[]      @relation("trade_destination_trainer_idTotrainer")
+  trade_trade_source_trainer_idTotrainer      trade[]      @relation("trade_source_trainer_idTotrainer")
+}
+
+model type {
+  name                        String    @id @db.VarChar(8)
+  color                       Int
+  attack                      attack[]
+  species_species_type1Totype species[] @relation("species_type1Totype")
+  species_species_type2Totype species[] @relation("species_type2Totype")
+}
+
+model weather {
+  dbid        Int    @id @default(autoincrement())
+  name        String @db.VarChar(32)
+  description String @db.VarChar(2048)
+  color       Int
+  emoji       String @db.VarChar(4)
+  code        String @db.VarChar(8)
+}
