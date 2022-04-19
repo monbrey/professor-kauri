@@ -1,9 +1,14 @@
 export * from './client/KauriClient';
-export * from './client/Logger';
-export * from './models';
+// export * from './client/Logger';
+export * from './models/Ability';
+export * from './models/Attack';
+export * from './models/EndOfTurn';
+export * from './models/Item';
+export * from './models/Species';
+export * from './models/Weather';
 export * from './structures/BaseHandler';
 export * from './structures/Module';
-export * from './structures/commands/ArgumentsOf';
+// export * from './structures/commands/ArgumentsOf';
 export * from './structures/commands/Command';
 export * from './structures/commands/CommandHandler';
 export * from './structures/events/Event';
