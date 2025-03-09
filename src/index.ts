@@ -1,9 +1,6 @@
 import { resolve } from "path";
 import { Intents } from "discord.js";
-import dotenv from "dotenv";
 import { KauriClient } from "./framework/structures/KauriClient";
-
-dotenv.config();
 
 const client = new KauriClient({
 	commandDirectory: resolve(__dirname, "commands"),
