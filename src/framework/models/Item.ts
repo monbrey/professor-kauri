@@ -1,50 +1,54 @@
-import { MessageEmbed } from "discord.js";
-import type { KauriClient } from "../structures/KauriClient";
-import { Database } from "../util/Database";
+// import { MessageEmbed } from "discord.js";
+// import type { KauriClient } from "../structures/KauriClient";
+// import { Database } from "../../database";
 
+// export type ItemSchema = {
+// 	_id: number;
+// 	category?: string[];
+// 	description: string;
+// 	name: string;
+// 	price?: number;
+// };
 
-export interface ItemSchema {
-	_id: number;
-	name: string;
-	description: string;
-	category?: string[];
-	price?: number;
-}
+// export class Item {
+// 	public name: any;
 
-export class Item {
-	public name: any;
-	public description: string;
-	public category: string[] | undefined;
-	public price: number | undefined;
+// 	public description: string;
 
-	constructor(data: ItemSchema) {
-		this.name = data.name;
-		this.description = data.description;
-		this.category = data.category;
-		this.price = data.price;
-	}
+// 	public category: string[] | undefined;
 
-	public static async fetch(client: KauriClient, value: string): Promise<Item | null> {
-		const data = await Database.findClosest("item", "name", value);
-		return data ? new this(data) : null;
-	}
+// 	public price: number | undefined;
 
+// 	constructor(data: ItemSchema) {
+// 		this.name = data.name;
+// 		this.description = data.description;
+// 		this.category = data.category;
+// 		this.price = data.price;
+// 	}
 
-	public info(): MessageEmbed {
-		const embed = new MessageEmbed()
-			.setTitle(this.name)
-			.setDescription(this.description);
+// 	public static async fetch(client: KauriClient, value: string): Promise<Item | null> {
+// 		const data = await Database.findClosest("item", "name", value);
+// 		return data ? new this(data) : null;
+// 	}
 
-		if (this.price) {
-			const priceString = this.price.toLocaleString("en-US", {
-				style: "currency",
-				currency: "USD",
-				minimumFractionDigits: 0,
-				maximumFractionDigits: 0,
-			});
-			embed.addFields({ name: "**Price**", value: priceString });
-		}
+// 	public info(): MessageEmbed {
+// 		const embed = new MessageEmbed()
+// 			.setTitle(this.name)
+// 			.setDescription(this.description);
 
-		return embed;
-	}
-}
+// 		if (this.price) {
+// 			const priceString = this.price.toLocaleString("en-US", {
+// 				style: "currency",
+// 				currency: "USD",
+// 				minimumFractionDigits: 0,
+// 				maximumFractionDigits: 0,
+// 			});
+// 			embed.addFields({
+// 				name: "**Price**",
+// 				value: priceString,
+// 			});
+// 		}
+
+// 		return embed;
+// 	}
+// }

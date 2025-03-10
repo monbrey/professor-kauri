@@ -1,35 +1,36 @@
-import type { KauriClient } from "../structures/KauriClient";
-import { Database } from "../util/Database";
+// import type { KauriClient } from "../structures/KauriClient";
+// import { Database } from "../../database";
 
-export interface EotSchema {
-	_id: number;
-	order: number;
-	effect: string;
-}
+// export type EotSchema = {
+// 	_id: number;
+// 	effect: string;
+// 	order: number;
+// };
 
-export class EOT {
-	public order: number;
-	public effect: string;
+// export class EOT {
+// 	public order: number;
 
-	constructor(data: EotSchema) {
-		this.order = data.order;
-		this.effect = data.effect;
-	}
+// 	public effect: string;
 
-	public static async fetch(client: KauriClient, value: string): Promise<EOT | null> {
-		const data = await Database.findClosest("eot", "effect", value);
-		return data ? new this(data) : null;
-	}
+// 	constructor(data: EotSchema) {
+// 		this.order = data.order;
+// 		this.effect = data.effect;
+// 	}
 
-	public async getSurrounding(client: KauriClient): Promise<EOT[]> {
-		const database = await client.getDatabase();
-		const data = await database.collection<EotSchema>("eot").find({
-			order: {
-				$gt: Math.floor(this.order) - 3,
-				$lt: Math.floor(this.order) + 3,
-			},
-		}).toArray();
+// 	public static async fetch(client: KauriClient, value: string): Promise<EOT | null> {
+// 		const data = await Database.findClosest("eot", "effect", value);
+// 		return data ? new this(data) : null;
+// 	}
 
-		return data.map(d => new EOT(d));
-	}
-}
+// 	public async getSurrounding(client: KauriClient): Promise<EOT[]> {
+// 		const database = await client.getDatabase();
+// 		const data = await database.collection<EotSchema>("eot").find({
+// 			order: {
+// 				$gt: Math.floor(this.order) - 3,
+// 				$lt: Math.floor(this.order) + 3,
+// 			},
+// 		}).toArray();
+
+// 		return data.map((d) => new EOT(d));
+// 	}
+// }

@@ -9,8 +9,8 @@ const config: Configuration = {
 				type: "pattern",
 				pattern: "timestamp=%d level=%p %x{data}",
 				tokens: {
-					data: function (logEvent) {
-						return logEvent.data.flatMap(data => {
+					data(logEvent) {
+						return logEvent.data.flatMap((data) => {
 							if (typeof data === "string") {
 								return `message=${data}`;
 							} else {
@@ -23,10 +23,13 @@ const config: Configuration = {
 		},
 	},
 	categories: {
-		default: { appenders: ["out"], level: "debug" },
+		default: {
+			appenders: ["out"],
+			level: "debug",
+		},
 	},
 };
 
 log4js.configure(config);
 const _logger = log4js.getLogger();
-export const Logger = _logger;
+export const logger = _logger;

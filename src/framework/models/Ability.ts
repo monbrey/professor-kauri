@@ -1,56 +1,64 @@
-import { MessageEmbed } from "discord.js";
-import type { KauriClient } from "../structures/KauriClient";
-import { Database } from "../util/Database";
+// import { MessageEmbed } from "discord.js";
+// import type { KauriClient } from "../structures/KauriClient";
+// import { Database } from "../../database";
 
-export interface AbilitySchema {
-	_id: number;
-	name: string;
-	description: string;
-	announcement?: string;
-	affects?: string;
-	info: MessageEmbed;
-}
+// export type AbilitySchema = {
+// 	_id: number;
+// 	affects?: string;
+// 	announcement?: string;
+// 	description: string;
+// 	info: MessageEmbed;
+// 	name: string;
+// };
 
-export class Ability {
-	public name: string;
-	public description: string;
-	public announcement?: string;
-	public affects?: string;
+// export class Ability {
+// 	public name: string;
 
-	constructor(data: AbilitySchema) {
-		this.name = data.name;
-		this.description = data.description;
-		this.announcement = data.announcement;
-		this.affects = data.affects;
-	}
+// 	public description: string;
 
-	public static async fetch(client: KauriClient, value: string): Promise<Ability | null> {
-		const data = await Database.findClosest("ability", "name", value);
+// 	public announcement?: string;
 
-		return data ? new this(data) : null;
-	}
+// 	public affects?: string;
 
-	public info(): MessageEmbed {
-		const embed = new MessageEmbed().setDescription(this.description);
+// 	constructor(data: AbilitySchema) {
+// 		this.name = data.name;
+// 		this.description = data.description;
+// 		this.announcement = data.announcement;
+// 		this.affects = data.affects;
+// 	}
 
-		switch (this.announcement) {
-			case "Active":
-				embed.setTitle(`${this.name} | Announced on activation`);
-				break;
-			case "Enter":
-				embed.setTitle(`${this.name} | Announced on entry`);
-				break;
-			case "Hidden":
-				embed.setTitle(`${this.name} | Hidden`);
-				break;
-			default:
-				embed.setTitle(`${this.name}`);
-		}
+// 	public static async fetch(client: KauriClient, value: string): Promise<Ability | null> {
+// 		const data = await Database.findClosest("ability", "name", value);
 
-		if (this.affects) embed.addFields({ name: "**Interacts with**", value: this.affects });
-		// if (this.additional) embed.addFields({ name: '**Additional information**', value: this.additional });
+// 		return data ? new this(data) : null;
+// 	}
 
-		return embed;
-	}
-}
+// 	public info(): MessageEmbed {
+// 		const embed = new MessageEmbed().setDescription(this.description);
+
+// 		switch (this.announcement) {
+// 			case "Active":
+// 				embed.setTitle(`${this.name} | Announced on activation`);
+// 				break;
+// 			case "Enter":
+// 				embed.setTitle(`${this.name} | Announced on entry`);
+// 				break;
+// 			case "Hidden":
+// 				embed.setTitle(`${this.name} | Hidden`);
+// 				break;
+// 			default:
+// 				embed.setTitle(`${this.name}`);
+// 		}
+
+// 		if (this.affects) {
+// 			embed.addFields({
+// 				name: "**Interacts with**",
+// 				value: this.affects,
+// 			});
+// 		}
+// 		// if (this.additional) embed.addFields({ name: '**Additional information**', value: this.additional });
+
+// 		return embed;
+// 	}
+// }
 
