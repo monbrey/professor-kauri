@@ -1,12 +1,11 @@
 {
   "name": "professor-kauri",
   "version": "5.0.0",
+  "type": "module",
   "engines": {
-    "node": ">=16",
-    "npm": ">=7"
+    "node": ">=22"
   },
   "description": "Monorepo for the Professor Kauri framework, bot and related utilities",
-  "type": "module",
   "scripts": {
     "prebuild": "npm run clean && npm install --production=false",
     "build": "tsc -p tsconfig.json",
@@ -14,7 +13,6 @@
     "clean": "npx rimraf dist",
     "lint": "npx eslint src/**/*.ts",
     "lint:fix": "npx eslint src/**/*.ts --fix",
-    "postversion": "git push && git push --tags",
     "start": "node --enable-source-maps --env-file=.env dist/index.js"
   },
   "repository": {
@@ -51,6 +49,7 @@
     "dice-coefficient": "^2.1.1",
     "eslint-config-neon": "^0.2.4",
     "log4js": "^6.9.1",
+    "pokeapi-typescript": "^3.0.0",
     "postgres": "^3.4.5",
     "urpg.js": "^2.4.0"
   },

@@ -1,10 +1,8 @@
-import { readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { Routes } from "@discordjs/core";
 import type { REST } from "@discordjs/rest";
-import { name } from "./events/interactionCreate.js";
-import { readFile } from "node:fs/promises";
 
 export const publishIcons = async (rest: REST) => {
 	if (!process.env.CLIENT_ID) {

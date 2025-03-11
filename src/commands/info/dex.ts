@@ -1,6 +1,7 @@
 import type { API, APIApplicationCommandAutocompleteGuildInteraction, APIChatInputApplicationCommandGuildInteraction, RESTPostAPIChatInputApplicationCommandsJSONBody } from "@discordjs/core";
 import { ApplicationCommandOptionType, ApplicationIntegrationType, ButtonStyle, InteractionContextType } from "@discordjs/core";
 import { stripIndents } from "common-tags";
+import { PokeAPI } from "pokeapi-typescript";
 import type { ContainerComponent } from "../../types.js";
 import { abilities, genders, prices, titleCase } from "../../util/formatters.js";
 import { urpg } from "../../util/urpg.js";
@@ -27,8 +28,13 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 		return;
 	}
 
-	const result = await urpg.species.fetch(query.value);
-	if (!result) {
+	const dex_entry = await urpg.species.fetch(query.value);
+	if (!dex_entry) {
+		return;
+	}
+
+	const pokeapi_entry = await PokeAPI.Pokemon.fetch(query.value);
+	if (!pokeapi_entry) {
 		return;
 	}
 
@@ -36,21 +42,10 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 		type: 17,
 		components: [
 			{
-				type: 9,
-				components: [
-					{
-						type: 10,
-						content: stripIndents`
-							### ${result.name} (#${result.dexno})
-							*The ${result.classification} Pokémon*`,
-					},
-				],
-				accessory: {
-					type: 2,
-					label: "Ultradex",
-					style: ButtonStyle.Link,
-					url: `https://pokemonurpg.com/pokemon/${result.name}`,
-				},
+				type: 10,
+				content: stripIndents`
+					### ${dex_entry.name} (#${dex_entry.dexno.toString().padStart(3, "0")})
+					*The ${dex_entry.classification} Pokémon*`,
 			},
 			{
 				type: 14,
@@ -62,33 +57,51 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 					{
 						type: 10,
 						content: stripIndents`
-						Type: ${titleCase(result.type1)} | ${titleCase(result.type2)}
-						Abilities:
-							${abilities(result)}
-						Legal Genders: ${genders(result)}
-						Height: ${result.height}m
-						Weight: ${result.weight}kg
-						Ranks: Story: ${result.storyRank.name} | Art: ${result.artRank.name}
-						Prices:
-							${prices(result)}
+						**Type**: ${titleCase(dex_entry.type1)} | ${titleCase(dex_entry.type2)}
+						**Abilities**:
+							${abilities(dex_entry)}
+						**Legal Genders**:
+							${genders(dex_entry)}
+						**Height**: ${dex_entry.height}m
+						**Weight**: ${dex_entry.weight}kg
+						**Ranks**: Story: ${dex_entry.storyRank.name} | Art: ${dex_entry.artRank.name}
+						**Prices**:
+							${prices(dex_entry)}
 						`,
 					},
 				],
 				accessory: {
 					type: 11,
-					media: { url: `https://pokemonurpg.com/img/models/${result.dexno}.gif` },
+					media: { url: pokeapi_entry.sprites.other["official-artwork"].front_default },
 				},
+			},
+			{
+				type: 10,
+				content: stripIndents`**Stats**\`\`\`
+						HP  | Att | Def | SpA | SpD | Spe
+						${dex_entry.hp} | ${dex_entry.attack} | ${dex_entry.defense} | ${dex_entry.specialAttack} | ${dex_entry.specialDefense} | ${dex_entry.speed}
+					\`\`\``,
 			},
 			{
 				type: 14,
 				divider: true,
 			},
 			{
-				type: 10,
-				content: stripIndents`\`\`\`
-						HP  | Att | Def | SpA | SpD | Spe
-						${result.hp} | ${result.attack} | ${result.defense} | ${result.specialAttack} | ${result.specialDefense} | ${result.speed}
-					\`\`\``,
+				type: 1,
+				components: [
+					{
+						type: 2,
+						custom_id: `moves-${dex_entry.name}`,
+						label: "Moves",
+						style: ButtonStyle.Secondary,
+					},
+					{
+						type: 2,
+						label: "Ultradex",
+						style: ButtonStyle.Link,
+						url: `https://pokemonurpg.com/pokemon/${dex_entry.name}`,
+					},
+				],
 			},
 		],
 	};

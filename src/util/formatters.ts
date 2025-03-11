@@ -4,22 +4,22 @@ import type { Species } from "urpg.js";
 export const titleCase = (str: string) => str[0].toUpperCase() + str.slice(1).toLowerCase();
 
 // Dex
-export const abilities = ({ abilities }: Species) => `-${abilities.map((ability) => `${ability.name}${ability.hidden ? " (HA)" : ""}`).join("\n- ")}`;
+export const abilities = ({ abilities }: Species) => `- ${abilities.map((ability) => `${ability.name}${ability.hidden ? " (HA)" : ""}`).join("\n- ")}`;
 
 export const genders = ({ maleAllowed, femaleAllowed }: Species) => {
 	if (maleAllowed && femaleAllowed) {
-		return "Male ♂️ | Female ♀️";
+		return "- Male ♂️\n- Female ♀️";
 	}
 
 	if (maleAllowed) {
-		return "Male ♂️";
+		return "- Male ♂️";
 	}
 
 	if (femaleAllowed) {
-		return "Female ♀️";
+		return "- Female ♀️";
 	}
 
-	return "Genderless";
+	return "- Genderless";
 };
 
 export const prices = ({ pokemart, contestCredits }: Species) => {
@@ -33,5 +33,5 @@ export const prices = ({ pokemart, contestCredits }: Species) => {
 		prices.push(`- Berry Store: ${pokemart.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })}`);
 	}
 
-	return prices.length ? "- Not available for purchase" : prices.join("\n");
+	return prices.length === 0 ? "- Not available for purchase" : prices.join("\n");
 };
