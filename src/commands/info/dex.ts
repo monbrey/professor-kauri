@@ -20,7 +20,7 @@ export const data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
 			autocomplete: true,
 		},
 	],
-} as const;
+};
 
 export const execute = async (api: API, interaction: APIChatInputApplicationCommandGuildInteraction) => {
 	const query = interaction.data.options?.find((x) => x.name === "species");
@@ -111,6 +111,7 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 		interaction.token,
 		{
 			flags: 1 << 15,
+			// @ts-expect-error Components V2
 			components: [container],
 		},
 	);

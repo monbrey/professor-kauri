@@ -15,10 +15,10 @@ export const data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
 			description: "Pokemon species to search for",
 			type: ApplicationCommandOptionType.String,
 			required: true,
-			// autocomplete: true,
+			autocomplete: true,
 		},
 	],
-} as const;
+};
 
 export const execute = async (api: API, interaction: APIChatInputApplicationCommandGuildInteraction) => {
 	console.log("Executing");
@@ -89,6 +89,7 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 		interaction.token,
 		{
 			flags: 1 << 15,
+			// @ts-expect-error Components V2
 			components: [container],
 		},
 	);

@@ -2,9 +2,6 @@
   "name": "professor-kauri",
   "version": "5.0.0",
   "type": "module",
-  "engines": {
-    "node": ">=22"
-  },
   "description": "Monorepo for the Professor Kauri framework, bot and related utilities",
   "scripts": {
     "prebuild": "npm run clean && npm install --production=false",
@@ -25,23 +22,6 @@
     "url": "https://github.com/monbrey/professor-kauri/issues"
   },
   "homepage": "https://github.com/monbrey/professor-kauri#readme",
-  "eslintConfig": {
-    "extends": "marine/prettier/node",
-    "ignorePatterns": [
-      "**/dist/*"
-    ],
-    "rules": {
-      "@typescript-eslint/naming-convention": 0,
-      "quotes": [
-        "error",
-        "double",
-        {
-          "avoidEscape": true,
-          "allowTemplateLiterals": true
-        }
-      ]
-    }
-  },
   "dependencies": {
     "@discordjs/core": "^2.0.1",
     "@types/node": "^22.13.10",
