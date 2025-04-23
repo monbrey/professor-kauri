@@ -1,8 +1,7 @@
-import type { API, APIApplicationCommandAutocompleteGuildInteraction, APIChatInputApplicationCommandGuildInteraction, RESTPostAPIChatInputApplicationCommandsJSONBody } from "@discordjs/core";
-import { ApplicationCommandOptionType, ApplicationIntegrationType, ButtonStyle, InteractionContextType } from "@discordjs/core";
+import type { API, APIApplicationCommandAutocompleteGuildInteraction, APIChatInputApplicationCommandGuildInteraction, APIContainerComponent, RESTPostAPIChatInputApplicationCommandsJSONBody } from "@discordjs/core";
+import { ApplicationCommandOptionType, ApplicationIntegrationType, ButtonStyle, ComponentType, InteractionContextType, MessageFlags } from "@discordjs/core";
 import { stripIndents } from "common-tags";
 import { PokeAPI } from "pokeapi-typescript";
-import type { ContainerComponent } from "../../types.js";
 import { abilities, genders, prices, titleCase } from "../../util/formatters.js";
 import { urpg } from "../../util/urpg.js";
 
@@ -38,24 +37,24 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 		return;
 	}
 
-	const container: ContainerComponent = {
-		type: 17,
+	const container: APIContainerComponent = {
+		type: ComponentType.Container,
 		components: [
 			{
-				type: 10,
+				type: ComponentType.TextDisplay,
 				content: stripIndents`
 					### ${dex_entry.name} (#${dex_entry.dexno.toString().padStart(3, "0")})
 					*The ${dex_entry.classification} Pokémon*`,
 			},
 			{
-				type: 14,
+				type: ComponentType.Separator,
 				divider: true,
 			},
 			{
-				type: 9,
+				type: ComponentType.Section,
 				components: [
 					{
-						type: 10,
+						type: ComponentType.TextDisplay,
 						content: stripIndents`
 						**Type**: ${titleCase(dex_entry.type1)} | ${titleCase(dex_entry.type2)}
 						**Abilities**:
@@ -71,32 +70,32 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 					},
 				],
 				accessory: {
-					type: 11,
+					type: ComponentType.Thumbnail,
 					media: { url: pokeapi_entry.sprites.other["official-artwork"].front_default },
 				},
 			},
 			{
-				type: 10,
+				type: ComponentType.TextDisplay,
 				content: stripIndents`**Stats**\`\`\`
 						HP  | Att | Def | SpA | SpD | Spe
 						${dex_entry.hp} | ${dex_entry.attack} | ${dex_entry.defense} | ${dex_entry.specialAttack} | ${dex_entry.specialDefense} | ${dex_entry.speed}
 					\`\`\``,
 			},
 			{
-				type: 14,
+				type: ComponentType.Separator,
 				divider: true,
 			},
 			{
-				type: 1,
+				type: ComponentType.ActionRow,
 				components: [
 					{
-						type: 2,
+						type: ComponentType.Button,
 						custom_id: `moves-${dex_entry.name}`,
 						label: "Moves",
 						style: ButtonStyle.Secondary,
 					},
 					{
-						type: 2,
+						type: ComponentType.Button,
 						label: "Ultradex",
 						style: ButtonStyle.Link,
 						url: `https://pokemonurpg.com/pokemon/${dex_entry.name}`,
@@ -110,8 +109,7 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 		interaction.id,
 		interaction.token,
 		{
-			flags: 1 << 15,
-			// @ts-expect-error Components V2
+			flags: MessageFlags.IsComponentsV2,
 			components: [container],
 		},
 	);
@@ -131,12 +129,6 @@ export const autocomplete = async (api: API, interaction: APIApplicationCommandA
 	await api.interactions.createAutocompleteResponse(
 		interaction.id,
 		interaction.token,
-		{
-			choices: list.map((result) => ({
-				name: result.target,
-				value: result.target,
-			}
-			)),
-		},
+		{ choices: list.map((result) => ({ name: result.target, value: result.target })) },
 	);
 };

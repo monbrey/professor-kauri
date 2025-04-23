@@ -1,7 +1,6 @@
-import type { API, APIChatInputApplicationCommandGuildInteraction, RESTPostAPIChatInputApplicationCommandsJSONBody } from "@discordjs/core";
-import { ApplicationCommandOptionType, ApplicationIntegrationType, InteractionContextType } from "@discordjs/core";
+import type { API, APIChatInputApplicationCommandGuildInteraction, APIContainerComponent, RESTPostAPIChatInputApplicationCommandsJSONBody } from "@discordjs/core";
+import { ApplicationCommandOptionType, ApplicationIntegrationType, ComponentType, InteractionContextType, MessageFlags } from "@discordjs/core";
 import { PokeAPI } from "pokeapi-typescript";
-import type { ContainerComponent } from "../../types.js";
 import { urpg } from "../../util/urpg.js";
 
 export const data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
@@ -61,22 +60,22 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 	}
 
 	const outputs = Object.entries(sorted).map(([name, value]) => ({ type: 10, content: `**${name}**\n${value.sort((a, b) => a.localeCompare(b)).join(", ")}` }));
-	const container: ContainerComponent = {
-		type: 17,
+	const container: APIContainerComponent = {
+		type: ComponentType.Container,
 		components: [
 			{
-				type: 10,
+				type: ComponentType.TextDisplay,
 				content: `### ${dex_entry.name} (#${dex_entry.dexno.toString().padStart(3, "0")})`,
 			},
 			{
-				type: 14,
+				type: ComponentType.Separator,
 				divider: true,
 			},
 			{
-				type: 9,
+				type: ComponentType.Section,
 				components: [outputs[0]],
 				accessory: {
-					type: 11,
+					type: ComponentType.Thumbnail,
 					media: { url: pokeapi_entry.sprites.other["official-artwork"].front_default },
 				},
 			},
@@ -88,8 +87,7 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 		interaction.id,
 		interaction.token,
 		{
-			flags: 1 << 15,
-			// @ts-expect-error Components V2
+			flags: MessageFlags.IsComponentsV2,
 			components: [container],
 		},
 	);

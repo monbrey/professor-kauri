@@ -1,5 +1,5 @@
 import type { API, APIChatInputApplicationCommandGuildInteraction, RESTPostAPIChatInputApplicationCommandsJSONBody } from "@discordjs/core";
-import { ApplicationCommandOptionType, ApplicationIntegrationType, InteractionContextType } from "@discordjs/core";
+import { ApplicationCommandOptionType, ApplicationIntegrationType, InteractionContextType, MessageFlags } from "@discordjs/core";
 import { stripIndents } from "common-tags";
 
 const Section = {
@@ -93,8 +93,7 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 				interaction.id,
 				interaction.token,
 				{
-					flags: 1 << 15,
-					// @ts-expect-error Components v2
+					flags: MessageFlags.IsComponentsV2,
 					components: [container],
 				},
 			);

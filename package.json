@@ -40,5 +40,8 @@
     "globals": "^16.0.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.0"
+  },
+  "overrides": {
+    "discord-api-types": "^0.38.0"
   }
 }

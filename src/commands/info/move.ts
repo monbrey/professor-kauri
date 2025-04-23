@@ -1,9 +1,3 @@
-// import type { CommandInteraction } from "discord.js";
-// import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
-// import type { ArgumentsOf } from "../../framework/structures/commands/ArgumentsOf";
-// import { Command } from "../../framework/structures/commands/Command";
-// import { AugmentationTypes } from "../../typings";
-
 import { ApplicationCommandOptionType } from "@discordjs/core";
 
 export const data = {

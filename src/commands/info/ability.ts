@@ -1,9 +1,7 @@
-import type { API, APIApplicationCommandAutocompleteGuildInteraction, APIChatInputApplicationCommandGuildInteraction } from "@discordjs/core";
-import { ApplicationCommandOptionType } from "@discordjs/core";
+import type { API, APIApplicationCommandAutocompleteGuildInteraction, APIChatInputApplicationCommandGuildInteraction, APIContainerComponent } from "@discordjs/core";
+import { ApplicationCommandOptionType, ComponentType, MessageFlags } from "@discordjs/core";
 import { stripIndents } from "common-tags";
 import { PokeAPI } from "pokeapi-typescript";
-import type { ContainerComponent } from "../../types.js";
-import { ComponentV2Type } from "../../types.js";
 import { titleCase } from "../../util/formatters.js";
 import { urpg } from "../../util/urpg.js";
 
@@ -19,7 +17,6 @@ export const data = {
 			autocomplete: true,
 		},
 	],
-	global: true,
 };
 
 export const execute = async (api: API, interaction: APIChatInputApplicationCommandGuildInteraction) => {
@@ -34,24 +31,24 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 		return;
 	}
 
-	const container: ContainerComponent = {
-		type: ComponentV2Type.Container,
+	const container: APIContainerComponent = {
+		type: ComponentType.Container,
 		components: [
 			{
-				type: ComponentV2Type.TextDisplay,
+				type: ComponentType.TextDisplay,
 				content: `## ${entry.names.find((name) => name.language.name === "en")?.name}`,
 			},
 			{
-				type: ComponentV2Type.Separator,
+				type: ComponentType.Separator,
 				divider: true,
 			},
 			{
-				type: ComponentV2Type.TextDisplay,
+				type: ComponentType.TextDisplay,
 				content: stripIndents`### Description
 				${entry.effect_entries.find((effect) => effect.language.name === "en")?.short_effect}`,
 			},
 			{
-				type: ComponentV2Type.TextDisplay,
+				type: ComponentType.TextDisplay,
 				content: stripIndents`### Pokemon with ability
 				${entry.pokemon.map((pokemon) => `${titleCase(pokemon.pokemon.name)}${pokemon.is_hidden ? " (HA)" : ""}`).join(", ")}`,
 			},
@@ -62,8 +59,7 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 		interaction.id,
 		interaction.token,
 		{
-			flags: 1 << 15,
-			// @ts-expect-error Components V2
+			flags: MessageFlags.IsComponentsV2,
 			components: [container],
 		},
 	);
