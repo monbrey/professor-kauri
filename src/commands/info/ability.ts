@@ -49,8 +49,13 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 			},
 			{
 				type: ComponentType.TextDisplay,
-				content: stripIndents`### Pokemon with ability
-				${entry.pokemon.map((pokemon) => `${titleCase(pokemon.pokemon.name)}${pokemon.is_hidden ? " (HA)" : ""}`).join(", ")}`,
+				content: stripIndents`### Pokemon with ${entry.names.find((name) => name.language.name === "en")?.name} as a primary ability
+				${entry.pokemon.filter(p => !p.is_hidden).map(pokemon => titleCase(pokemon.pokemon.name)).join(", ")}`,
+			},
+			{
+				type: ComponentType.TextDisplay,
+				content: stripIndents`### Pokemon with ${entry.names.find((name) => name.language.name === "en")?.name} as a hidden ability
+				${entry.pokemon.filter(p => p.is_hidden).map(pokemon => titleCase(pokemon.pokemon.name)).join(", ")}`,
 			},
 		],
 	};

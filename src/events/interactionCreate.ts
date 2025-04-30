@@ -3,6 +3,8 @@ import { GatewayDispatchEvents, InteractionType } from "@discordjs/core";
 import type { AsyncEventEmitterListenerForEvent } from "@vladfrangu/async_event_emitter";
 import { isChatInputApplicationCommandInteraction } from "discord-api-types/utils";
 import { handleAutocomplete, handleChatInputCommand } from "../handlers/commands.js";
+import { handleMessageComponentInteraction } from "../handlers/components.js";
+import { handleModalSubmitInteraction } from "../handlers/modals.js";
 
 export const name = GatewayDispatchEvents.InteractionCreate;
 export const execute: AsyncEventEmitterListenerForEvent<Client, typeof name> = async ({ data, api }) => {
@@ -16,13 +18,13 @@ export const execute: AsyncEventEmitterListenerForEvent<Client, typeof name> = a
 
 			break;
 		case InteractionType.MessageComponent:
-			// await Handlers.messageComponentInteraction(api, data);
+			await handleMessageComponentInteraction(api, data);
 			break;
 		case InteractionType.ApplicationCommandAutocomplete:
 			await handleAutocomplete(api, data);
 			break;
 		case InteractionType.ModalSubmit:
-			// await handleModalSubmitInteraction(api, data);
+			await handleModalSubmitInteraction(api, data);
 			break;
 	}
 };

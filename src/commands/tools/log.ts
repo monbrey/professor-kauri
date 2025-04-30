@@ -1,5 +1,5 @@
-import type { API, APIChatInputApplicationCommandGuildInteraction, RESTPostAPIChatInputApplicationCommandsJSONBody } from "@discordjs/core";
-import { ApplicationCommandOptionType, ApplicationIntegrationType, InteractionContextType, MessageFlags } from "@discordjs/core";
+import type { API, APIChatInputApplicationCommandGuildInteraction, APIComponentInContainer, APIContainerComponent, APIMessageComponentButtonInteraction, APIMessageComponentSelectMenuInteraction, APIMessageUserSelectInteractionData, APIModalSubmitInteraction, APITextDisplayComponent, APIUser, RESTPostAPIChatInputApplicationCommandsJSONBody } from "@discordjs/core";
+import { ApplicationCommandOptionType, ApplicationIntegrationType, ButtonStyle, ComponentType, InteractionContextType, MessageFlags, TextInputStyle } from "@discordjs/core";
 import { stripIndents } from "common-tags";
 
 const Section = {
@@ -11,6 +11,107 @@ const Section = {
 	Morphic: 6,
 };
 
+class Log {
+	winner?: APIUser;
+	winningTeam?: string;
+	loser?: APIUser;
+	losingTeam?: string;
+	description?: string;
+	size?: string;
+	generation?: string;
+	privacy?: string;
+	format?: string;
+	clauses?: string[];
+	createdAt?: Date;
+
+	private formatRuleBlock() {
+		return stripIndents`
+			${this.winner && this.loser ? `**<@${this.winner.id}> vs <@${this.loser.id}>**` : ''}
+			${this.size ? `${this.size}v${this.size}` : ''}
+			${this.generation ?? ''}
+			${this.privacy ?? ''}
+			${this.format ?? ''}
+			${this.clauses?.join(", ") ?? ''}
+		`
+	};
+
+	private formatTeamBlock() {
+		return (this.winner && this.loser && this.winningTeam && this.losingTeam) ?
+			stripIndents`
+				${this.winner?.username}'s ${this.winningTeam}
+				vs
+				${this.loser?.username}'s ${this.losingTeam}
+			` : '';
+	};
+
+	private formatCashBlock() {
+		return stripIndents`
+			${this.winner?.username ?? '*Pending*'}: $${Number(this.size) * 500}
+			${this.loser?.username ?? '*Pending*'}: $${Number(this.size) * 250}
+		`
+	};
+
+	public generateLogContainer(draft = true) {
+		const container: APIContainerComponent = {
+			type: ComponentType.Container,
+			components: [
+				{
+					type: ComponentType.TextDisplay,
+					content: `### Battle Log #999${draft ? ' (draft)' : ''}`,
+				},
+				{
+					type: ComponentType.Separator,
+					divider: true,
+				}
+			]
+		};
+
+		const rules = this.formatRuleBlock();
+		if (rules.trim().length > 0) {
+			container.components.push({
+				type: ComponentType.TextDisplay,
+				content: rules,
+			}, {
+				type: ComponentType.Separator,
+				divider: true,
+			});
+		}
+
+		const teams = this.formatTeamBlock();
+		if (teams.trim().length > 0) {
+			container.components.push({
+				type: ComponentType.TextDisplay,
+				content: teams,
+			}, {
+				type: ComponentType.Separator,
+				divider: true,
+			});
+		}
+
+		if (this.description) {
+			container.components.push({
+				type: ComponentType.TextDisplay,
+				content: this.description,
+			}, {
+				type: ComponentType.Separator,
+				divider: true,
+			});
+		}
+
+		const cash = this.formatCashBlock();
+		if (cash.trim().length > 0) {
+			container.components.push({
+				type: ComponentType.TextDisplay,
+				content: cash,
+			})
+		}
+
+		return container;
+	};
+}
+
+const logs = new Map<number, Log>();
+
 export const data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
 	name: "log",
 	description: "Create a log entry",
@@ -21,20 +122,7 @@ export const data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
 			name: "battles",
 			description: "Create a battle log",
 			type: ApplicationCommandOptionType.Subcommand,
-			options: [
-				{
-					name: "trainer-1",
-					description: "Participating trainer #1",
-					type: ApplicationCommandOptionType.User,
-					required: true,
-				},
-				{
-					name: "trainer-2",
-					description: "Participating trainer #2",
-					type: ApplicationCommandOptionType.User,
-					required: true,
-				},
-			],
+			options: [],
 		},
 	],
 } as const;
@@ -47,42 +135,129 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 
 	switch (section.name) {
 		case "battles": {
-			const trainer1 = section.options?.find((x) => x.name === "trainer-1");
-			const trainer2 = section.options?.find((x) => x.name === "trainer-2");
-			if (!trainer1 || !trainer2) {
-				return;
-			}
+			const log = new Log();
+			logs.set(999, log);
 
-			const container = {
-				type: 17,
+			const controlContainer: APIContainerComponent = {
+				type: ComponentType.Container,
 				components: [
 					{
-						type: 10,
-						content: "### Battle Log #999 (preview)",
+						type: ComponentType.TextDisplay,
+						content: "### Input controls",
 					},
 					{
-						type: 14,
+						type: ComponentType.Separator,
 						divider: true,
 					},
 					{
-						type: 10,
-						content: stripIndents`
-							<@${trainer1.value}> vs <@${trainer2.value}>
-
-							`,
+						type: ComponentType.ActionRow,
+						components: [{
+							custom_id: "log:999:winner",
+							placeholder: "Winning trainer",
+							type: ComponentType.UserSelect,
+						}]
 					},
 					{
-						type: 14,
+						type: ComponentType.ActionRow,
+						components: [{
+							custom_id: "log:999:loser",
+							placeholder: "Losing trainer",
+							type: ComponentType.UserSelect,
+						}]
+					},
+					{
+						type: ComponentType.Separator,
 						divider: true,
 					},
 					{
-						type: 1,
+						type: ComponentType.ActionRow,
 						components: [
 							{
-								type: 3,
-								custom_id: "battle:999:size",
-								label: "Team Size",
+								type: ComponentType.StringSelect,
+								custom_id: "log:999:size",
+								placeholder: "Size",
 								options: [{ label: "1v1", value: "1" }, { label: "2v2", value: "2" }, { label: "3v3", value: "3" }, { label: "4v4", value: "4" }, { label: "5v5", value: "5" }, { label: "6v6", value: "6" }],
+							}]
+					},
+					{
+						type: ComponentType.ActionRow,
+						components: [{
+							type: ComponentType.StringSelect,
+							custom_id: "log:999:generation",
+							placeholder: "Generation",
+							options: [{ label: "GSC", value: "GSC" }, { label: "RSE", value: "RSE" }, { label: "SM", value: "SM" }],
+						}]
+					},
+					{
+						type: ComponentType.ActionRow,
+						components: [{
+							type: ComponentType.StringSelect,
+							custom_id: "log:999:privacy",
+							placeholder: "Privacy",
+							options: [{ label: "Public", value: "Public" }, { label: "Private", value: "Private" }],
+						}]
+					},
+					{
+						type: ComponentType.ActionRow,
+						components: [{
+							type: ComponentType.StringSelect,
+							custom_id: "log:999:format",
+							placeholder: "Format",
+							options: [{ label: "Open", value: "Open" }, { label: "Full", value: "Full" }, { label: "Box", value: "Box" }],
+						}]
+					},
+					{
+						type: ComponentType.ActionRow,
+						components: [
+							{
+								type: ComponentType.StringSelect,
+								custom_id: "log:999:clauses",
+								placeholder: "Clauses",
+								min_values: 1,
+								max_values: 4,
+								options: [
+									{ label: "Sleep Clause", value: "Sleep" },
+									{ label: "Freeze Clause", value: "Freeze" },
+									{ label: "Evasion Clause", value: "Evasion" },
+									{ label: "Accuracy Clause", value: "Accuracy" }
+								],
+							}
+						],
+					},
+					{
+						type: ComponentType.Separator,
+						divider: true,
+					},
+					{
+						type: ComponentType.ActionRow,
+						components: [
+							{
+								type: ComponentType.StringSelect,
+								custom_id: "log:999:loading",
+								placeholder: "Special Battles",
+								options: [{ label: "Gym", value: "1" }, { label: "Other", value: "2" }],
+								disabled: true,
+							}
+						],
+					},
+					{
+						type: ComponentType.Separator,
+						divider: true,
+					},
+					{
+						type: ComponentType.ActionRow,
+						components: [
+							{
+								type: ComponentType.Button,
+								custom_id: "log:999:entertext",
+								label: "Enter Text",
+								style: ButtonStyle.Secondary,
+							},
+							{
+								type: ComponentType.Button,
+								custom_id: "log:999:finalise",
+								label: "Save and Submit",
+								style: ButtonStyle.Primary,
 							},
 						],
 					},
@@ -94,7 +269,7 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 				interaction.token,
 				{
 					flags: MessageFlags.IsComponentsV2,
-					components: [container],
+					components: [log.generateLogContainer(), controlContainer],
 				},
 			);
 			break;
@@ -104,3 +279,121 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 			break;
 	}
 };
+
+export const onClick = async (api: API, interaction: APIMessageComponentButtonInteraction) => {
+	const [command, id, section] = interaction.data.custom_id.split(":");
+	const log = logs.get(Number(id));
+	if (!log) return;
+
+	switch (section) {
+		case "entertext":
+			await api.interactions.createModal(
+				interaction.id,
+				interaction.token,
+				{
+					custom_id: "log:999:modal",
+					title: "Enter log text",
+					components: [{
+						type: ComponentType.ActionRow,
+						components: [{
+							type: ComponentType.TextInput,
+							custom_id: "log:999:winningteam",
+							label: "Winning team",
+							style: TextInputStyle.Short,
+						}]
+					}, {
+						type: ComponentType.ActionRow,
+						components: [{
+							type: ComponentType.TextInput,
+							custom_id: "log:999:losingteam",
+							label: "Losing team",
+							style: TextInputStyle.Short,
+						}]
+					}, {
+						type: ComponentType.ActionRow,
+						components: [{
+							type: ComponentType.TextInput,
+							custom_id: "log:999:description",
+							label: "Battle description",
+							style: TextInputStyle.Paragraph,
+						}]
+					}]
+				},
+			);
+			break;
+		case "finalise":
+			await api.interactions.updateMessage(
+				interaction.id,
+				interaction.token,
+				{
+					components: [log.generateLogContainer(false)],
+				}
+			);
+
+			await api.interactions.followUp(
+				interaction.application_id,
+				interaction.token,
+				{
+					content: "Log saved!",
+					flags: MessageFlags.Ephemeral,
+				}
+			);
+
+			break;
+	}
+
+}
+
+export const onSelect = async (api: API, interaction: APIMessageComponentSelectMenuInteraction) => {
+	const [command, id, section] = interaction.data.custom_id.split(":");
+	const log = logs.get(Number(id));
+	if (!log) return;
+
+	switch (section) {
+		case "size":
+			log.size = interaction.data.values[0];
+			break;
+		case "generation":
+			log.generation = interaction.data.values[0];
+			break;
+		case "privacy":
+			log.privacy = interaction.data.values[0];
+			break;
+		case "format":
+			log.format = interaction.data.values[0];
+			break;
+		case "clauses":
+			log.clauses = interaction.data.values;
+			break;
+		case "winner":
+			log.winner = (interaction.data as APIMessageUserSelectInteractionData).resolved.users[interaction.data.values[0]];
+			break;
+		case "loser":
+			log.loser = (interaction.data as APIMessageUserSelectInteractionData).resolved.users[interaction.data.values[0]];
+			break;
+	}
+
+	await api.interactions.updateMessage(
+		interaction.id,
+		interaction.token,
+		{
+			components: [log.generateLogContainer(), interaction.message?.components?.[1]!]
+		});
+}
+
+export const onModal = async (api: API, interaction: APIModalSubmitInteraction) => {
+	const [command, id] = interaction.data.custom_id.split(":");
+	const log = logs.get(Number(id));
+	if (!log) return;
+
+	log.winningTeam = interaction.data.components[0].components[0].value;
+	log.losingTeam = interaction.data.components[1].components[0].value;
+	log.description = interaction.data.components[2].components[0].value;
+
+	await api.interactions.updateMessage(
+		interaction.id,
+		interaction.token,
+		{
+			components: [log.generateLogContainer(), interaction.message?.components?.[1]!]
+		});
+}
