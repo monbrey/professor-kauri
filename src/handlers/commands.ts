@@ -2,7 +2,6 @@ import { readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { API, APIApplicationCommandAutocompleteInteraction } from "@discordjs/core";
-// eslint-disable-next-line import-x/no-extraneous-dependencies
 import { MessageFlags, type APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 
 const path = join(dirname(process.argv[1]), "commands");

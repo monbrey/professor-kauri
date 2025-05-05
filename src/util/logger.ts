@@ -14,7 +14,10 @@ const config: Configuration = {
 							if (typeof data === "string") {
 								return `message=${data}`;
 							} else {
-								return Object.entries(data).map(([k, v]) => `${k}=${v}`);
+								return Object.entries(data).map(([
+									key,
+									value,
+								]) => `${key}=${value}`);
 							}
 						}).join(" ");
 					},

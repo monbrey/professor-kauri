@@ -8,6 +8,14 @@ export default [
     rules: {
       "import-x/no-extraneous-dependencies": "off",
       "@stylistic/js/object-property-newline": ["error", { allowAllPropertiesOnSameLine: true }],
+      "@stylistic/js/array-element-newline": ["error", "always"],
+      "@stylistic/js/lines-between-class-members": [
+        "error",
+        {
+          enforce: [
+            { blankLine: "never", prev: "field", next: "field" }
+          ]
+        }]
     },
     languageOptions: {
       parserOptions: {

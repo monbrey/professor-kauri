@@ -1,8 +1,8 @@
-import { API, APIMessageComponentButtonInteraction, APIMessageComponentInteraction, APIMessageComponentSelectMenuInteraction } from "@discordjs/core";
-import { isMessageComponentButtonInteraction, isMessageComponentSelectMenuInteraction } from "discord-api-types/utils";
 import { readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
+import type { API, APIMessageComponentButtonInteraction, APIMessageComponentInteraction, APIMessageComponentSelectMenuInteraction } from "@discordjs/core";
+import { isMessageComponentButtonInteraction, isMessageComponentSelectMenuInteraction } from "discord-api-types/utils";
 
 const path = join(dirname(process.argv[1]), "commands");
 const files = await readdir(path, { recursive: true }).then((dir) => dir.filter((file) => file.endsWith(".js")));
@@ -13,7 +13,7 @@ const commands = new Map<string, {
 
 for (const file of files) {
 	const { data, onClick, onSelect } = await import(pathToFileURL(join(path, file)).href);
-	if (!data || (!onClick && !onSelect)) {
+	if (!data || !onClick && !onSelect) {
 		continue;
 	}
 
@@ -24,17 +24,18 @@ for (const file of files) {
 }
 
 export const handleMessageComponentInteraction = async (api: API, interaction: APIMessageComponentInteraction) => {
-	const [command, ] = interaction.data.custom_id.split(":");
+	const [_command] = interaction.data.custom_id.split(":");
 
-	if(commands.has(command)) {
-		const { onClick, onSelect } = commands.get(command)!;
-		if (isMessageComponentButtonInteraction(interaction) && onClick) {
-			return await onClick(api, interaction as APIMessageComponentButtonInteraction);
-		}
-		
-		if (isMessageComponentSelectMenuInteraction(interaction) && onSelect) {
-			return await onSelect(api, interaction as APIMessageComponentSelectMenuInteraction);
-		}
+	const command = commands.get(_command);
+	if (!command) {
+		return;
 	}
 
-}
+	if (isMessageComponentButtonInteraction(interaction) && command.onClick) {
+		await command.onClick(api, interaction as APIMessageComponentButtonInteraction);
+	}
+
+	if (isMessageComponentSelectMenuInteraction(interaction) && command.onSelect) {
+		await command.onSelect(api, interaction as APIMessageComponentSelectMenuInteraction);
+	}
+};

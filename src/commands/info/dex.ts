@@ -9,7 +9,10 @@ export const data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
 	name: "dex",
 	description: "Get Ultradex data for a Pokemon",
 	contexts: [InteractionContextType.Guild],
-	integration_types: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
+	integration_types: [
+		ApplicationIntegrationType.GuildInstall,
+		ApplicationIntegrationType.UserInstall,
+	],
 	options: [
 		{
 			name: "species",

@@ -7,7 +7,10 @@ export const data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
 	name: "learnset",
 	description: "Get Ultradex movelist data for a Pokemon",
 	contexts: [InteractionContextType.Guild],
-	integration_types: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
+	integration_types: [
+		ApplicationIntegrationType.GuildInstall,
+		ApplicationIntegrationType.UserInstall,
+	],
 	options: [
 		{
 			name: "species",
@@ -20,7 +23,6 @@ export const data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
 };
 
 export const execute = async (api: API, interaction: APIChatInputApplicationCommandGuildInteraction) => {
-	console.log("Executing");
 	const query = interaction.data.options?.find((x) => x.name === "species");
 	if (query?.type !== ApplicationCommandOptionType.String) {
 		return;
@@ -59,7 +61,10 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 		sorted[key].push(val.name);
 	}
 
-	const outputs = Object.entries(sorted).map(([name, value]) => ({ type: 10, content: `**${name}**\n${value.sort((a, b) => a.localeCompare(b)).join(", ")}` }));
+	const outputs = Object.entries(sorted).map(([
+		name,
+		value,
+	]) => ({ type: 10, content: `**${name}**\n${value.sort((a, b) => a.localeCompare(b)).join(", ")}` }));
 	const container: APIContainerComponent = {
 		type: ComponentType.Container,
 		components: [
