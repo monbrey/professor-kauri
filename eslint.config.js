@@ -7,9 +7,9 @@ export default [
     files: ["**/*.ts"],
     rules: {
       "import-x/no-extraneous-dependencies": "off",
-      "@stylistic/js/object-property-newline": ["error", { allowAllPropertiesOnSameLine: true }],
+      "@stylistic/ts/object-property-newline": ["error", { allowAllPropertiesOnSameLine: true }],
       "@stylistic/js/array-element-newline": ["error", "always"],
-      "@stylistic/js/lines-between-class-members": [
+      "@stylistic/ts/lines-between-class-members": [
         "error",
         {
           enforce: [
