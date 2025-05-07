@@ -1,6 +1,7 @@
-import type { APIContainerComponent, APITextDisplayComponent, APIUser } from "@discordjs/core";
+import type { APIContainerComponent, APISeparatorComponent, APITextDisplayComponent, APIUser } from "@discordjs/core";
 import { ComponentType } from "@discordjs/core";
 import { stripIndents } from "common-tags";
+import { sep } from "path";
 
 export class BattleLog {
 	public readonly id: number;
@@ -9,12 +10,12 @@ export class BattleLog {
 	public loser?: APIUser;
 	public losingTeam?: string;
 	public description?: string;
-	public size?: string;
+	public size?: number;
 	public generation?: string;
 	public privacy?: string;
 	public format?: string;
 	public clauses?: string[];
-	public createdAt?: Date;
+	public createdAt: Date;
 
 	public constructor(id: number) {
 		this.id = id;
@@ -28,7 +29,7 @@ export class BattleLog {
 		};
 	}
 
-	private generateRulesBlock(): APITextDisplayComponent {
+	private generateRulesBlock(): APITextDisplayComponent | undefined {
 		const rules = [];
 		if (this.winner && this.loser) {
 			rules.push(`**<@${this.winner.id}> vs <@${this.loser.id}>**`);
@@ -54,67 +55,70 @@ export class BattleLog {
 			rules.push(this.clauses.join(", "));
 		}
 
+		if (rules.length > 0)
+			return {
+				type: ComponentType.TextDisplay,
+				content: rules.join("\n"),
+			};
+	}
+
+	private generateTeamBlock(): APITextDisplayComponent | undefined {
+		if (!this.winner || !this.loser) return;
+		if (!this.winningTeam || !this.losingTeam) return;
+
 		return {
 			type: ComponentType.TextDisplay,
-			content: rules.join("\n"),
-		};
+			content: stripIndents`
+				${this.winner?.username}'s ${this.winningTeam}
+				vs
+				${this.loser?.username}'s ${this.losingTeam}
+			`
+		}
 	}
 
-	private formatTeamBlock() {
-		return this.winner && this.loser && this.winningTeam && this.losingTeam ?
-			stripIndents`
-				${this.winner?.username} 's ${this.winningTeam}
-		vs
-				${this.loser?.username} 's ${this.losingTeam}
-			` : "";
-	}
-
-	private formatCashBlock() {
-		return stripIndents`
-			${this.winner?.username ?? "*Pending*"}: $${Number(this.size) * 500}
-			${this.loser?.username ?? "*Pending*"}: $${Number(this.size) * 250}
-		`;
+	private generateCashBlock(): APITextDisplayComponent | undefined {
+		if (this.winner && this.loser) {
+			return {
+				type: ComponentType.TextDisplay,
+				content: stripIndents`
+					${this.winner.username}: $${this.size ? this.size * 500 : ''}
+					${this.loser.username}: $${this.size ? this.size * 250 : ''}
+				`
+			}
+		}
 	}
 
 	public generateLogContainer(draft = true) {
+		const separator: APISeparatorComponent = { type: ComponentType.Separator };
 		const container: APIContainerComponent = {
 			type: ComponentType.Container,
 			components: [
 				this.generateTitleComponent(),
-				{ type: ComponentType.Separator },
-				this.generateRulesBlock() ?? null,
-				{ type: ComponentType.Separator },
-			],
+				separator,
+			]
 		};
 
-		const teams = this.formatTeamBlock();
-		if (teams.trim().length > 0) {
-			container.components.push({
-				type: ComponentType.TextDisplay,
-				content: teams,
-			}, {
-				type: ComponentType.Separator,
-				divider: true,
-			});
+		const rules = this.generateRulesBlock();
+		const teams = this.generateTeamBlock();
+		const cash = this.generateCashBlock();
+
+		if (rules) {
+			container.components.push(rules, separator);
+		}
+
+		if (teams) {
+			container.components.push(teams, separator);
 		}
 
 		if (this.description) {
-			container.components.push({
-				type: ComponentType.TextDisplay,
-				content: this.description,
-			}, {
-				type: ComponentType.Separator,
-				divider: true,
-			});
+			container.components.push({ type: ComponentType.TextDisplay, content: this.description, }, separator);
+		};
+
+		if (cash) {
+			container.components.push(cash, separator);
 		}
 
-		const cash = this.formatCashBlock();
-		if (cash.trim().length > 0) {
-			container.components.push({
-				type: ComponentType.TextDisplay,
-				content: cash,
-			});
-		}
+		container.components.push({ type: ComponentType.TextDisplay, content: `-# ${this.createdAt.toUTCString()}` });
 
 		return container;
 	}

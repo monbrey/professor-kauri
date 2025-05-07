@@ -1,6 +1,6 @@
-import type { API, APIChatInputApplicationCommandGuildInteraction, APIContainerComponent, APIMessageComponentButtonInteraction, APIMessageComponentSelectMenuInteraction, APIMessageUserSelectInteractionData, APIModalSubmitInteraction, APIUser, RESTPostAPIChatInputApplicationCommandsJSONBody } from "@discordjs/core";
+import type { API, APIChatInputApplicationCommandGuildInteraction, APIContainerComponent, APIMessageComponentButtonInteraction, APIMessageComponentSelectMenuInteraction, APIMessageUserSelectInteractionData, APIModalSubmitInteraction, RESTPostAPIChatInputApplicationCommandsJSONBody } from "@discordjs/core";
 import { ApplicationCommandOptionType, ApplicationIntegrationType, ButtonStyle, ComponentType, InteractionContextType, MessageFlags, TextInputStyle } from "@discordjs/core";
-import { stripIndents } from "common-tags";
+import { BattleLog } from "../../lib/BattleLog.js";
 
 const Section = {
 	Battles: 1,
@@ -11,106 +11,7 @@ const Section = {
 	Morphic: 6,
 };
 
-class Log {
-	winner?: APIUser;
-	winningTeam?: string;
-	loser?: APIUser;
-	losingTeam?: string;
-	description?: string;
-	size?: string;
-	generation?: string;
-	privacy?: string;
-	format?: string;
-	clauses?: string[];
-	createdAt?: Date;
-
-	private formatRuleBlock() {
-		return stripIndents`
-			${this.winner && this.loser ? `**<@${this.winner.id}> vs <@${this.loser.id}>**` : ""}
-			${this.size ? `${this.size}v${this.size}` : ""}
-			${this.generation ?? ""}
-			${this.privacy ?? ""}
-			${this.format ?? ""}
-			${this.clauses?.join(", ") ?? ""}
-		`;
-	}
-
-	private formatTeamBlock() {
-		return this.winner && this.loser && this.winningTeam && this.losingTeam ?
-			stripIndents`
-				${this.winner?.username}'s ${this.winningTeam}
-				vs
-				${this.loser?.username}'s ${this.losingTeam}
-			` : "";
-	}
-
-	private formatCashBlock() {
-		return stripIndents`
-			${this.winner?.username ?? "*Pending*"}: $${Number(this.size) * 500}
-			${this.loser?.username ?? "*Pending*"}: $${Number(this.size) * 250}
-		`;
-	}
-
-	public generateLogContainer(draft = true) {
-		const container: APIContainerComponent = {
-			type: ComponentType.Container,
-			components: [
-				{
-					type: ComponentType.TextDisplay,
-					content: `### Battle Log #999${draft ? " (draft)" : ""}`,
-				},
-				{
-					type: ComponentType.Separator,
-					divider: true,
-				},
-			],
-		};
-
-		const rules = this.formatRuleBlock();
-		if (rules.trim().length > 0) {
-			container.components.push({
-				type: ComponentType.TextDisplay,
-				content: rules,
-			}, {
-				type: ComponentType.Separator,
-				divider: true,
-			});
-		}
-
-		const teams = this.formatTeamBlock();
-		if (teams.trim().length > 0) {
-			container.components.push({
-				type: ComponentType.TextDisplay,
-				content: teams,
-			}, {
-				type: ComponentType.Separator,
-				divider: true,
-			});
-		}
-
-		if (this.description) {
-			container.components.push({
-				type: ComponentType.TextDisplay,
-				content: this.description,
-			}, {
-				type: ComponentType.Separator,
-				divider: true,
-			});
-		}
-
-		const cash = this.formatCashBlock();
-		if (cash.trim().length > 0) {
-			container.components.push({
-				type: ComponentType.TextDisplay,
-				content: cash,
-			});
-		}
-
-		return container;
-	}
-}
-
-const logs = new Map<number, Log>();
+const logs = new Map<number, BattleLog>();
 
 export const data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
 	name: "log",
@@ -138,7 +39,7 @@ export const execute = async (api: API, interaction: APIChatInputApplicationComm
 
 	switch (section.name) {
 		case "battles": {
-			const log = new Log();
+			const log = new BattleLog(999);
 			logs.set(999, log);
 
 			const controlContainer: APIContainerComponent = {
@@ -435,7 +336,7 @@ export const onSelect = async (api: API, interaction: APIMessageComponentSelectM
 
 	switch (section) {
 		case "size":
-			log.size = interaction.data.values[0];
+			log.size = parseInt(interaction.data.values[0], 10);
 			break;
 		case "generation":
 			log.generation = interaction.data.values[0];
